@@ -12,20 +12,22 @@ my $ans = <STDIN>; chomp $ans;
 if($ans==1){
 	
 	## Take input from user
-	#print "What is your first sequence?\n";
-		#my $seq1= <STDIN>; chomp $seq1;
-	#print "What is your second sequence?\n";
-		#my $seq2= <STDIN>; chomp $seq2;
-	#print "What is your gap penalty?\n";
-		#my $gap=<STDIN>; chomp $gap;
-	#print "What is your match score?\n";
-		#my $mat=<STDIN>; chomp $mat;
-	#print "What is your mismatch score?\n";
-		#my #mismat=<STDIN>; chomp $mismat;
+	print "What is your first sequence?\n";
+	#	my $seq1= <STDIN>; chomp $seq1;
+	print "What is your second sequence?\n";
+	#	my $seq2= <STDIN>; chomp $seq2;
+	print "What is your gap penalty?\n";
+	#	my $gap=<STDIN>; chomp $gap;
+	print "What is your match score?\n";
+	#	my $mat=<STDIN>; chomp $mat;
+	print "What is your mismatch score?\n";
+	#	my $mismat=<STDIN>; chomp $mismat;
 
 	## Testing Only	
-	my $seq1 = "GCATGCU";
-	my $seq2 = "GATTACA";
+	my $seq1 = "GATCT";
+	my $seq2 = "GCGTA";
+	#my $seq1 = "GAGATTTGACTCATGCTATTATGGAAGCCAAGAAGTCCTACAATATGCCATCTTCAAATT";	
+	#my $seq2 = "GGAGATTTGACTCATGCTATTATGGAAGCCAAGAAGTCCTACAATATGCCATCTTCATATT";
 	my $gap=-1; my $mismat=-1;
 	my $mat = 1;
 	
@@ -117,14 +119,12 @@ if($ans==1){
 	}
 	
 	#Print the Results 
-	print "This is the scoring matrix:\n";
+	print "\n This is the scoring matrix:\n";
 		printarray(\@score, \$row, \$col);
 		print "\n";
-	print "This is the pointer matrix:\n";
-		printarray(\@pointer, \$row, \$col);
-		print "\n";
-	print "This is the optimal sequence:\n";
+	print "This is the optimal sequence alignmnet:\n";
 		seq_create(\@score, \@pointer, \$row, \$col);
+		print "\n";
 }
 
 ######################################################################################
@@ -160,7 +160,7 @@ sub seq_create{
 	##Sequence 1
 		#Initialize Counters
 		my $tcol=$$col-1;
-		my $trow=$$row-1; my $n=2;
+		my $trow=$$row-1; my $n=1;
 		
 		#For each column position add either the sequence letter, or matrix score
 		until ($n>$$col){
@@ -178,15 +178,15 @@ sub seq_create{
 			$n++;
 		}
 
-		#Print the optimal sequences
-		foreach my $line (@seq1_final){
-			print "$line  ";
-		} print "\n";
+	#Print the optimal sequence1
+	foreach my $line (@seq1_final){
+		print "$line  ";
+	} print "\n";
 		
 	##Sequence 2
 		#Initialize Counters
-		my $tcol=$$col-1;
-		my $trow=$$row-1; my $n=2;
+		$tcol=$$col-1;
+		$trow=$$row-1; $n=1;
 	
 		#For each column position add either the sequence letter, or matrix score
 		until ($n>$$row){
@@ -204,8 +204,14 @@ sub seq_create{
 			$n++;
 		}
 
-		#Print the optimal sequences
-		foreach my $line (@seq2_final){
-			print "$line  ";
-		}
+	#Print the optimal sequence2
+	foreach my $line (@seq2_final){
+		print "$line  ";
+	} print "\n";
+}
+
+sub seq_score{
+
+
+
 }
