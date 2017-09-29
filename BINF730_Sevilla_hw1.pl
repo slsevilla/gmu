@@ -13,23 +13,23 @@ if($ans==1){
 	
 	## Take input from user
 	print "What is your first sequence?\n";
-	#	my $seq1= <STDIN>; chomp $seq1;
+		my $sq1= <STDIN>; chomp $sq1;
 	print "What is your second sequence?\n";
-	#	my $seq2= <STDIN>; chomp $seq2;
+		my $sq2= <STDIN>; chomp $sq2;
 	print "What is your gap penalty?\n";
-	#	my $gap=<STDIN>; chomp $gap;
+		my $gap=<STDIN>; chomp $gap;
 	print "What is your match score?\n";
-	#	my $mat=<STDIN>; chomp $mat;
+		my $match=<STDIN>; chomp $match;
 	print "What is your mismatch score?\n";
-	#	my $mismat=<STDIN>; chomp $mismat;
+		my $mismatch=<STDIN>; chomp $mismatch;
 
 	## Testing Only	
-	my $sq1 = "GATCT";
-	my $sq2 = "GCGTA";
-	#my $sq1 = "GAGATTTGACTCATGCTATT";	
-	#my $sq2 = "GGAGATTTGACTCATGCTAT";
-	my $gap=-1; my $mismatch=-1;
-	my $match = 1;
+	#my $sq1 = "GATCT";
+	#my $sq2 = "GCGTA";
+	#my $sq1 = "GAGATTTGACTCATGCTATTATGGAAGCCAAGAAGTCCTACAATATGCCATCTTCTT";	
+	#my $sq2 = "GAGATTTGACTCATGCTATTATGGAAGCCAAGAAGTCCTACAATATGCCATCTTCATATT";
+	#my $gap=-1; my $mismatch=-1;
+	#my $match = 1;
 	
 	#Initialize Variables
 	my @score = (); my @pointer=();
@@ -94,31 +94,31 @@ if($ans==1){
 		seq_NW(\@pointer, \@seq1, \@seq2, \$row, \$col);
 		print "\n";
 
-	#Print the optimal score
-	seq_score(\@seq1, \@seq2, $gap, $mismatch, $match);
+		#Print the optimal score
+	seq_score(\@seq1, \@seq2, \$gap, \$mismatch, \$match);
 }
 
 if($ans==2){
 	
 	## Take input from user
 	print "What is your first sequence?\n";
-	#	my $seq1= <STDIN>; chomp $seq1;
+		my $sq1= <STDIN>; chomp $sq1;
 	print "What is your second sequence?\n";
-	#	my $seq2= <STDIN>; chomp $seq2;
+		my $sq2= <STDIN>; chomp $sq2;
 	print "What is your gap penalty?\n";
-	#	my $gap=<STDIN>; chomp $gap;
+		my $gap=<STDIN>; chomp $gap;
 	print "What is your match score?\n";
-	#	my $mat=<STDIN>; chomp $mat;
+		my $match=<STDIN>; chomp $match;
 	print "What is your mismatch score?\n";
-	#	my $mismat=<STDIN>; chomp $mismat;
+		my $mismatch=<STDIN>; chomp $mismatch;
 
 	## Testing Only	
-	my $sq1 = "ATTCGA";
-	my $sq2 = "ACGATA";
+	#my $sq1 = "ATTCGA";
+	#my $sq2 = "ACGATA";
 	#my $sq1 = "GAGATTTGACTCATGCTATT";	
 	#my $sq2 = "GGAGATTTGACTCATGCTAT";
-	my $gap=-1; my $mismatch=0;
-	my $match = 1; my $i_max; my $j_max;
+	#my $gap=-1; my $mismatch=0; my $match = 1; 
+	my $i_max; my $j_max;
 	
 	#Initialize Variables
 	my @score = (); my @pointer=();
@@ -187,7 +187,7 @@ if($ans==2){
 		seq_SW(\@score, \@pointer, \@seq1, \@seq2, \$row, \$col, \$i_max, \$j_max);
 		print "\n";
 	#Print the optimal score
-	#seq_score(\@seq1, \@seq2, $gap, $mismatch, $match);
+	seq_score(\@seq1, \@seq2, \$gap, \$mismatch,\$match);
 }
 
 
@@ -241,7 +241,7 @@ sub seq_NW{
 
 	##Sequence 1
 	my $tcol=$$col-1;
-	my $trow=$$row-1; my $n=0;
+	my $trow=$$row-1; my $n=2;
 	
 	#For each column position add either the sequence letter, or matrix score
 	until ($n>$$col){
@@ -261,7 +261,7 @@ sub seq_NW{
 
 	##Sequence 2
 	$tcol=$$col-1;
-	$trow=$$row-1; $n=0;
+	$trow=$$row-1; $n=2;
 		
 	#For each column position add either the sequence letter, or matrix score
 	until ($n>$$row){
@@ -287,6 +287,10 @@ sub seq_NW{
 	foreach my $line (@seq2_final){
 		print "$line  ";
 	} print "\n";
+	
+	#Pass through final sequences back to original array
+	@$seq1=@seq1_final;
+	@$seq2=@seq2_final;
 }
 
 sub seq_SW{
@@ -341,6 +345,10 @@ sub seq_SW{
 	foreach my $line (@seq2_final){
 		print "$line  ";
 	} print "\n";
+	
+	#Pass through final sequences back to original array
+	@$seq1=@seq1_final;
+	@$seq2=@seq2_final;
 }
 
 sub seq_score{
@@ -348,16 +356,18 @@ sub seq_score{
 	#Initialize Variables
 	my ($seq1_final, $seq2_final, $gap, $mismatch, $match) = @_;
 	my $score=0; my $n=0;
-
-	#Print the optimal sequence1
+	
+	#Score the sequence using +match, -gap, -mismatch
 	foreach my $line (@$seq1_final){
 		if($line =~ $$seq2_final[$n]){
-			$score=$score + $match;
+			$score=$score + $$match;
 			$n++;
 		} elsif($line=~ "-"){
-			$score=$score+$gap;
+			$score=$score + $$gap;
 			$n++;
-		} else{$score=$score+$mismatch};
+		} else{$score=$score + $$mismatch;
+			$n++;
+		}
 	} 
 	print "The optimal alignment has a score of: $score\n\n";
 }
