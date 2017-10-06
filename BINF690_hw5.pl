@@ -33,46 +33,29 @@ print "1) bisection method or 2)Newton Raphson:  ";
 	my $ans = <STDIN>; chomp $ans;
 
 ###########################################################################################
-###								First and Second iterations								###
+###								First iterations										###
 ###########################################################################################
 
 #Run through the first iteration of the problem
-	my $iter=1;
-
 	##Graphically represent the data
-	graph_data(\$iter);
+	graph_data();
 		print "\n*****Review the graph for more information on bounds******\n";
 
 	##Perform the selected method to find h	
 	if($ans==1){
-		$h = bisection(\$iter);
+		$h = bisection();
+	} elsif($ans==2){
+		$h = NR();
 	}
 
 	##Use h to determine the x and y values
 	maxmin(\$x_new, \$y_new, \$h);
 		print "Iteration $iter: ($x_new, $y_new)\n\n\n";
-
-#Run through the second iteration of the problem
-	my $iter=2;
-
-	##Graphically represent the data
-	graph_data(\$iter);
-		print "\n*****Review the graph for more information on bounds******\n";
-
-	##Perform the selected method to find h	
-	if($ans==1){
-		$h = bisection(\$iter);
-	}
 	
-	##Use h to determine the x and y values
-	maxmin(\$x_new, \$y_new, \$h);
-		print "Iteration $iter: ($x_new, $y_new)\n\n\n";
-
 ###########################################################################################
 ###										SUBROUTINES										###
 ###########################################################################################
 sub bisection{
-	my ($iter)=@_;
 
 	#Initialize BISECTION inputs
 	print "What is your initial Lower Bound (XL)?  ";
@@ -94,8 +77,8 @@ sub bisection{
 			$XR_new = ($XL+$XU)/2;
 			
 			#Find FL & FR
-			$FL=g1_solve($XL,$$iter);
-			$FR=g1_solve($XR_new,$$iter);
+			$FL=g1_solve($XL);
+			$FR=g1_solve($XR_new);
 
 			#Find EA for each iteration
 			if($n>0){
@@ -117,6 +100,44 @@ sub bisection{
 		print "\nThe h value is $XR_new\n";
 		return $XR_new;
 	}
+}
+
+sub NR {
+	
+	#Take in guess from CML
+	print "What is your guess for h? ";
+		my $h = <STDIN>; chomp $h;
+	
+	#Inputs
+	my $ES_Min = 5;
+	my $Xi_old= 0;
+
+		
+	#Initialize
+	my $Xi_new; my $EA=0;
+	my $ES=100; my $n=0;
+	my $gx; my $g1_fx;
+	
+	#Calculate range values
+	#until ($ES<$ES_Min){
+	until($n>4){	
+		$gx= g_solve($h);
+		$g1_gx=g1_solve($h);
+		
+		$Xi_new=$Xi_old-($gx/$g1_gx);
+		
+		$ES=(abs(($Xi_old-$Xi_new))/$Xi_new)*100;
+		$h=$Xi_new;
+		$Xi_old=$Xi_new;
+		
+		#Print iteration, f(x) and f'(x) values, and the ES
+		print "\nAt iteration $n, there is an EA: $EA\n";
+		print "       FX: $gx, F1_FX:$g1_gx \n";
+		print "       XI: $Xi_new, ES: $ES\n";
+		$n++;
+		
+	}
+	return $h;
 }
 
 #Subroutine determines x and y values using the optimal gradient method, printing out the x,y values
@@ -164,30 +185,39 @@ sub partials{
 }
 
 #Subroutine solves the g'(x) value, returning g'(x) value (Y value)
+sub g_solve{
+	my($x)=@_;
+	my $g_x;
+	
+	#Solve for Y, using the the two g'h formula
+	$g_x=832*$x**2 + 208*$x; ###Update with g(h)' equation
+	
+	return $g_x;
+}
+
+#Subroutine solves the g'(x) value, returning g'(x) value (Y value)
 sub g1_solve{
-	my($x,$iter)=@_;
+	my($x)=@_;
 	my $g1_x;
 	
-	#Solve for Y, using the the two g'h formulas Iter1 or Iter2
-	if ($iter==1){
-		$g1_x=1644*$x + 208; ###Update with g(h)' equation
-	} else {$g1_x=13*$x}; ###Update with g(h)' equation
+	#Solve for Y, using the the two g'h formula
+	$g1_x=1644*$x + 208; ###Update with g(h)' equation
+	
 	return $g1_x;
 }
 
 #Subroutine graphs g' data for visual reference, and prints to file
 sub graph_data{
-	my ($iter)=@_;
-	
+		
 	#Create file name
 	my $x=-5;
-	my $file="Graph_"; $file.= $$iter;
+	my $file="Graph_"; 
 	my @xval; my @yval;
 	my @data; my $n=0;
 	
 	#Create dataset
 	until ($x>5){
-		my $fx = g1_solve($x,$$iter);
+		my $fx = g1_solve($x);
 		push(@xval,$x);
 		push(@yval,$fx);
 		$x=$x+.5;
