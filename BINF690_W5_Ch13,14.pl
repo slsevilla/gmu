@@ -117,7 +117,6 @@ if($ans==3){
 	print "The final solution is $x_new";
 }
 
-
 if($ans==4){
 	#Initialize Variables
 	my $x; my $y; my $r;
