@@ -126,10 +126,7 @@ sub lin_reg{
 		my @pos = qw(a11 a12 a13 b1 a21 a22 a23 b2 a31 a32 a33 b3);
 	
 		#Create array with sum values needed
-		push (@terms, $$xnum); push (@terms, $xsum); push (@terms, $x2sum);
-		push (@terms, $ysum); push (@terms, $xsum); push (@terms, $x2sum);
-		push (@terms, $x3sum); push(@terms, $xysum); push (@terms, $x2sum);
-		push (@terms, $x3sum); push (@terms, $x4sum); push(@terms, $x2ysum);
+		my @terms = ($$xnum, $xsum, $x2sum, $ysum, $xsum, $x2sum, $x3sum, $xysum, $x2sum, $x3sum, $x4sum, $x2ysum);
 		
 		#Build the key with each position, and solved sums as a hash
 		foreach my $i (@pos){
