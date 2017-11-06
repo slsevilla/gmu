@@ -2,6 +2,7 @@
 #User: Samantha Sevilla
 #BINF690
 #Chapter 25
+#HW 25.5
 
 use strict;
 use GD::Graph::mixed;
@@ -10,73 +11,42 @@ use GD::Graph::colour
 ######################################################################################
 								##NOTES##
 ######################################################################################
-##This script was created from Ch25 problems
+##This script was created for 25.5 homework
+##first using Heun's method with corrector (Euler's method)
+##then using RK 2nd order method
+##then using RK 4th order method
 
-######################################################################################
-								##Main Code##
-######################################################################################
 #Standard input from CML
 print "What would you like to do?\n";
 print "  1) Euler's Method\n";
-print "  2) Heun's Method \n";
-print "  3) Euler's Compared to Heun's\n";
 print "  4) Ralston's RK 2nd order\n";
 print "  5) Ralston's RK 4th order\n";
+print "  6) 1, 4, and 5\n";
 print "ANS:";
 	my $ans = <STDIN>; chomp $ans;
 
 if ($ans==1){
 	
-	#UPDATE Variables
-	my $step = .5; my $x0 = 0; my $x1 = 4; 
-	my $xi = 0;	my $yi = 0;	
+	###UPDATE variables
+	my $step = .1;
+	my $x0 = 0;
+	my $x1 = 3;
+	my $xi = 0;
+	my $yi = 1;
 	
 	#Initialize Variables
 	my @x_val; my @y_true; my @y_euler;
 	
 	#Call subroutines
 	Eulers_method(\@y_euler, \@y_true, \@x_val, \$step, \$x0, \$x1, \$xi, \$yi, \$ans);
-	graph_data(\@x_val, \@y_true, \@y_euler, \@x_val, $ans, $ans);
+	graph_data(\@x_val, \@y_true, \@y_euler, \@x_val, \@x_val,$ans, $ans);
 	
-} elsif($ans==2){
-	
-	###UPDATE variables
-	my $step = 1;
-	my $x0 = 0;
-	my $x1 = 4;
-	my $xi = 0;
-	my $yi = 2;
-	
-	#Initialize Variables
-	my @x_val; my @y_true; my @y_heuns;
-	
-	#Call subroutines
-	Heun_Method(\@y_heuns, \@y_true, \@x_val, \$step,$x0, \$x1, \$xi, \$yi, \$ans);
-	graph_data(\@x_val, \@y_true, \@y_heuns, \@x_val, $ans, $ans);
-
-} elsif($ans==3){
-	
-	###UPDATE variables
-	my $step = .5;
-	my $x0 = 0;
-	my $x1 = 4;
-	my $xi = 0;
-	my $yi = 0;
-	
-	#Initialize Variables
-	my @x_val; my @y_true; my @y_euler; my @y_heuns;
-
-	#Call subroutines
-	Eulers_method(\@y_euler, \@y_true, \@x_val, \$step, \$x0, \$x1, \$xi, \$yi, \$ans);
-	Heun_Method(\@y_heuns, \@y_true, \@x_val, \$step,$x0, \$x1, \$xi, \$yi, \$ans);
-	graph_data(\@x_val, \@y_true, \@y_heuns, \@y_euler, $ans, $ans);
-
 } elsif($ans==4){
 	
 	###UPDATE variables
-	my $step = .5;
+	my $step = .1;
 	my $x0 = 0;
-	my $x1 = 4;
+	my $x1 = 3;
 	my $xi = 0;
 	my $yi = 1;
 	
@@ -86,24 +56,58 @@ if ($ans==1){
 	
 	#Call subroutines
 	RK_Method(\@y_rk, \@y_true, \@x_val, \$step, \$x0, \$x1, \$xi, \$yi, \$eq, \$order);
-	graph_data(\@x_val, \@y_true, \@y_rk, \@x_val, $ans, $ans);
+	graph_data(\@x_val, \@y_true, \@y_rk, \@x_val, \@x_val,$ans, $ans);
 
 }elsif($ans==5){
 	###UPDATE variables
-	my $step = 2;
+	my $step = .1;
 	my $x0 = 0;
-	my $x1 = 2;
+	my $x1 = 3;
 	my $xi = 0;
-	my $yi = 2;
+	my $yi = 1;
 	
 	#Initialize Variables
-	my @x_val; my @y_true;my @y_euler; my @y_rk;
+	my @x_val; my @y_true; my @y_euler; my @y_rk;
 	my $order =4; my $eq=2;
 	
 	#Call subroutines
 	RK_Method(\@y_rk, \@y_true, \@x_val, \$step, \$x0, \$x1, \$xi, \$yi, \$eq, \$order);
-	graph_data(\@x_val, \@y_true, \@y_rk, \@x_val, $ans, $ans);
+	graph_data(\@x_val, \@y_true, \@y_rk, \@x_val, \@x_val,$ans, $ans);
 
+}elsif($ans==6){
+	#Initialize Variables
+	my @x_val; my @y_true; my @y_euler; my @y_rk1; my @y_rk2;
+	
+	###UPDATE variables
+	my $step = .1;
+	my $x0 = 0;
+	my $x1 = 3;
+	my $xi = 0;
+	my $yi = 1;
+	
+	#Call subroutines
+	Eulers_method(\@y_euler, \@y_true, \@x_val, \$step, \$x0, \$x1, \$xi, \$yi, \$ans);
+
+	#Initialize Variables
+	my $x0 = 0; my $x1 = 3;
+	my $xi = 0; my $yi = 1;
+	my @x_val; my @y_true; 
+	my $order =2; my $eq=1;
+	
+	#Call subroutines
+	RK_Method(\@y_rk1, \@y_true, \@x_val, \$step, \$x0, \$x1, \$xi, \$yi, \$eq, \$order);
+	
+	#Initialize Variables
+	my $x0 = 0; my $x1 = 3;
+	my $xi = 0;	my $yi = 1;
+	my @x_val; my @y_true; 
+	my $order =4; my $eq=2;
+	
+	#Call subroutines
+	RK_Method(\@y_rk2, \@y_true, \@x_val, \$step, \$x0, \$x1, \$xi, \$yi, \$eq, \$order);
+
+	#Graph all Data
+	graph_data(\@x_val, \@y_true, \@y_euler, \@y_rk1, \@y_rk2, $ans, $ans);
 }
 
 ######################################################################################
@@ -111,10 +115,10 @@ if ($ans==1){
 ######################################################################################
 #Subroutine graphs g' data for visual reference, and prints to file
 sub graph_data{
-	my ($data1_in, $data2_in, $data3_in, $data4_in, $ans, $eq)=@_;
+	my ($data1_in, $data2_in, $data3_in, $data4_in, $data5_in, $ans, $eq)=@_;
 	
 	#Initialize Variables
-	my @data; my @xval; my @xval2; my @yval; my @yval2; my @yval3;
+	my @data; my @xval; my @xval2; my @yval; my @yval2; my @yval3; my @yval4;
 	
 	#Create file name
 	my $file="Graph_EQ";
@@ -122,18 +126,19 @@ sub graph_data{
 	
 	#Check answers to determine if multiple x inputs, or y inputs
 	#1 and #2 = Two inputs with two graphs
-	#3 = Three inputs and three lines
+	#3 = Four inputs and Four lines
 	if ($ans==1 | $ans==2 | $ans==4| $ans==5){
 		@xval= @$data1_in;
 		@yval = @$data2_in;
 		@yval2 = @$data3_in;
 		@data = (\@xval,\@yval, \@yval2, \@yval, \@yval2);
-	} elsif($ans==3){
+	} elsif($ans==3 | $ans==6){
 		@xval= @$data1_in;
 		@yval = @$data2_in;
 		@yval2 = @$data3_in;
 		@yval3 = @$data4_in;
-		@data = (\@xval, \@yval, \@yval2, \@yval3, \@yval, \@yval2, \@yval3);
+		@yval4 = @$data5_in;
+		@data = (\@xval, \@yval, \@yval2,\@yval3, \@yval4, \@yval, \@yval2, \@yval3,\@yval4);
 	} else{
 		my $x = 0; my $y =0;
 		until ($x>10){
@@ -157,17 +162,17 @@ sub graph_data{
 			x_label => "X",
 			y_label => "Y",
 			zero_axis=>"true",
-			title => "Graph of Comparison | Red = True, Purple = Approx");
-	} elsif($ans==3){
-			$graph -> set(
-			types =>[qw(points points points lines lines lines)],
+			title => "Comparison | Red = True, Purple = Approx");
+	} elsif($ans==3 | $ans==6){
+		$graph -> set(
+			types =>[qw(points points points points lines lines lines lines)],
 			markers => [qw(1,3)],
 			marker_size =>3,
-			dclrs=>[ qw(purple red orange)],
+			dclrs=>[ qw(green red purple blue)],
 			x_label => "X",
 			y_label => "Y",
 			zero_axis=>"true",
-			title => "Comparison | Red = True, Purple = Heuns, Orange = Euler");
+			title => "Comparison: True (Red), Euler(Blue), 2nd (Purple), 4th (Green)");
 	}
 	
 	#Create and save graph to gift file
@@ -183,17 +188,10 @@ sub fx_solve{
 	my $fx;	
 	
 	###UPDATE NEW EQUATIONS
-	#1 and #3) 25.1 Example
-	#2) 25.5 Example
-	
+		
 	#Equations solved
-	if($eq==1 | $eq==3){
-		$fx=-.5*$x**4 + 4*$x**3 -  10*$x**2 + 8.5*$x +1;
-	} elsif($eq==2){
-		$fx=(4/1.3)*(exp(.8*$x)-exp(-.5*$x)) + 2*exp(-.5*$x);
-	} else{
-		$fx=0;
-	}
+	$fx=exp(-cos($x)+((cos($x)**3)/3)+(2/3));
+	
 	
 	return $fx;
 }
@@ -204,26 +202,10 @@ sub fder_solve{
 	my $f1_fx;	
 	
 	###UPDATE NEW EQUATION
-	#1 and #3) 25.1 Example
-	#2) 25.5 Example
 
 	#Equations solved
-	if($eq==1 | $eq==3){
-		if($der==1){
-			$f1_fx=-2*$x**3 + 12*$x**2 - 20*$x + 8.5;
-		} elsif($der==2){
-			$f1_fx=-6*$x**2 + 24*$x - 20;
-		} elsif($der==3){
-			$f1_fx=-12*$x + 24;
-		} else{
-			$f1_fx = -12;
-		}
-	} elsif($eq==2){
-		if($der==1){
-			$f1_fx=4*exp(0.8*$x)-0.5*$y;
-		} 	
-	}
-
+	$f1_fx=$y*((sin($x))**3);
+	
 	return $f1_fx;
 }
 
@@ -233,29 +215,28 @@ sub Eulers_method{
 	
 	#Initialize Variables
 	my $f1x; my $fx_true; my $Et; my $euler; my $ETtotal;
-	my $iter = 1; my $level=4;
+	my $level=4;
 		
 	#Set starting values
 	my $x = $$xi; my $y= $$yi;	my $der =1;
 	my $fx = fx_solve($x,$$eq, $der);
 	
-	until ($x==$$x1){
-		
+	#until ($x==$$x1){
+	for($x; $x<$$x1; $x+$$step){
 		#Solve the Equations for Euler and Error
 		$f1x = fder_solve($x, $y, $$eq, $der);
 		$fx_true = fx_solve($x+$$step, $y+$$step, $$eq);
 		
 		#Solve Euler
-		$euler = $fx + $f1x * $$step;
+		$euler = sprintf("%.4f",$fx + $f1x*$$step);
 		
 		#Determine the Error This
-		$Et = sprintf("%.3f",(($fx_true - $euler)/$fx_true) * 100);
+		$Et = sprintf("%.4f",(($fx_true - $euler)/$fx_true) * 100);
 		
 		#Set counters for next iteration
-		$x = $x+$$step; $y=$y+$$step;
+		$x = $x+$$step; $y=$euler;
 		$fx = $euler;
-		$iter=$iter+1;
-		
+
 		#Push values to array for later graphing
 		push (@$y_euler, $euler);
 		push (@$y_true, $fx_true);
@@ -266,31 +247,11 @@ sub Eulers_method{
 	print "The Euler's approx is $euler, with an Et of $Et%\n";
 	print "\n#################################################\n";
 
-	
-	#Calculate the truncation error
-	for (my $i=2; $i<=$level; $i++){
-			
-		#Calcualte the factorial values
-		my $fact=$i; my $n = $i-1;
-		for ($n; $n>0; $n--){
-			$fact = $fact * $n;	
-		}
-		
-		#Use the truncation formula to determine total error
-		my $temp = fder_solve($$xi, $$yi, $$eq, $i); 
-		my $Etrunc = ($temp / $fact) * ($$step**$i);
-		$ETtotal = $ETtotal + $Etrunc;
-	}
-	print "#################################################\n";
-	print "\n The Total truncation error is $ETtotal\n";
-	print "\n#################################################\n";
-
 	#Empty true array if repeating with Heuns method
 	if ($$eq==3){
 		@$y_true=();
 		@$x_val=();
 	}
-	
 }
 
 sub Heun_Method{
@@ -362,7 +323,7 @@ sub RK_Method{
 			#Push values to array for later graphing
 			push (@$y_rk, $fsol);
 			push (@$y_true, $fx_true);
-			push (@$x_val, $x);
+			push (@$x_val, $$x0);
 		}
 
 		#Calculate the error
@@ -393,7 +354,7 @@ sub RK_Method{
 			#Push values to array for later graphing
 			push (@$y_rk, $fsol);
 			push (@$y_true, $fx_true);
-			push (@$x_val, $x);
+			push (@$x_val, $$x0);
 		}
 
 		#Calculate the error
