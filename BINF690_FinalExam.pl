@@ -81,12 +81,12 @@ if($ans==1){
 	my $step = .1;
 	my $xmin = 0;
 	my $xmax = 10;
-	my $xi = 0;
-	my $yi1 = 0;
-	my $yi2 = 1;
+	my $ti = 0;
+	my $x = 0;
+	my $y = 1;
 	
 	#Call subroutines for Euler's Method
-	Eulers_method_multiple(\$step, \$xmin, \$xmax, \$xi, \$yi1, \$yi2);
+	Eulers_method_multiple(\$step, \$xmin, \$xmax, \$ti, \$x, \$y);
 	
 }
 
@@ -95,18 +95,101 @@ if($ans==1){
 ######################################################################################
 sub newton_div{
 	my ($xvals, $yvals, $x)=@_;
-	
-	#Create Temp arrays
-	my @tempx=@$xvals; my @tempy=@$yvals;
-	
-	#Initalize Variables
-	my @interpol; my @solution;
-	my $iter =1;
-	my $n=0; my $i=0;
 	my @order = qw (first second third fourth);
 	
-	until ($iter==5){
+	#########################################################################
+	#Initalize Variables
+	my @interpol; my @solution; my @tempx=@$xvals; my @tempy=@$yvals;
+	
+	for (my $iter=1; $iter<3; $iter++){	
+		#Determine the length of the Y array
+		my $length = scalar @tempy -4; 
+
+		#Run a loop for the length of y variables - 1
+		for (my $i=0; $i < $length; $i++){
+			
+			#Calculate the divided difference
+			my $temp = ($tempy[$i+1]-$tempy[$i])/($tempx[$i+$iter]-$tempx[$i]);
+			
+			#Save differences to array
+			push(@interpol, sprintf("%.8f",$temp));
+			push(@solution, sprintf("%.8f",$temp));
+		}
 		
+		#Save the differences as the new Y values and increase/reset counters
+		@tempy = @interpol; @interpol=();
+	}
+
+	#Determine the answer for the given X
+	my $ans = @$yvals[0];
+		print "\n\n******************************************\n";
+		print "The final solution for 1st is $ans\n";
+		print "******************************************\n\n";
+		
+	#########################################################################
+	#Initalize Variables
+	my @interpol; my @solution; my @tempx=@$xvals; my @tempy=@$yvals;
+	
+	for (my $iter=1; $iter<4; $iter++){	
+		#Determine the length of the Y array
+		my $length = scalar @tempy -3; 
+
+		#Run a loop for the length of y variables - 1
+		for (my $i=0; $i < $length; $i++){
+			
+			#Calculate the divided difference
+			my $temp = ($tempy[$i+1]-$tempy[$i])/($tempx[$i+$iter]-$tempx[$i]);
+			
+			#Save differences to array
+			push(@interpol, sprintf("%.8f",$temp));
+			push(@solution, sprintf("%.8f",$temp));
+		}
+		
+		#Save the differences as the new Y values and increase/reset counters
+		@tempy = @interpol; @interpol=();
+	}
+
+	#Determine the answer for the given X
+	my $ans = @$yvals[0] + $solution[0]*($$x-@$xvals[0]);
+		print "\n\n******************************************\n";
+		print "The final solution for 2nd is $ans\n";
+		print "******************************************\n\n";
+	
+	#########################################################################
+	#Initalize Variables
+	my @interpol; my @solution; my @tempx=@$xvals; my @tempy=@$yvals;
+	
+	for (my $iter=1; $iter<5; $iter++){	
+		#Determine the length of the Y array
+		my $length = scalar @tempy -2; 
+
+		#Run a loop for the length of y variables - 1
+		for (my $i=0; $i < $length; $i++){
+			
+			#Calculate the divided difference
+			my $temp = ($tempy[$i+1]-$tempy[$i])/($tempx[$i+$iter]-$tempx[$i]);
+			
+			#Save differences to array
+			push(@interpol, sprintf("%.8f",$temp));
+			push(@solution, sprintf("%.8f",$temp));
+		}
+		
+		#Save the differences as the new Y values and increase/reset counters
+		@tempy = @interpol; @interpol=();
+	}
+
+	#Determine the answer for the given X
+	my $ans = @$yvals[0] + $solution[0]*($$x-@$xvals[0])+ $solution[4]*($$x-@$xvals[0])*($$x-@$xvals[1]);
+		print "\n\n******************************************\n";
+		print "The final solution for 3rd is $ans\n";
+		print "******************************************\n\n";
+	
+	
+	#########################################################################
+	#Initalize Variables
+	my @interpol; my @solution; my @tempx=@$xvals; my @tempy=@$yvals;
+	
+	for (my $iter=1; $iter<6; $iter++){	
 		#Determine the length of the Y array
 		my $length = scalar @tempy -1; 
 
@@ -121,26 +204,15 @@ sub newton_div{
 			push(@solution, sprintf("%.8f",$temp));
 		}
 		
-		#Print the divided differences
-		print "\n The $order[$iter-1] divided differences are\n";
-		foreach(@interpol){
-			print "$interpol[$i]\n";
-			$i++;
-		}
-		
 		#Save the differences as the new Y values and increase/reset counters
-		@tempy = @interpol;
-		@interpol=();
-		$iter = $iter+1; $i=0;
+		@tempy = @interpol; @interpol=();
 	}
 
 	#Determine the answer for the given X
 	my $ans = @$yvals[0] + $solution[0]*($$x-@$xvals[0])+ $solution[4]*($$x-@$xvals[0])*($$x-@$xvals[1])+ $solution[7]*($$x-@$xvals[0])*($$x-@$xvals[1])*($$x-@$xvals[2]);
-	
-	print "\n\n******************************************\n";
-	print "The final solution for f($$x) is $ans\n";
-	print "******************************************\n\n";
-
+		print "\n\n******************************************\n";
+		print "The final solution for 4th is $ans\n";
+		print "******************************************\n\n";
 }
 
 sub simpsons_rule_13{
@@ -237,10 +309,10 @@ sub f1x_solve{
 		$fx= $y1 -$x**2;
 		return $fx;
 	} elsif($ans==4){
-		$fx = -.5*$y2;
+		$fx = -.5*$y1;
 		return $fx;
 	} elsif($ans==5){
-		$fx = $y1;
+		$fx = $y2;
 		return $fx;
 	}
 }
@@ -307,30 +379,33 @@ sub RK_Method{
 
 sub Eulers_method_multiple{
 	#Pass in Variables
-	my ($step, $xmin, $xmax, $xi, $yi1, $yi2)=@_;
-	my $x = $$xi; my $euler1 = $$yi1; my $euler2 = $$yi2;
-	my $y1; my $y2; my $x_old; my $y_old1; my $y_old2;
+	my ($step, $xmin, $xmax, $ti, $x, $y)=@_;
+	
+	my $t = $$ti; my $t_old; 
+	my $eulery = $$y; my $y_old; 
+	my $eulerx = $$x; my $x_old; 
 
 	#Move steps until max x is reached
-	until ($x >10){
+	until ($t >10){
 	
-		#Save old x and increase counter
-		$x_old = $x; 
-		$x = sprintf("%.1f", $x + $$step); 
-		$y_old1 = $euler1;
-		$y_old2 = $euler2;
+		#Save old t and increase counter
+		$t_old = $t; $t = sprintf("%.1f", $t + $$step); 
+		$y_old = $eulery; $x_old = $eulerx;
 		
 		#Find the Derivatives
-		my $f1x1 = f1x_solve(4, $x_old, $y_old1, $y_old2);
-		my $f1x2 = f1x_solve(5, $x_old, $y_old1, $y_old2);
+		my $f1y = f1x_solve(4, $t_old, $x_old, $y_old);
+		my $f1x = f1x_solve(5, $t_old, $x_old, $y_old);
 		
 		#Find the Euler Approx
-		$euler1 = sprintf("%4f", $y_old1 + $f1x1*$$step);
-		$euler2 = sprintf("%4f", $y_old2 + $f1x2*$$step);
+		$eulery = sprintf("%4f", $y_old + $f1y*$$step);
+		$eulerx = sprintf("%4f", $x_old + $f1x*$$step);
+		
+		print "Euler for (x): $y_old + $f1y*$$step\n";
+		print "Euler for (y): $x_old + $f1x*$$step\n\n";
 	}
 	
 	print "\n#################################################\n";
-	print "The Euler's approx of Y at t=10 is $euler1\n";
-	print "The Euler's approx of X at t=10 is $euler2\n";
+	print "The Euler's approx of y at t=10 is $eulery\n";
+	print "The Euler's approx of x at t=10 is $eulerx\n";
 	print "\n#################################################\n";
 }
