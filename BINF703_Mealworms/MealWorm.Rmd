@@ -20,10 +20,9 @@ sapply(c(.cran_packages, .bioc_packages), require, character.only = TRUE)
 library("knitr")
 library(dada2); packageVersion("dada2")
 library(phangorn)
+libray(phyloseq)
 opts_chunk$set(cache = FALSE,fig.path="dadafigure/")
 ```
-
-
 
 Perform Filtering of data
 ```{r}
@@ -95,7 +94,7 @@ st.all <- mergeSequenceTables(st1, st2)
 # Remove chimeras
 seqtab <- removeBimeraDenovo(st.all, method="consensus", multithread=TRUE)
 # Assign taxonomy
-tax <- assignTaxonomy(seqtab, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/References", multithread=TRUE)
+taxtab <- assignTaxonomy(seqtab, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/References", multithread=TRUE)
 # Write to disk
 saveRDS(seqtab, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/seqtab_final.rds") 
 saveRDS(tax, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/tax_final.rds")
@@ -122,17 +121,27 @@ detach("package:phangorn", unload=TRUE)
 
 Create PhyloSeq Object
 ```{r}
-mimarks_path <- "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/MIMARKS_Data_combined.csv"
+mimarks_path <- file.path("C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Input_PhyloSeq.csv")
 samdf <- read.csv(mimarks_path, header=TRUE)
-samdf$SampleID <- paste0(gsub("00", "", samdf$host_subject_id), "D", samdf$age-21)
-samdf <- samdf[!duplicated(samdf$SampleID),] # Remove dupicate entries for reverse reads
-rownames(seqtab) <- gsub("124", "125", rownames(seqtab)) # Fixing an odd discrepancy
-all(rownames(seqtab) %in% samdf$SampleID) # TRUE - expected result
+all(rownames(seqtab) %in% samdf$SampleID) # Verificattion - TRUE
 
 rownames(samdf) <- samdf$SampleID
-keep.cols <- c("collection_date", "biome", "target_gene", "target_subfragment",
-"host_common_name", "host_subject_id", "age", "sex", "body_product", "tot_mass",
-"diet", "family_relationship", "genotype", "SampleID") 
-samdf <- samdf[rownames(seqtab), keep.cols]
+samdf <- samdf[rownames(seqtab), ]
+ps <- phyloseq(tax_table(taxtab),
+                 sample_data(samdf),
+                 otu_table(seqtab, taxa_are_rows = FALSE),
+                 phy_tree(fitGTR$tree))
+saveRDS(ps, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_final.rds")
+```
+
+Load Phylo Data
+```{r}
+library("phyloseq")
+library("gridExtra")
+ps = readRDS("C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_final.rds")
+```
+Run Analysis in PhyloSeq
+```{r}
+plot_bar(ps, fill="Phylum")
 ```
 
