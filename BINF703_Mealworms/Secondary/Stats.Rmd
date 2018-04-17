@@ -1,0 +1,235 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+---
+title: "R Notebook"
+output: html_notebook
+---
+Load Library
+```{r}
+.cran_packages <- c("knitr", "phyloseqGraphTest", "phyloseq", "shiny",
+                  "miniUI", "caret", "pls", "e1071", "ggplot2", "randomForest",
+                  "vegan", "plyr", "dplyr", "ggrepel", "nlme",
+                  "reshape2","devtools", "PMA", "structSSI", "ade4",
+                  "igraph", "ggnetwork", "intergraph", "scales")
+.github_packages <- c("jfukuyama/phyloseqGraphTest")
+.bioc_packages <- c("phyloseq", "genefilter", "impute")
+
+
+# Install CRAN packages (if not already installed)
+.inst <- .cran_packages %in% installed.packages()
+if (any(!.inst)){
+  install.packages(.cran_packages[!.inst],repos = "http://cran.rstudio.com/")
+}
+
+.inst <- .github_packages %in% installed.packages()
+if (any(!.inst)){
+  devtools::install_github(.github_packages[!.inst])
+}
+
+.inst <- .bioc_packages %in% installed.packages()
+if(any(!.inst)){
+  source("http://bioconductor.org/biocLite.R")
+  biocLite(.bioc_packages[!.inst])
+}
+library(phyloseq)
+library(phyloseqGraphTest)
+library(permute)
+library(lattice)
+library(vegan)
+```
+
+Preprocess
+```{r}
+#Load PS from previous
+ps = readRDS("C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_final.rds")
+
+qplot(sample_data(ps)$Timepoint, stat = "count") + xlab("Timepoint")
+qplot(log10(rowSums(otu_table(ps)))) +
+  xlab("Logged counts-per-sample")
+
+pslog <- transform_sample_counts(ps, function(x) log(10 + x))
+out.wuf.log <- ordinate(pslog, method = "MDS", distance = "wunifrac")
+
+evals <- out.wuf.log$values$Eigenvalues
+plot_ordination(pslog, out.wuf.log, color = "Timepoint") +
+  labs(col = "Timepoint") +
+  coord_fixed(sqrt(evals[2] / evals[1]))
+
+rel_abund <- t(apply(otu_table(ps), 1, function(x) x / sum(x)))
+qplot(rel_abund[, 12], geom = "histogram") +
+  xlab("Relative abundance")
+
+
+
+```
+Evaluate for outliers
+```{r}
+#Review Double PcOA
+out.dpcoa.log <- ordinate(pslog, method = "DPCoA")
+#Review Weighted Unifrac
+out.wuf.log <- ordinate(pslog, method = "PCoA", distance ="wunifrac")
+#Plot Data
+plot_ordination(pslog, out.dpcoa.log, type = "species", color = "Phylum") +
+  coord_fixed(sqrt(evals[2] / evals[1]))
+
+#Search for outliers
+evals <- out.wuf.log$values$Eigenvalues
+plot_ordination(pslog, out.wuf.log, color = "Diet",
+                  shape = "Timepoint") +
+  coord_fixed(sqrt(evals[2] / evals[1])) +
+  labs(col = "Diet", shape = "SampleType")
+
+```
+Create Phylogeny Trees
+```{r}
+#Remove decimals from tree for labels
+phy_tree(ps3ra)$node.label = substr(phy_tree(ps3ra)$node.label, 1, 4)
+
+
+#Plot by Variables
+plot_tree(ps3ra, nodelabf=nodeplotboot(), ladderize="left", color="Timepoint")
+plot_tree(ps3ra, nodelabf=nodeplotboot(), ladderize="left", color="Diet")
+plot_tree(ps3ra, nodelabf=nodeplotboot(), ladderize="left", color="SampleType")
+
+#Plot by Phylum
+plot_tree(ps3ra,color="Phylum", shape="Timepoint")
+plot_tree(ps3ra,color="Phylum", shape="Diet")
+plot_tree(ps3ra,color="Phylum", shape="SampleType")
+
+#Plot by Class
+plot_tree(ps3ra,color="Class", shape="Timepoint")
+plot_tree(ps3ra,color="Class", shape="Diet")
+plot_tree(ps3ra,color="Class", shape="SampleType")
+
+#Plot by Genus
+plot_tree(ps3ra,color="Genus", shape="Timepoint")
+plot_tree(ps3ra,color="Genus", shape="Diet")
+plot_tree(ps3ra,color="Genus", shape="SampleType")
+
+#Create spirl plots
+plot_tree(ps3ra, color="Diet", ladderize="left") + coord_polar(theta="y")
+
+```
+
+Create Barplots by Phylum and Class
+```{r}
+prune_plot <- prune_taxa(speciesSums(ps3ra) > 0, ps3ra)
+
+plot_bar(ps3ra,fill="Phylum",x="Worm")
+plot_bar(ps3ra,fill="Phylum",x="Timepoint")
+plot_bar(ps3ra,fill="Phylum",x="SampleType")
+plot_bar(ps3ra,fill="Phylum",x="Diet")
+plot_bar(ps3ra,fill="Class",x="Diet")
+plot_bar(ps3ra,fill="Class",x="SampleType")
+```
+
+RunDESeq2 - Timepoint
+```{r}
+library("DESeq2")
+kostic = subset_samples(ps3, Timepoint != "None")
+
+diagdds = phyloseq_to_deseq2(kostic, ~ Timepoint)
+
+# calculate geometric means prior to estimate size factors
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+```
+Results
+```{r}
+res = results(diagdds, cooksCutoff = FALSE)
+alpha = 1
+sigtab = res[which(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(kostic)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+```
+
+Plot Data
+```{r}
+library("ggplot2")
+theme_set(theme_bw())
+scale_fill_discrete <- function(palname = "Set1", ...) {
+    scale_fill_brewer(palette = palname, ...)
+}
+# Phylum order
+x = tapply(sigtab$log2FoldChange, sigtab$Phylum, function(x) max(x))
+x = sort(x, TRUE)
+sigtab$Phylum = factor(as.character(sigtab$Phylum), levels=names(x))
+# Class order
+x = tapply(sigtab$log2FoldChange, sigtab$Class, function(x) max(x))
+x = sort(x, TRUE)
+sigtab$Class = factor(as.character(sigtab$Class), levels=names(x))
+
+ggplot(sigtab, aes(x=Class, y=log2FoldChange, color=Phylum)) + geom_point(size=6) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
+```
+RunDESeq2 - Diet
+```{r}
+library("DESeq2")
+kostic = subset_samples(ps3, Diet != "None")
+head(sample_data(kostic)$Diet, 25)
+
+diagdds = phyloseq_to_deseq2(kostic, ~ Diet)
+
+# calculate geometric means prior to estimate size factors
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+```
+Results
+```{r}
+res = results(diagdds, cooksCutoff = FALSE)
+alpha = 1
+sigtab = res[which(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(kostic)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+```
+
+Plot Data
+```{r}
+library("ggplot2")
+theme_set(theme_bw())
+scale_fill_discrete <- function(palname = "Set1", ...) {
+    scale_fill_brewer(palette = palname, ...)
+}
+# Phylum order
+x = tapply(sigtab$log2FoldChange, sigtab$Phylum, function(x) max(x))
+x = sort(x, TRUE)
+sigtab$Phylum = factor(as.character(sigtab$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtab$log2FoldChange, sigtab$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtab$Genus = factor(as.character(sigtab$Genus), levels=names(x))
+ggplot(sigtab, aes(x=Genus, y=log2FoldChange, color=Phylum)) + geom_point(size=6) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
+```
+Trial
+```{r}
+kosticB = ps3
+
+kosticp = transform_sample_counts(kosticB, function(x){x/sum(x)})
+hist(log10(apply(otu_table(kosticp), 1, var)),
+     xlab="log10(variance)", breaks=50,
+     main="A large fraction of OTUs have very low variance")
+```
+```{r}
+dge = phyloseq_to_edgeR(kosticB, group="Timepoint")
+# Perform binary test
+et = exactTest(dge)
+# Extract values from test results
+tt = topTags(et, n=nrow(dge$table), adjust.method="BH", sort.by="PValue")
+res = tt@.Data[[1]]
+alpha = 0.001
+sigtab = res[(res$FDR < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(kosticB)[rownames(sigtab), ], "matrix"))
+dim(sigtab)
+```
+
