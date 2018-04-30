@@ -178,8 +178,8 @@ filterPhyla = c("Parcubacteria", "Saccharibacteria")
 # Filter entries with unidentified Phylum.
 ps1 = subset_taxa(ps0, !Phylum %in% filterPhyla)
 
-#Review diversity
-plot_richness(ps3,x="Timepoint",measures=c("Observed","Shannon"), color="Timepoint") + theme_bw()
+#Review diversity (richness)
+plot_richness(ps3,x="Timepoint",measures=c("Observed","Shannon"), color="Timepoint") + theme_bw() + geom_boxplot()
 
 ```
 
@@ -223,7 +223,7 @@ p4tree = plot_tree(ps4, method = "treeonly",
   theme(plot.title = element_text(size = multiPlotTitleTextSize))
 
 # group plots together
-grid.arrange(nrow = 1, p2tree, p3tree, p4tree)
+plot(grid.arrange(nrow = 1, p2tree, p3tree, p4tree))
 ```
 
 Transform data for abundances
@@ -246,7 +246,7 @@ plot_abundance = function(physeq,title = "",
 #Transform and plot the before and after
 ps3ra = transform_sample_counts(ps3, function(x){x / sum(x)})
 plotBefore = plot_abundance(ps3,"")
-plotAfter = plot_abundance(ps3ra,"")
+plotAfter = plot_abundance(ps3ra,"Phylum")
 
 # Combine each plot into one graphic.
 grid.arrange(nrow = 2, plotBefore, plotAfter)
@@ -261,7 +261,6 @@ Create Phylogeny Trees
 ```{r}
 #Remove decimals from tree for labels
 phy_tree(ps3ra)$node.label = substr(phy_tree(ps3ra)$node.label, 1, 4)
-
 
 #Plot by Variables
 plot_tree(ps3ra, nodelabf=nodeplotboot(), ladderize="left", color="Timepoint")
