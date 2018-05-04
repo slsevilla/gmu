@@ -1,6 +1,8 @@
 ---
 title: "Mealworms - Filtering and Data Assessment"
 output: word_document
+editor_options: 
+  chunk_output_type: console
 ---
 Install packages and load librarys
 ```{r}
@@ -24,14 +26,13 @@ library(phangorn)
 library("phyloseq")
 library("gridExtra")
 library("ggplot2")
-library("phy")
 opts_chunk$set(cache = FALSE,fig.path="dadafigure/")
 ```
 
 Perform Filtering of data
 ```{r}
 # Set path of samples
-path <- "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Samples"
+path <- "/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Samples"
 # Set filtered path
 filtpath <- file.path(path, "filtered") 
 fns <- list.files(path, pattern=".fastq")
@@ -145,13 +146,13 @@ ps <- phyloseq(tax_table(taxtab),
                  sample_data(samdf),
                  otu_table(seqtab, taxa_are_rows = FALSE),
                  phy_tree(fitGTR$tree))
-saveRDS(ps, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_final.rds")
+saveRDS(ps, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_ori.rds")
 ```
 
 Load Phylo Data
 ```{r}
 #load the phylo object
-ps = readRDS("C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_final.rds")
+ps = readRDS("C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_ori.rds")
 ```
 
 PhyloSeq Filtering - Supervised
@@ -179,7 +180,12 @@ filterPhyla = c("Parcubacteria", "Saccharibacteria")
 ps1 = subset_taxa(ps0, !Phylum %in% filterPhyla)
 
 #Review diversity (richness)
-plot_richness(ps3,x="Timepoint",measures=c("Observed","Shannon"), color="Timepoint") + theme_bw() + geom_boxplot()
+plot_richness(ps1,x="Timepoint",measures=c("Shannon","Simpson", "Fisher"), color="Timepoint") + theme_bw() + geom_boxplot()
+
+plot_richness(ps1,x="Diet",measures=c("Shannon","Simpson", "Fisher"), color="Diet") + theme_bw() + geom_boxplot()
+
+plot_richness(ps1,x="SampleType",measures=c("Shannon","Simpson", "Fisher"), color="Diet") + theme_bw() + geom_boxplot()
+
 
 ```
 
@@ -246,17 +252,15 @@ plot_abundance = function(physeq,title = "",
 #Transform and plot the before and after
 ps3ra = transform_sample_counts(ps3, function(x){x / sum(x)})
 plotBefore = plot_abundance(ps3,"")
-plotAfter = plot_abundance(ps3ra,"Phylum")
+plotAfter = plot_abundance(ps3ra,"Genus")
 
 # Combine each plot into one graphic.
 grid.arrange(nrow = 2, plotBefore, plotAfter)
-```
-Subset further based on taxa findings
-```{r}
+
+#Subset further based on taxa findings, if necessary
 psOrd = subset_taxa(ps3, Order == "Lactobacillales")
 plot_abundance(psOrd, Facet = "Genus", Color = NULL)
 ```
-
 Create Phylogeny Trees
 ```{r}
 #Remove decimals from tree for labels
@@ -266,6 +270,8 @@ phy_tree(ps3ra)$node.label = substr(phy_tree(ps3ra)$node.label, 1, 4)
 plot_tree(ps3ra, nodelabf=nodeplotboot(), ladderize="left", color="Timepoint")
 plot_tree(ps3ra, nodelabf=nodeplotboot(), ladderize="left", color="Diet")
 plot_tree(ps3ra, nodelabf=nodeplotboot(), ladderize="left", color="SampleType")
+plot_tree(ps3ra, nodelabf=nodeplotboot(), ladderize="left", color="Timepoint", shape="Diet")
+
 
 #Plot by Phylum
 plot_tree(ps3ra,color="Phylum", shape="Timepoint")
@@ -289,13 +295,21 @@ plot_tree(ps3ra, color="Diet", ladderize="left") + coord_polar(theta="y")
 
 Create Barplots by Phylum and Class
 ```{r}
-prune_plot <- prune_taxa(speciesSums(ps3ra) > 0, ps3ra)
+ps4 <- prune_taxa(taxa_sums(ps3ra) > 0, ps3ra)
 
-plot_bar(ps3ra,fill="Phylum",x="Worm")
-plot_bar(ps3ra,fill="Phylum",x="Timepoint")
-plot_bar(ps3ra,fill="Phylum",x="SampleType")
-plot_bar(ps3ra,fill="Phylum",x="Diet")
-plot_bar(ps3ra,fill="Class",x="Diet")
-plot_bar(ps3ra,fill="Class",x="SampleType")
+plot_bar(ps4,fill="Phylum",x="Worm")
+plot_bar(ps4,fill="Phylum",x="Timepoint")
+plot_bar(ps4,fill="Phylum",x="SampleType")
+plot_bar(ps4,fill="Phylum",x="Diet")
+plot_bar(ps4,fill="Class",x="Diet")
+plot_bar(ps4,fill="Class",x="SampleType")
+plot_bar(ps4,fill="Class",x="Timepoint")
+
+```
+
+Save ps
+```{r}
+ps_pruned <-saveRDS(ps3ra, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_pruned.rds")
+ps_filt <- saveRDS(ps2, "C:/Users/sevillas2/Google Drive/My Documents/Education/George Mason University/BINF703/2018_Spring_BaranovaGillevet/Analysis/DADA2/Output/ps_filt.rds")
 ```
 

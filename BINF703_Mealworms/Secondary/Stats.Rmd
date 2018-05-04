@@ -84,7 +84,7 @@ plot_richness(ps0,x="Timepoint",measures=c("Observed","Shannon"), color="Timepoi
 
 #Plot Side by Side comparisons for top Phylum
 plot_bar(st1, x="SampleType", fill="Phylum") + facet_wrap(~Timepoint)
-plot_bar(st1, x="Timepoint", fill="Phylum") + facet_wrap(~SampleType)
+plot_bar(st1, x="Diet", fill="Phylum") + facet_wrap(~SampleType)
 ```
 
 Evaluate for outliers
@@ -122,8 +122,8 @@ Ranking
 ```{r}
 abund <- otu_table(st2)
 abund_ranks <- t(apply(abund, 1, rank))
-abund_ranks <- abund_ranks -10#Number brings down scale of ranks
-abund_ranks[abund_ranks < 12] <-1 #Anything below 1 gets a "tied" score
+abund_ranks <- abund_ranks -120#Number brings down scale of ranks
+abund_ranks[abund_ranks < 20] <-1 #Anything below 1 gets a "tied" score
 
 ranks_pca <- dudi.pca(abund_ranks, scannf = F, nf = 3)
 row_scores <- data.frame(li = ranks_pca$li,SampleID = rownames(abund_ranks))
@@ -153,6 +153,7 @@ net <- make_network(st2, max.dist=.75, distance=function(x){vegan::vegdist(x, "j
 
 plot_network(net, st2, color="Timepoint", line_weight = 0.3, label=NULL)
 plot_network(net, st2, color="Diet", line_weight = 0.3, label=NULL)
+plot_network(net, st2, color="SampleType", line_weight = 0.3, label=NULL)
 plot_network(net, st2, color="Diet", shape="Timepoint",line_weight = 0.3, label=NULL)
 
 
@@ -187,8 +188,6 @@ plot_tree(st2,color="Genus", shape="SampleType")
 plot_tree(st2, color="Diet", ladderize="left") + coord_polar(theta="y")
 plot_tree(st2, color="SampleType", ladderize="left") + coord_polar(theta="y")
 plot_tree(st2, color="Timepoint", ladderize="left") + coord_polar(theta="y")
-
-
 ```
 
 Create Barplots by Phylum and Class
