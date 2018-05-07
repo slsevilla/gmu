@@ -1,0 +1,30 @@
+---
+title: "R Notebook"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+Data Input
+```{r}
+vcf <- read.vcfR(vcf_file, verbose=FALSE)
+library(vcfR)
+pkg <- "pinfsc50"
+vcf_file <- system.file("extdata", "pinf_sc50.vcf.gz", package = pkg)
+dna_file <- system.file("extdata", "pinf_sc50.fasta", package = pkg)
+gff_file <- system.file("extdata", "pinf_sc50.gff", package = pkg)
+```
+
+Prepare library
+```{r}
+vcf <- read.vcfR(vcf_file, verbose=FALSE)
+dna <- ape::read.dna(dna_file, format="fasta")
+gff<- read.table(gff_file, sep="\t", quote="")
+chrom <- create.chromR(name='Supercontig', vcf=vcf, seq=dna, ann=gff)
+```
+
+Plot overview
+```{r}
+plot(chrom)
+
+```
