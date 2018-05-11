@@ -1,0 +1,75 @@
+---
+title: "R Notebook"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+Links that helped
+-onlinelibrary.wiley.com/doi/pdf/10.1111/1755-0998.12549
+
+Load Libraries
+```{r}
+library(vcfR)
+library(ggplot2)
+library(reshape2)
+```
+
+Data Input
+```{r}
+vcf <- read.vcfR(vcf_file, verbose=FALSE)
+pkg <- "pinfsc50"
+vcf_file <- system.file("extdata", "pinf_sc50.vcf.gz", package = pkg)
+dna_file <- system.file("extdata", "pinf_sc50.fasta", package = pkg)
+gff_file <- system.file("extdata", "pinf_sc50.gff", package = pkg)
+```
+
+Prepare library
+```{r}
+vcf <- read.vcfR(vcf_file, verbose=FALSE)
+dna <- ape::read.dna(dna_file, format="fasta")
+gff<- read.table(gff_file, sep="\t", quote="")
+chrom <- create.chromR(name='Supercontig', vcf=vcf, seq=dna, ann=gff)
+```
+
+Create Violen Plots
+```{r}
+p <- ggplot(dpf,aes(x=Sample,y=Depth)) + geom_violin(adjust=1.0, scale='count', trim=TRUE) + ylab('ReadDepth(DP') + theme(axis.title.x= element_blank(), axis.text.x=element_text(angle=60,hjust=1)) + stat_summary(fun.data=mean_sdl, geom='pointrange') + scale_y_continuous(trans=scales::log2_trans(), breaks = c(1,10,100,1000))
+p
+```
+
+Create heatmap
+```{r}
+heatmap.bp(dp[501:1500,], rlabels = FALSE)
+```
+
+Adjust data for averages
+```{r}
+plot(chrom)
+
+#Determine the filtering based on read depth, and mapping quality
+chrom <- masker(chrom, min_Qual = 1, min_DP=300, max_DP=700, min_MQ=59.9, max_MQ=60.1)
+plot(chrom)
+
+```
+
+Set Objects
+```{r}
+chrom<- proc.chromR(chrom, verbos=TRUE)
+plot(chrom)
+```
+
+Visualize Data
+```{r}
+chromoqc(chrom, dp.alpha=20)
+```
+
+Parse Data
+```{r}
+dp <- extract.gt(vcf, element='DP', as.numeric=TRUE)
+dpf <- melt(dp,varnames=c('Index','Sample'), value.name = 'Depth', na.rm=TRUE)
+dpf <- dpf[dpf$Depth>0,]
+```
+
+
+
+

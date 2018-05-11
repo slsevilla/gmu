@@ -1,0 +1,39 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+https://cran.r-project.org/web/packages/rbamtools/vignettes/rbamtools.pdf
+http://www.bioconductor.org/packages/2.13/bioc/vignettes/Rsamtools/inst/doc/Rsamtools-Overview.pdf
+
+
+```{r}
+library(rbamtools)
+
+reader <- bamReader("Galaxy13-[Bowtie2_on_Trimmomatic_ONLY_Kapa_Omega_Tumor].bam", "Galaxy1-[Bowtie2_on_Trimmomatic_ONLY_Kapa_Omega_Tumor].bai")
+getRefData(reader)
+
+header <- getHeader(reader)
+writer <- bamWriter(header,"test.bam")
+# Write alignments using bamSave
+bamClose(writer)
+
+bh <- new("bamHeaderText")
+headl <- new("headerLine")
+setVal(headl, "SO", "coordinate")
+dict <- new("refSeqDict")
+addSeq(dict, SN="chr1", LN=249250621)
+addSeq(dict, SN="chr16", LN=90354753)
+dict
+
+rpb<- readPooledBamGaps("Galaxy13-[Bowtie2_on_Trimmomatic_ONLY_Kapa_Omega_Tumor].bam", "Galaxy1-[Bowtie2_on_Trimmomatic_ONLY_Kapa_Omega_Tumor].bai")
+
+rpdf<-readPooledBamGapDf("Galaxy13-[Bowtie2_on_Trimmomatic_ONLY_Kapa_Omega_Tumor].bam", "Galaxy1-[Bowtie2_on_Trimmomatic_ONLY_Kapa_Omega_Tumor].bai")
+
+coords <- c(0, 8000, 90000)
+names(coords) <- c("refid","start","stop")
+range <- bamRange(reader,coords)
+size(range)
+
+ plotQualQuant(range)
+
+```

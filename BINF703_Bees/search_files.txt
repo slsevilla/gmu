@@ -1,0 +1,7 @@
+bac_thur.fasta
+bac_cer.fasta
+clos_b.fasta
+mel_plut.fasta
+paen_lar.fasta
+pseu_prot.fasta
+rick_gry.fasta
