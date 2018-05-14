@@ -1,7 +1,8 @@
-bac_thur.fasta
-bac_cer.fasta
-clos_b.fasta
-mel_plut.fasta
-paen_lar.fasta
-pseu_prot.fasta
-rick_gry.fasta
+bacillus_cereus.fasta
+bacillus_thuringiensis.fasta
+clostridium_botulinum.fasta
+melissococcus_plutonius.fasta
+paenibacillus_larvae.fasta
+pseudomonas_protegens.fasta
+rickettsiella_grylli.fasta
+spiroplasma_melliferum.fasta
