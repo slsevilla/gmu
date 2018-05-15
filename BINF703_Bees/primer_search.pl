@@ -23,7 +23,7 @@ use File::chdir;
 #Ask for length of the inital sequnce - template Blast requires a minimum of 70bp
 #print "What is the length of the PCR template sequence to create (minimum of 70)? ";
 #my $length=<STDIN>; chomp $length;
-	my $length=100; ##Testing
+	my $length=400; ##Testing
 
 #Ask for the name of the txt file with fasta names
 #print "What is the text files with fasta names?";
@@ -33,13 +33,13 @@ use File::chdir;
 #Ask for the directory of the fasta files
 #print "what is the full directory of fasta files\n";
 #my $dir =<STDIN>; chomp $dir; 
-	my $dir = "C:\\Users\\sevillas2\\Google Drive\\My Documents\\Education\\George Mason University\\BINF703\\2018_Spring_Lim\\Coding\\Bacterial"; ##Testing
+	my $dir = "C:\\Users\\slsevilla\\Google Drive\\My Documents\\Education\\George Mason University\\BINF703\\2018_Spring_Lim\\Coding\\Fungi"; ##Testing
 
-#Initialize variable
+	#Initialize variable
 my @files; my @template_data;
 
 #Read the Text files with fasta names into an array
-fasta_files($filename, \@files);
+fasta_files($filename, \@files, $dir);
 
 #Run through each file, creating a template, and comparing it to all other files
 process_files(\@files, $dir, \@template_data, $length);
@@ -56,16 +56,15 @@ sub process_files{
 	#Initialize variables
 	my ($files,$dir, $template_data, $length)=@_;
 	my @data1; my @data2;
-	my $validation='N'; my $n=0; my $a=0;
+	my $validation='N'; my $n=1; my $a=0;
 	my $attempt=1; my $template; 
-
-	#
-		
+	
+	#Create an array with the file names to rotate through during search
+	my @rotatingfiles= @$files;
+	
 	#Run until all the files have been used as the "template" sequence
 	foreach (@$files){
 	
-		my @rotatingfiles= @$files;
-
 		#Print which file is being searched"
 		print "\n********************************\n";
 		print "Information for $files[$a]\n";
@@ -78,28 +77,31 @@ sub process_files{
 		my $start=int rand(15);
 	
 		#Starting with the second sequencing file, run a search
-		$type = "search"; $validation="N";
+		$type = "search"; $validation='N';
 		
 		#Runs the comparision until a sequence is found unique as compared to all other sequences (max of 10 attempts)
-		until ($n>scalar(@$files)-1 or $attempt==10){
+		until ($n>scalar(@$files)-1 or $attempt==11){
 
 			#Creates a template of specified length, changes flag to Y for second iteration and N to 1, to skip first 
 			#template file, moves start to Start+10 for second iteration, if one is necessary, increased the attempt counter
 			if ($validation=~'N'){
-				$template = "";
+				print "Attempt #$attempt\n";
 				template_create($length, \$template, $start, \@data1);
-				$validation="Y";
-				$n=1; $attempt++;
-				$start = $start+10;
-			#Print out the file search, and read in the fasta file, then search through the file to determine
-			#if the template sequence is unique
-			} else{
-				print "For file: $rotatingfiles[$n]-";
-				fasta_read($rotatingfiles[$n], $dir, $type, \@data2);
-				template_verify(\$template, \$validation, \@data2);
-				$n++;
-				@data2=();
+				$start = $start+10; $attempt++;
 			}
+			
+			#Print out the file search
+			chomp $rotatingfiles[$n]; print "For file: $rotatingfiles[$n]-";
+			
+			#Read in the fasta file, then search through the file to determine if the template sequence is unique
+			fasta_read($rotatingfiles[$n], $dir, $type, \@data2);
+			template_verify(\$template, \$validation, \@data2);
+			@data2=(); 
+			
+			#Increase the counter if the template is unique, otherwise start over
+			if ($validation=~'N'){
+				$n=1; $template="";
+			} else{$n++};
 		}
 	
 		#Start with a new file as the source by moving the first fastq file to the end of the array
@@ -110,7 +112,8 @@ sub process_files{
 		push(@$template_data, $template);
 
 		#Reset the marker
-		$attempt=1; $a++;
+		$attempt=1; $a++; $n=1;
+		@data1=(); $template = "";
 	}
 }	
 
@@ -119,11 +122,11 @@ sub process_files{
 sub fasta_files {
 	
 	#Initialize variables
-	my($filename, $files)=@_;
-	
+	my($filename, $files, $dir)=@_;
+	$CWD = $dir;
 	#If filename not provided, give error message and close
 	unless (open(READ_FILE, $filename)) {
-		print "Cannot open file \$filename\"\n\n";
+		print "Cannot open text search file \$filename\"\n\n";
 		exit;
 	}
 
@@ -141,10 +144,10 @@ sub fasta_read {
 
 	#Move to the directory
 	$CWD= $dir;
-	
+
 	#If filename not provided, give error message and close
 	unless (open(READ_FILE, $filename)) {
-		print "Cannot open file \$filename\"\n\n";
+		print "Cannot open fasta file \$filename\n\n";
 		exit;
 	}
 
