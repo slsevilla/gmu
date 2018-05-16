@@ -86,7 +86,7 @@ names(dds) <- sample.names
 for(sam in sample.names) {
   cat("Processing:", sam, "\n")
   derep <- derepFastq(filts[[sam]])
-  dds[[sam]] <- dada(derep, err=err, multithread=TRUE)
+  dds[[sam]] <- dada(derep, err=err2, multithread=TRUE)
 }
 
 # Construct sequence table and write

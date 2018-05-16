@@ -21,21 +21,21 @@ use File::chdir;
 #################################################################################################################################
 
 #Ask for length of the inital sequnce - template Blast requires a minimum of 70bp
-#print "What is the length of the PCR template sequence to create (minimum of 70)? ";
-#my $length=<STDIN>; chomp $length;
-	my $length=400; ##Testing
+print "What is the length of the PCR template sequence to create (minimum of 70)? ";
+my $length=<STDIN>; chomp $length;
+	#my $length=400; ##Testing
 
 #Ask for the name of the txt file with fasta names
-#print "What is the text files with fasta names?";
-#my $filename=<STDIN>; chomp $filename;
-	my $filename= "search_files.txt"; ##Testing
+print "What is the text files with fasta names?";
+my $filename=<STDIN>; chomp $filename;
+	#my $filename= "search_files.txt"; ##Testing
 
 #Ask for the directory of the fasta files
-#print "what is the full directory of fasta files\n";
-#my $dir =<STDIN>; chomp $dir; 
-	my $dir = "C:\\Users\\slsevilla\\Google Drive\\My Documents\\Education\\George Mason University\\BINF703\\2018_Spring_Lim\\Coding\\Fungi"; ##Testing
+print "what is the full directory of fasta files\n";
+my $dir =<STDIN>; chomp $dir; 
+	#my $dir = "C:\\Users\\sevillas2\\Google Drive\\My Documents\\Education\\George Mason University\\BINF703\\2018_Spring_Lim\\Coding\\Lepidoptera"; ##Testing
 
-	#Initialize variable
+#Initialize variable
 my @files; my @template_data;
 
 #Read the Text files with fasta names into an array
@@ -79,6 +79,11 @@ sub process_files{
 		#Starting with the second sequencing file, run a search
 		$type = "search"; $validation='N';
 		
+		#If there is only one file, generate random template
+		if(scalar(@$files)==1){
+			template_create($length, \$template, $start, \@data1);
+		}
+		
 		#Runs the comparision until a sequence is found unique as compared to all other sequences (max of 10 attempts)
 		until ($n>scalar(@$files)-1 or $attempt==11){
 
@@ -91,7 +96,7 @@ sub process_files{
 			}
 			
 			#Print out the file search
-			chomp $rotatingfiles[$n]; print "For file: $rotatingfiles[$n]-";
+			chomp $rotatingfiles[$n]; print "Searching file: $rotatingfiles[$n]-";
 			
 			#Read in the fasta file, then search through the file to determine if the template sequence is unique
 			fasta_read($rotatingfiles[$n], $dir, $type, \@data2);
@@ -207,9 +212,9 @@ sub template_verify{
 	#Search through the fasta file to determine if the sequence is unique
 	if (index($$data2[0], $$template) !=-1){
 		$$validation='N';
-		print "Attempt was not sucessful. Repeating\n\n\n";
+		print "A match was found - new template must be generated. Attempt was not sucessful. Repeating\n\n\n";
 	} else{
-		print " Unique Sequence\n";
+		print "No Match. This is an unique sequence.\n";
 		$$validation='Y';
 	}
 }
