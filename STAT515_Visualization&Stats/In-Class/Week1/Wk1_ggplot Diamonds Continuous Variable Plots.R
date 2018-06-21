@@ -163,3 +163,90 @@ ggplot(diamonds,aes(x = carat,y = price/1000,
 # Perhaps the other cuts are problematic with larger carat
 # diamonds. The down turn for the Ideal cut suggests difficulties.
 
+#In Class
+####################################################################################
+#Basic Graph
+ggplot(diamonds , aes(x = cut)) + 
+ geom_bar() + labs(x = "Cut Classes",y = "Count", title = "Diamond Data Set")
+
+#Add Color
+ggplot(diamonds , aes(x = cut, fill = cut)) +
+ geom_bar(color = 'black') +
+ labs(x = "Cut Classes", y = "Count", title = "Diamond Data Set") +
+ hw
+
+#Remove the Legend
+ggplot(diamonds, aes(x = cut, fill = cut)) +
+ geom_bar(color = "black") + # adds black outline 
+ labs(x = "Cut Classes", y = "Count", title = "Diamond Data Set") + 
+ hw + 
+ theme(legend.position = 'none')
+
+#Define the color using RGB number scheme
+vert <- ggplot(diamonds, aes(x = cut, fill = cut)) +
+ geom_bar(color = gray(.25)) +
+ labs(x = "Cut Classes",
+      y = "Count",
+      title = "Diamond Data Set",
+      fill = "Cut") + hw +
+ scale_fill_manual(
+  values = c("red", "orange", rgb(.90, .90, 0), rgb(0, .75, 0), 'blue'),
+  na.value = "grey30") +
+ theme(legend.position = 'none')
+
+#Flip the graph by adding in dimension
+vert + coord_flip()
+
+#Add additional color information within the classes
+ggplot(diamonds, aes(x = cut, fill = color)) +
+ geom_bar(color = "black") +
+ labs(x = "Cut Classes",
+      y = "Count",
+      title = "Diamond Data",
+      fill = "Color") + hw
+
+#Flip the Cut vs Color variable positions
+twoway <- ggplot(diamonds, aes(x = color, fill = cut)) +
+ geom_bar(color = "black") +
+ labs(x = "Color Classes",
+      y = "Count",
+      title = "Diamond Data",
+      fill = "Cut") + hw +
+ scale_fill_manual(
+  values = c("red", "orange", rgb(.90, .90, 0), rgb(0, .75, 0), 'blue'),
+  na.value = "grey30")
+twoway
+
+#Flip the graph and move the legend to the top of the graph, adding description to the
+#legend
+twoway + 
+ theme(legend.position = 'top') + 
+ guides(fill = guide_legend(reverse = TRUE, 
+                            title.position = 'left', title = "Cut Classes:", 
+                            title.hjust = .5, title.vjust = 1, 
+                            legend.margin = unit(c(0,0,0,0),"cm"), 
+                            label.position = "bottom", label.hjust = .5, 
+                            label.theme = element_text(color = 'black', angle = 0, 
+                                                       size = 11), keywidth = 2, 
+                            keyheight = 0.8)) + coord_flip()
+
+#Create histogram
+ggplot(data=diamonds, aes(x=carat)) +
+ geom_histogram(fill="cyan", color = "black") +
+ hw
+
+#Increase the bin size - gives you an error
+ggplot(data=diamonds, aes(x=carat)) +
+ geom_histogram(fill="cyan", color = "black", bin=10) +
+ hw
+
+#Lower the x-axis
+ggplot(data=diamonds, aes(x=carat)) +
+ geom_histogram(fill="cyan", color = "black",bin=50) +
+ xlim(0,3.5)+
+ hw
+
+#Kernal Density - gives a sense of the distribution of the data; finds a curve that fits
+ggplot(data=diamonds, aes(x=carat)) +
+ geom_density(fill="cyan", color = "black") +
+ hw
