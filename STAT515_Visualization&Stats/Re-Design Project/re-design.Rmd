@@ -10,36 +10,35 @@ Library
 ```{r}
 library(ggplot2)
 library(reshape2)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
 ```
 
-Input Files
+Table 1 Manipulation
+#Read in the data file
 ```{r}
-#Read in data tables, provide column names and unique features of each column
-##Education summary by race and gender
-race_gender <- read.csv("C:\\Users\\sevillas2\\Google Drive\\My Documents\\Education\\George Mason University\\Stat515\\Re-Design\\Data\\T1_Education_AgeSex(1940-2017).csv", header=TRUE)
+#Read in data table, provide column names and unique features of each column
+##Education summary by age and gender
+age_gender <- read.csv("C:\\Users\\sevillas2\\Google Drive\\My Documents\\Education\\George Mason University\\Stat515\\Re-Design\\Data\\T1_Education_AgeSex(1940-2017).csv", header=TRUE)
 ##Column headers
-colnames(race_gender)
+colnames(age_gender)
 ##Unique variables of specific columns
-unique(race_gender$Age)
-unique(race_gender$Year)
+unique(age_gender$Age)
+unique(age_gender$Year)
 
-age_gender
-race_gender_income
-detailed
-
+#Combines columns for less than high school, high school or college, and college and above 
+for (i in 1:nrow(age_gender)){
+ age_gender[i,"LESS_HS"] <- age_gender[i,"ELEM_0to4"] + age_gender[i,"ELEM_5to8"] +  age_gender[i,"HS_1to3"]
+ age_gender[i,"HS_SomeCol"] <- age_gender[i,"HS_4"] + age_gender[i,"COL_1to3"]
+}
 ```
 
 Analysis of Race and Gender
 ##Recreate Figure 1
 ```{r}
 #Generate table for only age 25 and over with both genders
-fig1 <- subset(race_gender,Gender=="Both" & Age=="25 YEARS AND OLDER")
-
-#Combines columns for less than high school, high school or college, and college and above 
-for (i in 1:nrow(fig1)){
- fig1[i,"LESS_HS"] <- fig1[i,"ELEM_0to4"] + fig1[i,"ELEM_5to8"] +  fig1[i,"HS_1to3"]
- fig1[i,"HS_SomeCol"] <- fig1[i,"HS_4"] + fig1[i,"COL_1to3"]
-}
+fig1 <- subset(age_gender,Gender=="Both" & Age=="25 YEARS AND OLDER")
 
 #Create a new data frame for figure 1
 fig1_redo <- data.frame()
@@ -47,11 +46,6 @@ fig1_redo <- data.frame()
 count=1
 #Create a row for each variable, with year and population information included
 for(i in 1:nrow(fig1)){
- #fig1_redo[count,"Year"] <- fig1[i,"Year"]
- #fig1_redo[count,"Label"] <- "Population"
- #fig1_redo[count,"Pop"] <- fig1[i,"Population"]
- #count = count+1
- 
  fig1_redo[count,"Year"] <- fig1[i,"Year"]
  fig1_redo[count,"Label"] <- "Less than HS"
  fig1_redo[count,"Pop"] <- fig1[i,"LESS_HS"]
@@ -93,12 +87,14 @@ ggplot(fig1_redo,aes(x=Year,y=Pop)) +
 #Create a new data frame for figure 1
 fig1_per <- data.frame()
 
+#Start counter
 count=1
+
 #Create a row for each variable, with year and population information included
 for(i in 1:nrow(fig1)){
  fig1_per[count,"Year"] <- fig1[i,"Year"]
  fig1_per[count,"Label"] <- "Less than HS"
- fig1_per[count,"Per"] <- (fig1[i,"LESS_HS"]/fig1[i,"Population"])*100
+ fig1_per[count,"Per"] <- (fig1[i,"LESS_HS"]/fig1[i,"Population"])*100 #Determine the pop frequency
  count = count+1
  
  fig1_per[count,"Year"] <- fig1[i,"Year"]
@@ -112,16 +108,127 @@ for(i in 1:nrow(fig1)){
  count = count+1
 }
 
-fig1_per_sub <- subset(fig1_per,Label=="Less than HS")
-
 #Generate graph
 ggplot(fig1_per,aes(x=Year,y=Per,color=Label)) +
  geom_smooth()+
  labs(y="Percent Population",
-      title="Educational Attainment 1940-2017: Percent of Population")
- 
-ggplot(fig1_per_sub, aes(x=Year,y=Per))+
- geom_bar(stat="identity")
+      title="Educational Attainment 1940-2017: Percent of Population")+
+ scale_x_continuous(breaks = round(seq(min(fig1_redo$Year), max(fig1_redo$Year), by = 5),1)) + 
+ guides(color=guide_legend("Levels of Educatiion"))
+```
 
+##Add Gender Information
+```{r}
+#Create a new data frame for gender
+fig1_gen <- data.frame()
+
+#Start counter
+count=1
+
+#Create a row for each variable, with year and population information included
+for(i in 1:nrow(age_gender)){
+ fig1_gen[count,"Year"] <- age_gender[i,"Year"]
+ fig1_gen[count,"Gender"] <- age_gender[i,"Gender"]
+ fig1_gen[count,"Age"] <- age_gender[i,"Age"]
+ fig1_gen[count,"Label"] <- "Less than HS"
+ fig1_gen[count,"Per"] <- (age_gender[i,"LESS_HS"]/age_gender[i,"Population"])*100
+ count = count+1
+ 
+ fig1_gen[count,"Year"] <- age_gender[i,"Year"]
+ fig1_gen[count,"Gender"] <- age_gender[i,"Gender"]
+ fig1_gen[count,"Age"] <- age_gender[i,"Age"]
+ fig1_gen[count,"Label"] <- "HS, some college"
+ fig1_gen[count,"Per"] <- (age_gender[i,"HS_SomeCol"]/age_gender[i,"Population"])*100
+ count = count+1
+
+ fig1_gen[count,"Year"] <- age_gender[i,"Year"]
+ fig1_gen[count,"Gender"] <- age_gender[i,"Gender"]
+ fig1_gen[count,"Age"] <- age_gender[i,"Age"]
+ fig1_gen[count,"Label"] <- "College or higher"
+ fig1_gen[count,"Per"] <- (age_gender[i,"COL_4plus"]/age_gender[i,"Population"])*100
+ count = count+1
+}
+
+##Subset table
+fig1_gen_sub <- subset(fig1_gen,!(Gender=="Both")& Age=="25 YEARS AND OLDER")
+
+#Create graph split by gender
+ggplot(fig1_gen_sub,aes(x=Year)) +
+ geom_line(aes(y=Per,col=Label),size=1.5) + 
+ facet_grid(Gender ~ ., scales = "free_y")+
+ labs(y="Percent Population",
+      title="Educational Attainment (1940-2017)",
+      subtitle="Percent of Population by Gender")+
+ scale_x_continuous(breaks = round(seq(min(fig1_gen_sub$Year), max(fig1_gen_sub$Year), by = 5),1)) +
+ guides(color=guide_legend("Levels of Educatiion")) +
+ theme(panel.grid.minor = element_line(colour="grey", size=0.5))
+```
+
+Table 2 Manipulation
+#Read in the data file
+```{r}
+#Read in data table, provide column names and unique features of each column
+##Education summary by race and gender
+race_gender <- read.csv("C:\\Users\\sevillas2\\Google Drive\\My Documents\\Education\\George Mason University\\Stat515\\Re-Design\\Data\\T2_Education_RaceSex(1940-2017).csv", header=TRUE)
+
+##Column headers
+colnames(race_gender)
+```
+
+##Graph of both genders, all races & specific races
+```{r}
+#Create a list of all of the race categories in the dataset
+race_list <- c("All.Races", "White", "Non.Hispanic.White","Black","Asian","Hispanic","White.alone.or.combo",
+               "Non.Hispanic.White.alone.or.combo","Black.alone.or.combo","Asian.alone.or.combo")
+#Subset to include only 25 and over age
+fig5 <- subset(race_gender,Age=="25 YEARS AND OLDER")
+
+#Create a new data frame for figure 1
+fig5_allraces <- data.frame()
+
+#Start Counter
+count=1
+
+#Create a row for each variable, with year, educational attainment, population, and race information included
+for(i in 1:nrow(fig5)){
+ 
+ #Start column counter
+ col=4 #Race columns begin at 4
+ 
+ #Move through the race list, which passes through each column, creating a new row for each race
+ for (a in race_list){
+  fig5_allraces[count,"Year"] <- fig5[i,"Year"]
+  fig5_allraces[count,"Label"] <- fig5[i,"Label"] #educational attainment label
+  fig5_allraces[count,"Race"] <- a #assigns the race
+  fig5_allraces[count,"Per"] <- fig5[i,col] #moves to the correct column that matches the race label
+  count = count+1 #increase to the next row
+  col = col +3 #Move three columns down, skipping the male and female information
+ }
+}
+
+#Subset to include only "All Races" category 
+fig5_allraces<-subset(fig5_allraces,Race=="All.Races")
+
+##Generate graph
+ggplot(fig5_allraces,aes(x=Year,y=Per,color=Label)) +
+ geom_smooth()+
+ labs(y="Percent Population",
+      title="Educational Attainment 1940-2017: Percent of Population",
+      subtitle="All Races Included")+
+ scale_x_continuous(breaks = round(seq(min(fig5_allraces$Year), max(fig5_allraces$Year), by = 5),1)) + 
+ guides(color=guide_legend("Levels of Educatiion"))
+
+#Subset to include "Whites, Blacks, and Hispanics between 1974 and 2017
+
+##Create graph split by gender
+ggplot(fig1_gen_sub,aes(x=Year)) +
+ geom_line(aes(y=Per,col=Label),size=1.5) + 
+ facet_grid(Gender ~ ., scales = "free_y")+
+ labs(y="Percent Population",
+      title="Educational Attainment (1940-2017)",
+      subtitle="Percent of Population by Gender")+
+ scale_x_continuous(breaks = round(seq(min(fig1_gen_sub$Year), max(fig1_gen_sub$Year), by = 5),1)) +
+ guides(color=guide_legend("Levels of Educatiion")) +
+ theme(panel.grid.minor = element_line(colour="grey", size=0.5))
 
 ```
