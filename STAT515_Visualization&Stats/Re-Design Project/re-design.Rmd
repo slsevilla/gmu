@@ -175,7 +175,7 @@ race_gender <- read.csv("C:\\Users\\sevillas2\\Google Drive\\My Documents\\Educa
 colnames(race_gender)
 ```
 
-##Graph of both genders, all races & specific races
+##Graph of both genders, all races
 ```{r}
 #Create a list of all of the race categories in the dataset
 race_list <- c("All.Races", "White", "Non.Hispanic.White","Black","Asian","Hispanic","White.alone.or.combo",
@@ -221,13 +221,61 @@ ggplot(fig5_allraces,aes(x=Year,y=Per,color=Label)) +
 #Subset to include "Whites, Blacks, and Hispanics between 1974 and 2017
 
 ##Create graph split by gender
-ggplot(fig1_gen_sub,aes(x=Year)) +
+ggplot(fig5_allraces,aes(x=Year)) +
  geom_line(aes(y=Per,col=Label),size=1.5) + 
- facet_grid(Gender ~ ., scales = "free_y")+
+ facet_grid(Race ~ ., scales = "free_y")+
  labs(y="Percent Population",
       title="Educational Attainment (1940-2017)",
       subtitle="Percent of Population by Gender")+
- scale_x_continuous(breaks = round(seq(min(fig1_gen_sub$Year), max(fig1_gen_sub$Year), by = 5),1)) +
+ scale_x_continuous(breaks = round(seq(min(fig5_allraces$Year), max(fig5_allraces$Year), by = 5),1)) +
+ guides(color=guide_legend("Levels of Educatiion")) +
+ theme(panel.grid.minor = element_line(colour="grey", size=0.5))
+
+```
+
+##Graph of both genders specific races
+```{r}
+#Create a list of all of the race categories in the dataset
+race_list <- c("All.Races", "White", "Non.Hispanic.White","Black","Asian","Hispanic","White.alone.or.combo",
+               "Non.Hispanic.White.alone.or.combo","Black.alone.or.combo","Asian.alone.or.combo")
+#Subset to include only 25 and over age
+fig5 <- subset(race_gender,Age=="25 YEARS AND OLDER")
+
+#Create a new data frame for figure 1
+fig5_allraces <- data.frame()
+
+#Start Counter
+count=1
+
+#Create a row for each variable, with year, educational attainment, population, and race information included
+for(i in 1:nrow(fig5)){
+ 
+ #Start column counter
+ col=4 #Race columns begin at 4
+ 
+ #Move through the race list, which passes through each column, creating a new row for each race
+ for (a in race_list){
+  fig5_allraces[count,"Year"] <- fig5[i,"Year"]
+  fig5_allraces[count,"Label"] <- fig5[i,"Label"] #educational attainment label
+  fig5_allraces[count,"Race"] <- a #assigns the race
+  fig5_allraces[count,"Per"] <- fig5[i,col] #moves to the correct column that matches the race label
+  count = count+1 #increase to the next row
+  col = col +3 #Move three columns down, skipping the male and female information
+ }
+}
+
+#Subset to include "Whites, Blacks, and Hispanics between 1974 and 2017
+fig5_allraces<-subset(fig5_allraces,Race=="White" | Race=="Black" | Race=="Hispanic")
+fig5_allraces<-subset(fig5_allraces,Year>1974)
+
+##Create graph split by race
+ggplot(fig5_allraces,aes(x=Year)) +
+ geom_line(aes(y=Per,col=Label),size=1.5) + 
+ facet_grid(Race ~ ., scales = "free_y")+
+ labs(y="Percent Population",
+      title="Educational Attainment (1974-2017)",
+      subtitle="Percent of Population by Race")+
+ scale_x_continuous(breaks = round(seq(min(fig5_allraces$Year), max(fig5_allraces$Year), by = 5),1)) +
  guides(color=guide_legend("Levels of Educatiion")) +
  theme(panel.grid.minor = element_line(colour="grey", size=0.5))
 
