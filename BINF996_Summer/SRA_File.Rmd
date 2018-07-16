@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+output: word_document
+---
+#How to Get SRA files
+##Taken from https://www.biostars.org/p/93494/
+##SRA documentation https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump
+
+Setup 
+```{r}
+#source('http://bioconductor.org/biocLite.R')
+#biocLite('SRAdb')
+library(SRAdb)
+library(DBI)
+srafile = getSRAdbFile() #download the first time
+con = dbConnect(RSQLite::SQLite(), srafile)
+```
+
+#Dataset 1 - list the SRA files, and then download
+```{r}
+#Option 1
+##https://www.nature.com/articles/nature14546#t1
+##https://www.ncbi.nlm.nih.gov/sra/SRX874253[accn]
+listSRAfile('SRP047082',con)
+getSRAfile('SRP047082',con,fileType='sra')
+```
+
+
+#Dataset 2 - list the SRA files, and then download
+```{r}
+#Option 2 - 28 samples, from WGS data 
+
+#Make sure the list is correct
+listSRAfile('SRP010986',con)
+getSRAfile('SRP010986',con,fileType='sra')
+
+#Change directory and download files
+{setwd("/Users/sevillas2/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP010986/")
+getSRAfile('SRP010986',con,fileType='sra')
+}
+
+#Read in the CSV to get names
+sri <- read.csv("/Users/sevillas2/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP010986/SraRunTable_SRP010986.csv",stringsAsFactors = FALSE)
+
+for (a in 1:nrow(sri)){
+ Samplename <- sri[a,"Run"]
+ Samplename <- paste("/Program Files/Git/Coding/GMU/BINF996_Summer/",Samplename,".sra")
+ Samplename <- gsub("/ SRR","/SRR",Samplename)
+ Samplename <- gsub(" .sra",".sra",Samplename)
+ sri[a,"filename"] <- Samplename
+}
+sri$filename
+write.csv(sri,"SraRunTable_SRP010986.csv")
+files <-as.list(sri$filename)
+
+for(f in files) {
+ getFASTQfile(in_acc=f,sra_con = con,destDir="/Users/sevillas2/Google\ Drive/My\
+              Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP010986/")
+}
+```
