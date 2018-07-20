@@ -1,0 +1,163 @@
+---
+title: "R Notebook"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+#How to Get SRA files
+##Taken from https://www.biostars.org/p/93494/
+##SRA documentation https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump
+
+Bioconductor Setup
+```{r}
+source('http://bioconductor.org/biocLite.R')
+biocLite('SRAdb')
+biocLite('limma')
+biocLite('ShortRead')
+biocLite('Rbowtie')
+```
+
+Load Libraries
+```{r}
+library(SRAdb)
+library(DBI)
+library(ShortRead)
+library(R.utils)
+library(curl)
+library(Rbowtie)
+library(Rsamtools)
+library(devtools)
+```
+
+Setup for SRA
+```{r}
+#srafile = getSRAdbFile() #only need to run once
+con = dbConnect(RSQLite::SQLite(), srafile)
+```
+
+#Data Set 3
+```{r}
+#Make sure the list is correct
+listSRAfile('SRP052738',con)
+
+#Change directory and download files
+{setwd("/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP052738/")
+getSRAfile('SRP052738',con,fileType='sra')
+}
+
+#Read in the CSV to get names
+sri <- read.csv("/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP052738/SraRunTable_SRP052738.csv",stringsAsFactors = FALSE)
+
+#Assign sample name to rows
+row.names(sri) <- sri$Run
+files <-as.list(sri$Run)
+
+for(f in files) {
+ #Create a list of the files, and determine their ftp location
+ temp <- getFASTQinfo(in_acc=f,sra_con=con)
+ temp <- as.character(temp$ftp)
+ 
+ #Add location to database
+ sri[f,"Location"] <- temp
+ 
+ #Determine FastQ GZ name
+ tempname <- paste(f,".fastq.gz")
+ tempname <- gsub(" .fastq",".fastq",tempname)
+ sri[f,"GZip"] <- tempname
+ 
+ #Print as files go
+ print(temp)
+ 
+ #Download file
+ #curl_download(temp,tempname)
+}
+
+#Unzip the GZ files
+files <- as.list(sri[1,"GZip"])
+for (f in files){
+ gunzip(f)
+}
+
+
+#Preview FastQ file
+strm <- FastqStreamer("SRR409202.fastq.gz")
+repeat {
+ fq <- yield(strm)
+ if(length(fq) ==0)
+    break
+}
+}
+```
+
+#Align and create bam files
+```{r}
+#Download the reference file, and unzip
+refFiles <- "chrM.fa.gz"
+gunzip (refFile)
+
+#Create index
+refFiles <- "chrM.fa"
+indexDir <- file.path(tempdir(), "refsIndex")
+tmp <- bowtie_build(references=refFiles, outdir=indexDir, prefix="index", force=TRUE)
+head(tmp)
+
+#Create directory to read in and for final file names
+files <- as.list(sri$Run)
+
+for (f in files){
+ #Create FASTQ File
+ temp <- sri[f,"Run"]
+ temp <- paste(temp,".fastq")
+ temp <- paste("C:\\Program Files\\Git\\Coding\\GMU\\BINF996_Summer\\",temp)
+ temp <- gsub(" .fastq",".fastq",temp)
+ temp <- gsub("\\ ","\\",temp)
+ sri[f,"FASTQ"]<- temp
+ 
+ #Create SAM File location
+ temp <- sri[f,"Run"]
+ temp <- paste(temp,".sam")
+ temp <- paste("C:\\Program Files\\Git\\Coding\\GMU\\BINF996_Summer\\",temp)
+ temp <- gsub(" .sam",".sam",temp)
+ temp <- gsub("\\ ","\\",temp)
+ sri[f,"SAM"]<- temp
+}
+
+#Align sequences, create sam file
+files <- as.character(as.list(sri$Run))
+for (f in files){
+ temp <- sri[f,"FASTQ"]
+ finalname <- sri[f,"SAM"]
+ bowtie(sequences=temp, outfile = finalname,index=file.path("index"), sam=TRUE, 
+        best=TRUE, force=TRUE)
+ #strtrim(readLines(finalname), 65)
+}
+
+#Convert to bam
+samtools view -b -S file.sam > file.bam
+
+
+```
+
+Example
+```{r}
+refFiles <- dir(system.file(package="Rbowtie","samples","refs"),full=TRUE)
+indexDir<-file.path(tempdir(),"refsIndex")
+temp<-bowtie_build(references=refFiles,outdir=indexDir,prefix="index",force=TRUE)
+
+readsFiles<- system.file(package="Rbowtie", "samples", "reads","reads.fastq")
+samFiles <- file.path(tempdir(),"alignments.sam")
+bowtie(sequences=readsFiles, index=file.path(indexDir,"index"),
+       outfile=samFiles,
+       sam=TRUE, best=TRUE, force=TRUE)
+
+#Version 2
+refFiles <- "C:\\Program Files\\Git\\Coding\\GMU\\BINF996_Summer\\chrM.fa"
+indexDir<-file.path(tempdir(),"refsIndex")
+temp<-bowtie_build(references=refFiles,outdir=indexDir,prefix="index",force=TRUE)
+
+readsFiles<- system.file(package="Rbowtie", "samples", "reads","reads.fastq")
+samFiles <- "C:\\Program Files\\Git\\Coding\\GMU\\BINF996_Summer\\test.sam"
+bowtie(sequences=readsFiles, index=file.path(indexDir,"index"),
+       outfile=samFiles,
+       sam=TRUE, best=TRUE, force=TRUE)
+```
