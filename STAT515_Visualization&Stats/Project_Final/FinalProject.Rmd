@@ -1,0 +1,113 @@
+---
+title: "R Notebook"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+#Read in Crime Data Table
+```{r}
+#Read in pre-edited crime data
+crime_raw <- read.csv("Data/CrimeStatebyState_edited.csv",fill=TRUE)
+head(crime_raw)
+
+#Read in state list and add to datatable
+states <- read.csv("Data/StateList.csv",stringsAsFactors = FALSE)
+
+#Add states to the table
+n=1
+for (i in 1:nrow(crime_raw)){
+ temp <- states[n,1]
+ crime_raw[i,"ST"] <- temp
+ 
+ if(n<nrow(states)){
+  n=n+1
+ } else{n=1}
+}
+
+#Select specific years
+crime_raw <- subset(crime_raw,Yr==1970 | Yr==1975 | Yr==1980)
+
+#Review new data table
+head(crime_raw)
+write.table(crime_raw,"crime_raw.csv",sep=",")
+```
+
+#Create Population Data
+```{r}
+#Create population database
+pop<- data.frame()
+
+##Add all states to dataframe, add pop placeholder
+states <- unique(states$ST)
+n=1
+for (i in states){
+ pop[n,"ST"] <- i
+ pop[n,"PopTotal_1970"]<-0
+ n=n+1
+}
+#Add row names
+rownames(pop)<-pop$ST
+head(pop)
+
+```
+
+#Create and read in Population Data
+```{r}
+#1970 data read in
+pop70 <- read.csv("Data/1970_clean.csv")
+head(pop70)
+str(pop70)
+##Correct character information
+pop70$ST <- as.character(pop70$ST)
+pop70$Race <- as.character(pop70$Race)
+pop70$Sex <- as.character(pop70$Sex)
+##Correct integer information
+ages <- colnames(pop70[,6:23])
+for (i in ages){
+ pop70[,i]<-as.numeric(as.character(pop70[,i]))
+}
+##Check changes
+str(pop70)
+head(pop70)
+
+#Find total population for each state
+for (a in 1:nrow(pop70)){
+ state <- pop70[a,"ST"] 
+ temp <- pop[state,"PopTotal_1970"]
+ #Determine the population for all columns, add rows of data together
+ for (b in 6:23){
+  temp <- pop70[a,b] + temp
+  pop[state,"PopTotal_1970"] <- temp
+ }
+}
+#Review the data table
+head(pop)
+```
+
+#Combine population data with crime data
+```{r}
+#1970 Data
+for(a in 1:nrow(crime_raw)){
+ year <- crime_raw[a,"Yr"]
+ state <- crime_raw[a,"ST"]
+ temp <- pop[state,"PopTotal_1970"]
+ 
+ #If the year matches in the row
+ if(year==1970){
+  
+  #Loop through all of the states, passing population data to columns that match state and year
+  for(b in states){
+   if(b==state){
+    crime_raw[a,"PopTotal_1970"]<-temp
+   } else{next}
+  } 
+ } else {next}
+}
+ 
+#Review new data table
+head(crime_raw)
+write.table(crime_raw,"crime_raw.csv",sep=",")
+
+
+
+```
