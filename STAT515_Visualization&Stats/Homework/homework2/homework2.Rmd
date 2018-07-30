@@ -1,0 +1,693 @@
+---
+title: "Homework2"
+author: "Sevilla"
+date: "July 25, 2018"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+#Log Regression
+```{r}
+#Due Plot from 6 
+
+#1. Set up
+library(faraway)
+data(orings)
+
+#2. Space shuttle O-ring seals data and the Challenger 1986 explosion 
+orings
+
+#3. Regression Models for Binomial Data
+
+#4. Estimating model parameters
+
+#5. Fitting three models
+##Naive linear model
+linearModel = lm(damage/6 ~ temp,data=orings)
+summary(linearModel)
+
+##Logit model
+
+logitModel = 
+  glm(cbind(damage,6-damage) ~ temp,
+     family=binomial, data = orings) 
+summary(logitModel)
+
+## Probit 
+probitModel = 
+  glm(cbind(damage,6-damage) ~ temp,
+     family=binomial(probit),data=orings)
+summary(probitModel)
+
+#6. Plots of fitted values
+windows()
+plot(damage/6~temp,orings,xlim=c(25,85),ylim=c(0,1),las=1,
+xlab="Temperature (Degrees Fahrenheit)", ylab="Damage Probability",
+pch=21,bg="red",col="red",
+main="O-ring Models\nLinear:Black, Probit:Blue, Logit:Red")
+
+tempGrid = 25:85
+a=coef(linearModel)
+lines(tempGrid,a[1]+a[2]*tempGrid,col="black",lwd=2)
+
+a=coef(probitModel)
+lines(tempGrid,pnorm(a[1]+a[2]*tempGrid),col="blue",lwd=2)
+
+a = coef(logitModel)
+lines(tempGrid,ilogit(a[1]+a[2]*tempGrid),col="red",lwd=4)
+
+#7.  Comment
+```
+#Crime Data
+```{r}
+# Script from ISLR with slight modification
+
+# Due 2 points
+# 3. Second Biplot
+# 4. Second qplot
+
+# 0. Setup
+
+library(ggplot2)
+source("hw.R")
+
+# 1. Look at the Arrest Data
+states=row.names(USArrests)
+states
+names(USArrests)
+head(USArrests)
+colMeans(USArrests)
+
+apply(USArrests, 2, var)
+
+# 2. Principal Components
+
+pr.out=prcomp(USArrests, scale=TRUE)
+names(pr.out)
+pr.out$center
+pr.out$scale
+pr.out$rotation
+dim(pr.out$x)
+
+# 3. Biplots
+
+biplot(pr.out, scale=0,las=1)
+
+pr.out$rotation=-pr.out$rotation
+pr.out$x=-pr.out$x
+
+windows(width=10, height=10)
+biplot(pr.out, scale=0,cex=.5)
+
+# 4. Percent of Variance Explained
+
+pr.out$sdev
+pr.var=pr.out$sdev^2
+pr.var
+pve=pr.var/sum(pr.var)
+pve
+x = 1:length(pve)
+qplot(x,pve, xlab="Principal Component", 
+  ylab="Proportion of Variance Explained", 
+  main="US Arrests By State",ylim=c(0,1)) +
+  geom_line()+geom_point(shape=21,fill="red",cex=3)+hw
+
+qplot(x,cumsum(pve), xlab="Principal Component",
+  ylab="Cumulative Proportion of Variance Explained",
+  main="US Arrests By State",ylim=c(0,1))+
+  geom_line()+geom_point(shape=21,fill="red",cex=3)+hw
+```
+#2D Data
+```{r}
+# Principal Components 2D 
+# Illustrates centering and rotation of 2D data
+
+#Due:  3 points
+#2.  Juxtaposed plot
+#4.  Juxtaposed plot 
+#5.  Second Biplot
+
+# 0. Setup
+library(MASS)
+library(ggplot2)
+library(gridExtra)
+
+hwThemeSmallText <- hw +
+  theme(
+  axis.text=element_text(size=rel(.8)),
+  axis.title=element_text(size=rel(.8)),
+  plot.title=element_text(size=rel(.8))
+  )
+
+# 1. Read data and check for missing values
+  
+mfcancer <- read.csv(file="US_CancerMortality_byGender.csv",
+  header=TRUE, as.is=TRUE)
+head(mfcancer)
+tail(mfcancer)
+any(is.na(mfcancer))
+
+# Make a data frame for 2007 
+# with male and female columns
+# in separate columns
+
+# Get the rate for column X2007
+rate <- mfcancer[, "X2007"]
+
+# Make a logical vector with TRUE for "Male"
+# FALSE otherwise (Females0
+male <- mfcancer[, "Gender"]=="Male"
+
+# column bind the male and female rates into
+# two column matrix
+mat <- cbind(rate[male], rate[!male])
+
+# Add state postal codes as rownames 
+# Male and Female as column names
+rownames(mat) <- mfcancer$State[1:51]
+colnames(mat) <- c("Male","Female")
+mat
+
+# Make a data.frame
+df <- as.data.frame(mat)
+head(df)
+
+# 2. Center the variables 
+#    and compare plots of the data and
+#    centered data.  Just the axis scales
+#    should look different  
+
+# The scale function 
+#  scale(x,cen=TRUE,scale=TRUE) works on a numeric matrix
+
+# By default it subtracts the mean from each column
+# and then divides each column by its standard deviation.
+
+matCen <- scale(mat,scale=FALSE)
+dfCen <- as.data.frame(matCen)
+head(dfCen)
+
+# Save the means for reference lines
+maleM <- mean(df$Male)
+femaleM <- mean(df$Female)
+
+# Produce female rate versus male rate scatterplots
+# Produce both uncentered and centered scatterplot objects
+# Juxtapose the plots using grid.arrange()
+
+title <-paste("State Cancer Mortality Rates 2007",
+        "\nDeaths Per 100,000",sep="")   
+
+p <- ggplot(df,aes(x=Male,y=Female))+
+     geom_hline(yintercept=femaleM,color='blue')+ 
+     geom_vline(xintercept=maleM,color='blue')+
+     geom_point(fill="red",shape=21)+
+     labs( title=title)+hwThemeSmallText
+
+pCen<- ggplot(dfCen,aes(x=Male,y=Female))+
+       geom_hline(yintercept=0,color='blue')+ 
+       geom_vline(xintercept=0,color='blue')+
+       geom_point(fill="red",shape=21)+
+       labs(x="Male - Mean(Male)",
+         y="Female - mean(Female)",
+         title=title)+hwThemeSmallText
+
+windows(width=6, height=3)
+grid.arrange(p,pCen,ncol=2)
+
+# The plots look the excep for grid line
+# labels and variable labels.  
+
+# Some times grid.arrange is not updated
+# Hand juxtaposing the two plots in the 
+# assignment document is okday.  
+
+#windows(w=3,h=3)
+# p
+#
+# windows(w=3,h=3)
+# pCen
+
+
+# 3. Principal components and rotation 
+#
+# Below we keep the original units of
+# measure by setting scale to FALSE
+# Otherwise after centering the
+# variables, prcomp will divide them by 
+# their standard deviations so the
+# variables being rotated are unitless.  
+#
+# In most situations the variables
+# have different units of measure
+# and researchers usually choose to divide the
+# variables by their standard deviation
+# to produce unitless values. Then
+# the rotated values (linear combination
+# of the variables) are also unitless. 
+# If they are using R they will chose
+# scale=TRUE.   
+# 
+# There is related but somewhat
+# different numerical method for
+# computing principal components. 
+# The scale=TRUE options corresponds
+# to using correlation matrix in
+# the eigenvector method. 
+
+# With scale=FALSE both
+# variables remain expressed as 
+# deaths per 100000 people. Rotation will 
+# produce new coordinates in the same
+# units of measure, deaths per 100000.
+# The correspond to using covariance
+# matrix in eigenvector numerical method.
+   
+# It much harder to interpret linear
+# combinations of variables when the 
+# origin variables have different units
+# of measure.    
+
+pc <- prcomp(mat,scale=FALSE)
+pcDat <- pc$x # principal components
+pcRotate <- pc$rotation  #rotation matrix
+
+# Verify this is a rotation or
+# or a rotation with reflections.  
+# Reflections are possible
+#   We can multiple any pc column by -1
+#   and retain the center, variance and
+#   orthogonality to other pc's 
+   
+# The determinant of a rotation matrix is 1. 
+# If there are an odd number of reflections
+# about the axes, the determinant will be -1. 
+
+det(pcRotate)  # -1 means there is a reflection 
+
+# Rotate the centered data and compare
+
+matRot <- matCen %*% pcRotate
+head(pcDat)
+head(matRot)
+all.equal(pcDat,matRot)
+
+round(pcRotate,2)
+
+# Look at the first column in the
+# rotation matrix above. The first principal
+# component is approximately 
+# -.78 times the centered male vector plus
+# -.63 times the centered female vector. 
+
+# A rotation matrix for angle a in 2D
+# has form 
+#          sin(a)  cos(a)
+#         -cos(a)  sin(a)
+# The determinant is sin(a)**2 + cos(a)**2 = 1
+#
+# The reflection here has form
+#          -sin(a)  cos(a)
+#           cos(a)  sin(a)
+# The determinant is -(sin(a)**2) -(cos(a)**2) = -1
+
+a <- -pcRotate[1,1]
+asin(a)*180/pi
+
+# In 4. below, think of clockwise rotation
+# of 51 degrees about the origin and then
+# multiplying the resulting x coordinates
+# by -1 to put West Virginia on left    
+
+# 4. Juxtapose the centered data and  
+#    principle component scatterplots
+#    using the same x and y axis scale
+#    limits.
+#
+#  Find x and y axis limits to accommodate
+#  rotating the data.  
+#  The first principal component has 
+#  large variance but not necessarily
+#  the point furthest from the origin
+
+big <- max(abs(pcDat))
+
+dfPC <- data.frame(PC1=pcDat[,1],PC2 = pcDat[,2])
+rownames(dfPC) = rownames(dfCen)
+
+# Find some extreme points to label
+# with state postal codes
+
+id1 <- which.min(dfPC$PC1)
+id2 <- which.max(dfPC$PC1)
+id3 <- which.min(dfPC$PC2)
+subs <- c(id1,id2,id3)
+
+# Add a column to dfPC and to dfCen
+# for postal codes. Fill the columns
+# with NAs except for the 3 ids
+# we want to show. 
+     
+dfPC$State <- NA
+dfPC$State[subs] <- row.names(dfPC)[subs] 
+
+dfCen$State <- NA
+dfCen$State[subs] <- row.names(dfPC)[subs]
+
+# Store the two plots and then juxtapose
+#
+pCen <- ggplot(dfCen,aes(x=Male,y=Female))+
+  geom_hline(yintercept=0,color='blue')+ 
+  geom_vline(xintercept=0,color='blue')+
+  geom_point(fill="red",shape=21)+
+  ylim(-big,big)+
+  xlim(-big,big)+
+  geom_text(aes(y=Female-5,label=State),size=4,vjust=1)+
+  labs(x="Male - Mean(Male)",
+    y="Female - mean(Female)",
+    title=title)+hwThemeSmallText
+
+pRot <- ggplot(dfPC,aes(x=PC1,y=-PC2))+
+  geom_hline(yintercept=0,color='blue')+ 
+  geom_vline(xintercept=0,color='blue')+
+  geom_point(fill="red",shape=21)+
+  ylim(-big,big)+
+  xlim(-big,big)+
+  geom_text(aes(y=-PC2+5,label=State),size=4,vjust=0)+
+  labs(x="PC1 From Male and Female Rates",
+    y="-PC2 From Male and Female Rates",
+    title=title)+hwThemeSmallText
+
+grid.arrange(pCen,pRot,ncol=2)
+
+# Observe that WV point rotated about 
+# 135 degree counter clockwise about the center, 
+# (0, 0).  So the UT points and the MS points.
+
+ 
+
+# If grid arrange doesn't work
+# windows(w=3,h=3)
+# pCen
+# window(w=3,h=3)
+# pRot
+
+
+# The warning message is not a problem
+# The plan was to show just 3 of the
+# 51 state codes.
+
+# From the left panel to the right panel there
+# is roughly a 135 degree rotation. Look at the
+# script above to see that y=-PC2. Actually
+# there was also a reflection about the y-axis.
+# Think a 45 degree clockwise rotaton and the hte
+# x values were mulitple by -1.       
+
+# Multiplying a principal component by -1 does
+# not change the two basic properties. 
+
+# By convention
+# principal components are listed in decreasing
+# variance order.
+   
+# The principal component vectors are orthogonal. 
+# This means the dot products are zero
+# Dot product calculation
+
+with(dfPC, sum(PC1 *   PC2 ))
+with(dfPC, sum(PC1 * (-PC2)))
+
+# Both are zero for practical purposes.
+
+
+# 5. Biplot
+
+
+# Without scaling the data Covariance version
+
+windows(width=6,height=6)
+biplot(pc,scale=0,las=1,
+  main= "Covariance PC Loadings Top and Right Axes")
+
+# The biplot show two superimposed plot
+# that have different scales.
+# Such plots run the risk of being
+# confusing. 
+
+# The first plot shows the first two principal
+# components as points with respect to the
+# bottom and left axes. 
+
+head(pc$x)
+
+#  This principal components did not divide the variables
+#  by their standard deviations so are based on the covariance
+#  matrix of the variables. 
+
+# The second plot in red show values from the
+# from the rotation matrix using red arrows
+# tips with the arrows starting from the origin.
+# The Male arrow tip values can be read
+# from left column of the rotation matrix show
+# below.  The Female arrow tip values are from
+# right column
+
+pc$rot
+
+# The axes for the second plot appear on the top amd right
+# of biplot.  Ideally tick mark labels should also
+# be red to match the red tick marks, arrows and arrow
+# labels. 
+
+# If we read down the rotation matrix PC1 column
+# we see linear combination of coefficents that multiply
+# the center male and female values for each state to 
+# produce PC1.  Roughly speaking the first (PC1) linear combination
+# is a negative scale sum of the centered male and female
+# values for each states.  Roughly speaking the second linear
+# combination is the scaled difference of the center male
+# and female value for each state.
+# The columns are sometimes called factor loadings.      
+
+
+# With scaling the Correlation version of PCs
+
+windows(width=12, height=12)
+pcCor <- prcomp(mat,scale=TRUE)
+biplot(pcCor,scale=.5,las=1,
+  main="Correlation PC Loadings Top and Right Axes")
+
+# 6. Percent of variability represented
+
+# Guidance suggest looking the 
+# standard deviations of the principal
+# components
+
+pc$sdev
+
+# The screeplot shows variances
+screeplot(pc)
+
+# Another choice is to look 
+# cumulative percent of total
+# variance 
+dfPC$State <- NULL
+vec <- diag(var(dfPC))
+100*cumsum(vec)/sum(vec)  
+
+# The first principal component accounts for
+# 95% of the variability 
+
+# 6. Ordering States by the first principal component
+
+ord <- with(dfPC,order(PC1))
+round( dfPC[ord,1:2],1)
+
+# The first principal component is often useful for sorting cases
+```
+#Heptathlon
+```{r}
+
+#Sections
+#1. Read the data and make a scatterplot matrix
+#2. Use identify() to name an outlier 
+#3. Transforming data before input to principal components 
+#4. Obtaining principal components
+#5. Assess the variation in the principal components
+#6. Relate the first principal component to the judges score
+
+#Due: Plot from 2 with the name of the outlier and the plot from 6. 
+
+#1. Read the data and make a scatterplot matrix
+heptathlon = read.csv(file="heptathlon.csv",row.names=1)
+heptathlon
+
+# remove the official score
+hepDat = heptathlon[,-ncol(heptathlon)]
+
+{windows(width=7,height=7)      
+nam <- c("Hurdles\nSeconds","Highjump\nMeters","Shotput\nMeters",
+  "Run200m\nSeconds","Longjump\nMeters","Javelin\nMeters",
+  "Run800m\nSeconds")
+myPanelSmooth = function(x,y,...)panel.smooth(x,y,lwd=3,col.smooth='red',...)
+pairs(hepDat,lab=nam, panel=myPanelSmooth,pch=21,cex=1.5,
+     col=rgb(0,.6,1),bg=rgb(0,.6,1),gap=0,las=1)
+}
+#2 Identify
+plot(hepDat[c(1,7)],pch=16,col='blue',cex=1.2,las=1) 
+#identify(heptathlon[,1],heptathlon[,7],lab=row.names(heptathlon)) #Launa(PNG)
+
+#3. Transforming data before input to principal components 
+
+hepDat$hurdles=max(hepDat$hurdles)-hepDat$hurdles
+hepDat$run200m=max(hepDat$run200m)-hepDat$run200m
+hepDat$run800m=max(hepDat$run800m)-hepDat$run800m
+
+#4. Obtaining principal components
+
+heptPca = prcomp(hepDat,scale=TRUE) 
+
+heptPca$center # means of the variables 
+heptPca$scale  # standard deviation of the variables
+heptPca$x      # principal components
+heptPca$sdev   # standand deviations of the principal components
+round(heptPca$rotation,2)
+
+#5. Assess the variation in the principal components
+names(heptPca$sdev) = paste('Comp',1:length(heptPca$sdev),sep='')
+plot(heptPca)
+
+heptVar = heptPca$sdev**2
+100*cumsum(heptVar)/sum(heptVar)
+
+
+#6. Relate the first principal component to the judges score
+plot(heptathlon$score,-heptPca$x[,1],las=1,pch=21,bg="red",
+     xlab="Official Score",ylab="First Principal Component",
+     main="Comparing Scores and First Principal Component")
+correl = cor(-heptPca$x[,1],heptathlon$score)
+xloc = mean(par()$usr[1:2])
+text(xloc,4,paste("Correlation =",round(correl,2)),adj=.5,cex=1.1)
+```
+#3D Data
+```{r}
+# =========================================
+
+#Due       Plots from 2, 4, 8, 9-first plot
+
+#==========================================
+
+#0. Setup
+library(MASS)
+library(rgl)
+
+#1. Generating random sample from a trivariate normal distribution
+
+Mean <- c(4,-2, 5)
+Mean
+
+Cov <- matrix(c(3,3.5,0,3.5,10,0,0,0,1), 3,3)
+Cov
+
+set.seed(37)
+xyz <- mvrnorm(1000, Mean, Cov)
+
+sampMean <- apply(xyz,2,mean) 
+sampMean
+Mean
+sampMean - Mean
+
+sampCov <- var(xyz)
+round(sampCov,2)
+Cov
+round(sampCov-Cov,2)
+
+#2. A 3-D data scatterplot with a translucent ellipoid as a density reference.   
+
+{open3d(FOV=0)
+plot3d(xyz, box=TRUE,
+ xlab="x", ylab="y", zlab="z")
+aspect3d("iso")
+xzyMean <- colMeans(xyz)
+xCov <- var(xyz)
+plot3d( ellipse3d(Cov,centre=Mean, level=.9),
+  col="green", alpha=0.5, add = TRUE)
+}
+
+snapshot3d("Data and 90% Ellipsoid.png" )
+
+#3. Producing principal components 
+
+pcList <- prcomp(xyz)
+
+#4. A 3-D principal components plot with a reference ellipsoid.
+
+pc <- pcList$x
+pcMeans <- colMeans(pc)
+round(pcMeans,2)
+
+pcCov <- var(pc)
+round(pcCov,2)
+
+{open3d(FOV=0)
+plot3d(pc, box=TRUE,
+xlab="PC1",ylab="PC2",zlab="PC3")
+aspect3d("iso")
+plot3d(ellipse3d(pcCov, centre=pcMeans, level=.9),
+  col="cyan", alpha=0.5, add = TRUE)
+}
+
+snapshot3d("Principle components and 90% Ellipsoid.png" )
+
+#5. Results returned by prcomp()
+
+pcList$center # Contains the means of the input variables that were subtracted to center the data
+
+pcList$rotation #Is the rotation used to rotate the  case points about the origin.
+
+pcList$sdev #has standard deviations of the principal components.  
+
+pcList$scale #is FALSE in this case since the default uses the covariance matrix. 
+
+pcList$x #contains the principal components as indicated above. 
+
+#6. A computation check using matrix multiplication 
+
+rot <- pcList$rot
+rot
+det(rot)
+
+xyzCentered <- scale(xyz,center=T,scale=FALSE)
+head(xyzCentered)
+
+pcCheck<- xyzCentered %*% rot
+
+all.equal(pc, pcCheck)
+
+#7. Principal component interpretation in terms of rotation coefficients 
+
+round(rot,2)
+
+round(var(xyz),1)
+
+#8. Picking the number principal components to use
+screeplot(pcList, las=1)
+
+#9.  2-D scatterplots 
+
+tmp <- apply(pc,2,range)
+tmp
+
+round(diff(tmp),1)
+
+winX <- 7.5
+winY <- winX*8.1/22.6 
+windows(w=winX,h=winY)
+plot(pc[,1],pc[,2],las=T,
+main="Maybe Interesting")
+
+windows()
+plot(pc[,1],pc[,2],las=T,
+main="Not Very Interesting")
+```
