@@ -15,10 +15,14 @@ biocLite('SRAdb')
 biocLite('limma')
 biocLite('ShortRead')
 biocLite('Rbowtie')
+biocLite('Rsubread')
+biocLite('QuasR')
+biocLite('Gviz')
 ```
 
 Load Libraries
 ```{r}
+library(QuasR)
 library(SRAdb)
 library(DBI)
 library(ShortRead)
@@ -27,26 +31,32 @@ library(curl)
 library(Rbowtie)
 library(Rsamtools)
 library(devtools)
+library(rtracklayer)
+library(GenomicFeatures)
+library(Gviz)
 ```
 
 Setup for SRA
 ```{r}
 #srafile = getSRAdbFile() #only need to run once
-con = dbConnect(RSQLite::SQLite(), srafile)
+sraloc = "/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRAmetadb.sqlite"
+con = dbConnect(RSQLite::SQLite(), sraloc)
 ```
 
 #Data Set 3
 ```{r}
 #Make sure the list is correct
-listSRAfile('SRP052738',con)
+listSRAfile('SRP010986',con)
 
 #Change directory and download files
-{setwd("/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP052738/")
-getSRAfile('SRP052738',con,fileType='sra')
-}
+#{setwd("/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP010986/")
+#getSRAfile('SRP010986',con,fileType='sra')
+#}
 
 #Read in the CSV to get names
-sri <- read.csv("/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP052738/SraRunTable_SRP052738.csv",stringsAsFactors = FALSE)
+sri <- read.csv("/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP010986/SraRunTable_SRP010986.csv",stringsAsFactors = FALSE)
+sri <- sri[-c(6,7,8),]
+
 
 #Assign sample name to rows
 row.names(sri) <- sri$Run
@@ -65,28 +75,69 @@ for(f in files) {
  tempname <- gsub(" .fastq",".fastq",tempname)
  sri[f,"GZip"] <- tempname
  
+ tempname <- paste("/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP010986/",f,".fastq")
+ tempname <- gsub("/ ","/",tempname)
+ tempname <- gsub(" .fastq",".fastq",tempname)
+ sri[f,"FASTQ"] <- tempname
+ 
  #Print as files go
  print(temp)
  
  #Download file
+ setwd( "/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP010986/")
  #curl_download(temp,tempname)
 }
 
-#Unzip the GZ files
-files <- as.list(sri[1,"GZip"])
-for (f in files){
- gunzip(f)
+#Preview FastQ file
+{
+ sampler <- FastqSampler(sri[f,"GZip"])
+ fq<- yield(sampler)
+ head(sread(fq),3)
+ head(quality(fq),3)
 }
 
+ #Download file
+strm <- FastqStreamer("SRR409202.fastq.gz",n=1e6)
+repeat{
+ fq <- yield(strm)
+ if(length(fq)==0)
+  break
+}
+
+{ setwd( "/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP052738/")
+ sampler <- FastqSampler("SRR421041.fastq.gz")
+ fq<- yield(sampler)
+ head(sread(fq),3)
+ head(quality(fq),3)
+ 
+ fl<-"C://Users//slsevilla//Google\ Drive//My\ Documents//Education//George\ Mason\ University//BINF996//2018_Summer//SRA_SRP052738//SRR409202.fastq.gz"
+ fq<-readFastq(fl)
+}
 
 #Preview FastQ file
-strm <- FastqStreamer("SRR409202.fastq.gz")
-repeat {
- fq <- yield(strm)
- if(length(fq) ==0)
-    break
-}
-}
+fl<- system.file(package = "ShortRead","extdata","E-MTAB-1147",
+                 "ERR127302_1_subset.fastq.gz")
+fq<-readFastq(fl)
+fq
+
+sra_tables <- dbListTables(con)
+sra_tables
+dbListFields(con,"study")
+dbGetQuery(con,'PRAGMA TABLE_INFO(study)')
+rs <- dbGetQuery(con,"select * from study limit 3")
+rs[, 1:3]
+rs <- dbGetQuery(con, paste( "select study_accession,
+                             study_title from study where",
+                             "study_description like 'Transcriptome%'",sep=" "))
+rs[1:3,]
+
+
+conversion <- sraConvert( c('SRP052738'), sra_con = con )
+apply(conversion, 2, unique)
+
+
+system ("fastq-dump --fasta SRR442719.sra")
+
 ```
 
 #Align and create bam files
@@ -108,9 +159,9 @@ for (f in files){
  #Create FASTQ File
  temp <- sri[f,"Run"]
  temp <- paste(temp,".fastq")
- temp <- paste("C:\\Program Files\\Git\\Coding\\GMU\\BINF996_Summer\\",temp)
+ #temp <- paste("C:\\Program Files\\Git\\Coding\\GMU\\BINF996_Summer\\",temp)
  temp <- gsub(" .fastq",".fastq",temp)
- temp <- gsub("\\ ","\\",temp)
+ #temp <- gsub("\\ ","\\",temp)
  sri[f,"FASTQ"]<- temp
  
  #Create SAM File location
@@ -131,9 +182,15 @@ for (f in files){
         best=TRUE, force=TRUE)
  #strtrim(readLines(finalname), 65)
 }
+getwd()
+
+temp <- "C:\\Users\\slsevilla\\Google/ Drive\\My/ Documents\\Education\\George/ Mason University\\BINF996\\2018_Summer\\SRA_SRP052738\\reads.fastq"
+samFiles <- "C:\\Users\\slsevilla\\Google Drive\\My Documents\\Education\\George Mason University\\BINF996\\2018_Summer\\SRA_SRP010986\\test.sam"
+bowtie(sequences=temp, outfile = finalname,index=file.path("index"), sam=TRUE, best=TRUE, force=TRUE)
+
 
 #Convert to bam
-samtools view -b -S file.sam > file.bam
+#samtools view -b -S file.sam > file.bam
 
 
 ```
@@ -155,9 +212,47 @@ refFiles <- "C:\\Program Files\\Git\\Coding\\GMU\\BINF996_Summer\\chrM.fa"
 indexDir<-file.path(tempdir(),"refsIndex")
 temp<-bowtie_build(references=refFiles,outdir=indexDir,prefix="index",force=TRUE)
 
-readsFiles<- system.file(package="Rbowtie", "samples", "reads","reads.fastq")
-samFiles <- "C:\\Program Files\\Git\\Coding\\GMU\\BINF996_Summer\\test.sam"
+readsFiles<-  dir("/Users/slsevilla/Google\ Drive/My\ Documents/Education/George\ Mason\ University/BINF996/2018_Summer/SRA_SRP010986/","*fastq",full=TRUE)
+readsFiles <- readsFiles[1]
+samFiles <- "C:\\Users\\slsevilla\\Google Drive\\My Documents\\Education\\George Mason University\\BINF996\\2018_Summer\\SRA_SRP010986\\test.sam"
 bowtie(sequences=readsFiles, index=file.path(indexDir,"index"),
        outfile=samFiles,
        sam=TRUE, best=TRUE, force=TRUE)
+
+
+```
+
+```{r}
+file.copy(system.file(package="QuasR","extdata"),".",recursive=TRUE)
+sampleFile <- "extdata/samples_chip_single.txt"
+genomeFile<- "extdata/hg19sub.fa"
+proj <- qAlign(sampleFile,genomeFile)
+
+proj
+qQCReport(proj,"extdata/qc_report.pdf")
+annotFile<-"extdata/hg19sub_annotation.gtf"
+txtStart<-import.gff(annotFile,format="gtf",feature.type="start_codon")
+promReg<-promoters(txtStart,upstream=500,downstream=500)
+names(promReg)<-mcols(promReg)$transcript_name
+promCounts<-qCount(proj,query=promReg)
+promCounts
+
+#Create sample file
+final <- sri[,c(32,11)]
+sampleFile1<-system.file(package = "QuasR","extdata","samples_chip_single.txt")
+proj1<-qAlign(sampleFile1,genomeFile)
+write.table(alignments(proj1)$genome,sampleFile2,sep="\t",row.names=FALSE)
+
+#Create sample file
+final <- sri[,c(32,11)]
+colnames(final) <- c("FileName","SampleName")
+write.table(final,file="output.txt",sep="\t",row.names=FALSE,quote=FALSE)
+sampleFile1<-"output.txt"
+genomeFile<- "chrM.fa"
+
+proj1<-qAlign(sampleFile1,genomeFile)
+write.table(alignments(proj1)$genome,sampleFile2,sep="\t",row.names=FALSE)
+
+
+
 ```

@@ -1,0 +1,24 @@
+Tutorial: http://userweb.eng.gla.ac.uk/umer.ijaz/bioinformatics/linux.html
+#Create fasta files from SRR
+fastq-dump --split-files SRR
+
+#Create fastqc files
+fastqc data/*.fastq
+
+#Merge 2 reads into one - sam files
+bwa mem chrM.fa sample1_1.fastq sample1_2.fastq > sample1.sam | bwa mem chrM.fa sample2_1.fastq sample2_2.fastq >sample2.sam | bwa mem chrM.fa sample3_1.fastq sample3_2.fastq >sample3.sam | bwa mem chrM.fa sample4_1.fastq sample4_2.fastq >sample4.sam
+
+#sam to bam files
+samtools view -h -b -S sample1.sam > sample1.bam | samtools view -b -F 4 sample1.bam > sample1.mapped.bam | samtools view -H sample1.mapped.bam | perl -ne 'if($_ =~ m/^@SQ/) {print $_}' | perl -ne 'if($_ =~ m/SN:(.+)\s+LN:(\d+)/) {print $1,"\t",$2,"\n"}' > lengths.genome | cat lengths.genome | samtools sort -m 100000000 sample1.mapped.bam -o sample1.mapped.sorted.bam
+
+#Alignmnt Stats
+java -jar $(which CollectAlignmentSummaryMetrics.jar) INPUT=sample1.mapped.bam OUTPUT=sample1.sorted.alignment_stats.txt REFERENCE_SEQUENCE=chrM.fa
+
+#Alignmnt Stats
+grep -vi -e "^#" -e "^$" aln-pe.sorted.alignment_stats.txt | awk -F"\t" '{ for (i=1; i<=NF; i++)  {a[NR,i] = $i}}NF>p{p=NF}END{for(j=1;j<=p;j++){str=a[1,j];for(i=2; i<=NR; i++){str=str"\t"a[i,j];} print str}}'
+
+
+#################
+Alignmnt
+#################
+Tutorial: https://icb.med.cornell.edu/wiki/index.php/Elementolab/BWA_tutorial#Download_and_install_BWA_on_a_Linux.2FMac_machine
