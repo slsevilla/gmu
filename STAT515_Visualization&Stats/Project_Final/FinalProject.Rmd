@@ -1,0 +1,2599 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  word_document: default
+editor_options:
+  chunk_output_type: console
+---
+#1. Load libraries
+```{r}
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("flowViz")
+
+library(ff)
+library(randomForest)
+library(flowViz)
+library(micromapST)
+library(micromap)
+library(caret)
+library(ellipse)
+library(tibble)
+library(olsrr)
+library(car)
+library(lattice)
+library(grid)
+library(ellipse)
+library(rgl)
+library(hexbin)
+
+source('C:/Program Files/Git/Coding/GMU/STAT515_Visualization&Stats/Project_Final/classEda.r')
+source('C:/Program Files/Git/Coding/GMU/STAT515_Visualization&Stats/Project_Final/classDensity.r')
+source('C:/Program Files/Git/Coding/GMU/STAT515_Visualization&Stats/Project_Final/panelCorrelogram.r')
+source('C:/Program Files/Git/Coding/GMU/STAT515_Visualization&Stats/Project_Final/panelCorrgram.r')
+```
+
+#2. Create Population Data
+```{r}
+#Create population database
+pop<- data.frame()
+
+#Read in state list and add to datatable
+states <- read.csv("Data/StateList.csv")
+states$ST <- as.character(states$ST)
+states <- unique(states$ST)
+```
+
+#3A. Create and read in Population  - 1970
+```{r}
+#1970 data read in
+pop70 <- read.csv("Data/1970_clean.csv")
+head(pop70)
+str(pop70)
+##Correct character information
+pop70$ST <- as.character(pop70$ST)
+pop70$Race <- as.character(pop70$Race)
+pop70$Sex <- as.character(pop70$Sex)
+
+##Correct integer information
+ages <- colnames(pop70[,6:23])
+for (i in ages){
+ pop70[,i]<-as.numeric(as.character(pop70[,i]))
+}
+##Check changes
+str(pop70)
+head(pop70)
+temp=0
+
+##Add all states to dataframe, add pop placeholder
+n=1
+for (i in states){
+ pop[n,"ST"] <- i
+ pop[n,"PopTotal"]<-0
+ pop[n,"Pop_Un18"]<-0
+ pop[n,"Pop_20to40"]<-0
+ pop[n,"Pop_40to60"]<-0
+ pop[n,"Pop_60Ov"]<-0
+ n=n+1
+}
+#Add row names
+rownames(pop)<-pop$ST
+head(pop)
+
+#Find total population for each state
+for (a in 1:nrow(pop70)){
+ state <- pop70[a,"ST"] 
+ temp <- pop[state,"PopTotal"]
+ #Determine the population for all columns, add rows of data together
+ for (b in 6:23){
+  temp <- pop70[a,b] + temp
+  pop[state,"PopTotal"] <- temp
+ }
+ #Under 18 population
+ temp <- pop[state,"Pop_Un18"]
+ for (b in 6:9){
+  temp <- pop70[a,b] + temp
+  pop[state,"Pop_Un18"] <- temp
+ }
+ #Under 20-40 population
+ temp <- pop[state,"Pop_20to40"]
+ for (b in 10:13){
+  temp <- pop70[a,b] + temp
+  pop[state,"Pop_20to40"] <- temp
+ }
+  #Under 40-60 population
+ temp <- pop[state,"Pop_40to60"]
+ for (b in 14:17){
+  temp <- pop70[a,b] + temp
+  pop[state,"Pop_40to60"] <- temp
+ }
+ #Over 60 population
+ temp <- pop[state,"Pop_60Ov"]
+ for (b in 18:23){
+  temp <- pop70[a,b] + temp
+  pop[state,"Pop_60Ov"] <- temp
+ }
+}
+#Review the data table
+head(pop)
+
+#Create final frame
+pop_final<-data.frame()
+pop_final<-pop
+rownames(pop_final)<-c()
+for (i in 1:nrow(pop_final)){
+ pop_final[i,"Yr"]<-"1970"
+}
+head(pop_final)
+```
+
+#3B. Create and read in Population  - 1980
+```{r}
+#1980 data read in
+pop80 <- read.csv("Data/1980_clean.csv")
+head(pop80)
+str(pop80)
+##Correct character information
+pop80$ST <- as.character(pop80$ST)
+pop80$Race <- as.character(pop80$Race)
+pop80$Sex <- as.character(pop80$Sex)
+##Correct integer information
+ages <- colnames(pop80[,6:23])
+for (i in ages){
+ pop80[,i]<-as.numeric(as.character(pop80[,i]))
+}
+##Check changes
+str(pop80)
+head(pop80)
+temp=0
+
+##Add all states to dataframe, add pop placeholder
+n=1
+for (i in states){
+ pop[n,"ST"] <- i
+ pop[n,"PopTotal"]<-0
+ pop[n,"Pop_Un18"]<-0
+ pop[n,"Pop_20to40"]<-0
+ pop[n,"Pop_40to60"]<-0
+ pop[n,"Pop_60Ov"]<-0
+ n=n+1
+}
+#Add row names
+rownames(pop)<-pop$ST
+head(pop)
+
+#Find total population for each state
+for (a in 1:nrow(pop80)){
+ state <- pop80[a,"ST"] 
+ temp <- pop[state,"PopTotal"]
+ #Determine the population for all columns, add rows of data together
+ for (b in 6:23){
+  temp <- pop80[a,b] + temp
+  pop[state,"PopTotal"] <- temp
+ }
+ #Under 18 population
+ temp <- pop[state,"Pop_Un18"]
+ for (b in 6:9){
+  temp <- pop80[a,b] + temp
+  pop[state,"Pop_Un18"] <- temp
+ }
+ #Under 20-40 population
+ temp <- pop[state,"Pop_20to40"]
+ for (b in 10:13){
+  temp <- pop80[a,b] + temp
+  pop[state,"Pop_20to40"] <- temp
+ }
+  #Under 40-60 population
+ temp <- pop[state,"Pop_40to60"]
+ for (b in 14:17){
+  temp <- pop80[a,b] + temp
+  pop[state,"Pop_40to60"] <- temp
+ }
+ #Over 60 population
+ temp <- pop[state,"Pop_60Ov"]
+ for (b in 18:23){
+  temp <- pop80[a,b] + temp
+  pop[state,"Pop_60Ov"] <- temp
+ }
+}
+#Review the data table
+head(pop)
+
+#Create final frame
+for (i in 1:nrow(pop)){
+ pop[i,"Yr"]<-"1980"
+}
+pop_final<-rbind(pop_final,pop)
+head(pop_final)
+```
+
+#3C. Create and read in Population  - 1990
+```{r}
+#1990 data read in
+pop90 <- read.csv("Data/1990_clean2.csv")
+pop90$Sex <- as.character(pop90$Sex)
+pop90$Race <- as.character(pop90$Race)
+
+#Create new dataframe
+tempdat <- data.frame(matrix(ncol=88,nrow=816))
+ages <- c("Race","Gender",0:85)
+colnames(tempdat)<-ages
+
+#Iterate through data to reformat data
+counter <- 3
+row2<-1
+row2start=1
+
+for (a in 3:ncol(pop90)){
+ for (b in 1:nrow(pop90)){
+  if(counter<89){
+    tempdat[row2,"Race"]<-pop90[b,1]
+    tempdat[row2,"Gender"]<-pop90[b,2]
+    tempdat[row2,counter]<-pop90[b,a]
+    row2=row2+1
+  } else {
+   counter=3
+   tempdat[row2,"Race"]<-pop90[b,1]
+   tempdat[row2,"Gender"]<-pop90[b,2]
+   tempdat[row2,counter]<-pop90[b,a]
+   row2=row2+1
+   }
+ }
+ counter = counter+1
+
+ if(counter==89){
+  row2start=row2start+16
+  } else{ row2=row2start}
+}
+
+#Rename temp database
+pop90<-tempdat
+head(pop90)
+write.csv(pop90,"1990_clean3.csv")
+
+#Add states to data
+states2 <- unique(states$ST)
+states2 <- states2[1:51]
+n=1
+counter=1
+for (i in 1:nrow(pop90)){
+ if(counter==17){
+  n=n+1
+  counter=1
+ } else{n=n}
+ pop90[i,"ST"]<- states2[n]
+ counter=counter+1
+}
+
+#Convert value to chracter
+pop90$ST <- as.character(pop90$ST)
+#Review
+head(pop90)
+
+##Add all states to dataframe, add pop placeholder
+n=1
+for (i in states){
+ pop[n,"ST"] <- i
+ pop[n,"PopTotal"]<-0
+ pop[n,"Pop_Un18"]<-0
+ pop[n,"Pop_20to40"]<-0
+ pop[n,"Pop_40to60"]<-0
+ pop[n,"Pop_60Ov"]<-0
+ n=n+1
+}
+#Add row names
+rownames(pop)<-pop$ST
+head(pop)
+
+#Find total population for each state, as well as age groups
+for (a in 1:nrow(pop90)){
+ state <- pop90[a,"ST"] 
+ temp <- pop[state,"PopTotal"]
+ #Determine the population for all columns, add rows of data together
+ for (b in 3:88){
+  temp <- pop90[a,b] + temp
+  pop[state,"PopTotal"] <- temp
+ }
+ #Under 18 population
+ temp <- pop[state,"Pop_Un18"]
+ for (b in 3:22){
+  temp <- pop90[a,b] + temp
+  pop[state,"Pop_Un18"] <- temp
+ }
+ #Under 20-40 population
+ temp <- pop[state,"Pop_20to40"]
+ for (b in 23:43){
+  temp <- pop90[a,b] + temp
+  pop[state,"Pop_20to40"] <- temp
+ }
+  #Under 40-60 population
+ temp <- pop[state,"Pop_40to60"]
+ for (b in 44:63){
+  temp <- pop90[a,b] + temp
+  pop[state,"Pop_40to60"] <- temp
+ }
+ #Over 60 population
+ temp <- pop[state,"Pop_60Ov"]
+ for (b in 64:88){
+  temp <- pop90[a,b] + temp
+  pop[state,"Pop_60Ov"] <- temp
+ }
+}
+#Review the data table
+head(pop)
+
+#Create final frame
+for (i in 1:nrow(pop)){
+ pop[i,"Yr"]<-"1990"
+}
+pop_final<-rbind(pop_final,pop)
+rownames(pop_final)<-c()
+head(pop_final)
+```
+
+#4. Read in Crime Data Table
+```{r}
+#Read in pre-edited crime data
+crime_raw <- read.csv("Data/CrimeStatebyState_edited.csv",fill=TRUE)
+head(crime_raw)
+
+#Read in state list and add to datatable
+states <- read.csv("Data/StateList.csv")
+
+#Add states to the table
+n=1
+for (i in 1:nrow(crime_raw)){
+ temp <- states[n,1]
+ crime_raw[i,"ST"] <- temp
+ 
+ if(n<nrow(states)){
+  n=n+1
+ } else{n=1}
+}
+#Select specific years
+crime_raw <- subset(crime_raw,Yr==1970| Yr==1980| Yr==1990)
+
+#Review new data table
+head(crime_raw)
+write.table(crime_raw,"crime_raw.csv",sep=",")
+```
+
+#5. Combine population data with crime data
+```{r}
+#Convert state to character
+crime_raw$ST <- as.character(crime_raw$ST)
+rownames(crime_raw)<-c()
+
+#Add all pop data to crime file
+for (a in 1:nrow(crime_raw)){
+ year_crime <- crime_raw[a,"Yr"]
+ state_crime <- crime_raw[a,"ST"]
+ 
+ for(b in 1:nrow(pop_final)){
+  year_pop <- pop_final[b,"Yr"]
+  state_pop <- pop_final[b,"ST"]
+
+  if(year_crime==year_pop && state_crime==state_pop){
+   crime_raw[a,"PopTotal"]<- pop_final[b,"PopTotal"]
+   crime_raw[a,"Pop_Un18"]<- pop_final[b,"Pop_Un18"]/pop_final[b,"PopTotal"]
+   crime_raw[a,"Pop_20to40"]<- pop_final[b,"Pop_20to40"]/pop_final[b,"PopTotal"]
+   crime_raw[a,"Pop_40to60"]<- pop_final[b,"Pop_40to60"]/pop_final[b,"PopTotal"]
+   crime_raw[a,"Pop_60Ov"]<- pop_final[b,"Pop_60Ov"]/pop_final[b,"PopTotal"]
+  } else{next}
+ }
+}
+
+#Review new data table
+head(crime_raw)
+write.csv(crime_raw,"crime_raw.csv")
+remove(pop70,pop80,pop90)
+```
+
+#6.Load Soci-Economic Data
+```{r}
+#Reads in large Socio datafile in chunks of 500000
+socio<- read.csv.ffdf(file="Data/usa_00007.csv", header=TRUE, VERBOSE=TRUE, first.rows=10000, next.rows=50000, colClasses=NA)
+
+#Check file
+#tempdat <- socio[1:5,]
+#write.csv(tempdat,"tempcheck.csv")
+#colnames(socio)
+
+#Create manageable dataframes
+dat1 <- socio[,c(1,2,3,4,27,29,30,31)] # Income, Health
+dat2 <- socio[,c(1,2,5,6,7,8)] #Family, Marriage
+dat3 <- socio[,c(1,2,22,24,26)] #Ed
+dat4 <- socio[,c(1,2,13,32,34,36,37)] #Immig, Military
+dat5 <- socio[,c(1,2,11,15,17:21)] #Race
+remove(socio)
+```
+
+#7A.Subset Socio data - 1970's
+```{r}
+#Create 1970 database -For variables of interest, count and merge
+##############################
+#Create 1970 social info
+soc70<-data.frame()
+rownames(tempdat) <- c()
+
+##############################
+#Dat 1
+##############################
+##Subset for year, and for data with state information
+##Remove column 3 - not relevant for dataset
+tempdat <- subset(dat1,YEAR==1970 & STATEFIP>0)
+tempdat <- tempdat[,-3]
+
+##Randomly select subset of data to assess- only need to do this once
+total <- nrow(tempdat)*.001
+total
+random <- sample.int(nrow(tempdat),total)
+length(random)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+tempdat <- tempdat2
+#remove(tempdat2)
+
+#Review data
+head(tempdat)
+nrow(tempdat)
+
+#Read in state list and add to datatable
+states <- read.csv("Data/StateList_FIPS.csv")
+states$ST <- as.character(states$ST)
+states2 <- states$ST
+ 
+#Convert FIPS code to state, remove any errors
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+
+#Merge data1 from all rows together
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0; 
+
+ for (b in 1:nrow(tempdat)){
+   state <- tempdat[b,"STATEFIP"]
+   
+   if(a==state){
+    #HHIncome
+    #temp1 <- tempdat[b,"HHINCOME"]
+    #if(temp1>15000){
+     #count1 = count1 + 1
+    #}
+    
+    #VALUEH
+    temp2 <- tempdat[b,"VALUEH"]
+    if(temp2>15000){ #100K in current times, adjustd for inflation
+     count2 = count2 + 1
+    }
+    
+    #EMPSTAT
+    temp3 <- tempdat[b,"EMPSTAT"]
+    if(temp3==2 | temp3==3){ #UNEMP / not in workforce
+     count3 = count3+ temp3
+    }
+    
+    #TOT INCOME
+    temp4 <- tempdat[b,"FTOTINC"]
+    if(temp4>0 && temp4<9999997){
+     count4 = count4 + temp4
+    } 
+    
+    #WEL INCOME
+    temp5 <- tempdat[b,"INCWELFR"]
+    if(temp5>0 && temp5<99998){
+     count5 = count5 + temp5
+    } 
+    
+    #POVERTY
+    temp6 <- tempdat[b,"POVERTY"]
+    if(temp6==501){ #5x's the threshold
+     count6 = count6 + 1
+    }
+   }
+   else{next}
+   total <- sum(tempdat$STATEFIP==state)
+   soc70[state,"HHINCOME"]<- 0
+   soc70[state,"VALUEH"]<- (count2/total)
+   soc70[state,"EMPSTAT"] <- (count3/total)*100
+   soc70[state,"FTOTINC"] <- (count4/total)
+   soc70[state,"INCWELFR"] <- (count5/total)
+   soc70[state,"POVERTY"] <- (count6/total)*100
+  }
+  
+}
+head(soc70)
+#write.csv(soc70,"temp.csv")
+
+#############################
+#Dat2
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat2,YEAR==1970 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0; 
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+  if(a==state){
+   #FAMSIZE
+   temp1 <- tempdat[b,"FAMSIZE"]
+   if(temp1>0){
+     count1 = count1 + temp1
+    } 
+    #NCHILD
+    temp2 <- tempdat[b,"NCHILD"]
+    if(temp2>0){
+     count2 = count2 + temp2
+    }
+    
+    #MARST
+    temp3 <- tempdat[b,"MARST"]
+    if(temp3==1 | temp3==2){
+     count3 = count3 + 1
+    } else if (temp3==6){
+     count4 = count4 + 1
+    } else if (temp3==4){
+     count5 = count5 + 1
+    }
+   }
+   else{next}
+   total <- sum(tempdat$STATEFIP==state)
+   soc70[state,"FAMSIZE"]<- (count1/total)*100
+   soc70[state,"NCHILD"] <- (count2/total)*100
+   soc70[state,"MARST-MAR"] <- (count3/total)*100
+   soc70[state,"MARST-SING"] <- (count4/total)*100
+   soc70[state,"MARST-DIV"] <- (count5/total)*100
+  }
+ }
+
+head(soc70)
+
+#############################
+#Dat3
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat3,YEAR==1970 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #HIGHGADE
+    temp1 <- tempdat[b,"HIGRADE"]
+    if(temp1>15){ #comleted HS
+     count1 = count1+1
+    }
+    
+    #EDUC
+    temp2 <- tempdat[b,"EDUC"]
+    if(temp2==1 | temp2==2){ #Element only
+     count2 = count2 + 1
+    } 
+    else if (temp2==3 | temp2==4 | temp2==5){ #Some HS
+     count3 = count3 + 1
+    } 
+    else if (temp2==6 | temp2==7 | temp2==8 | temp2==9){ #Some COL
+     count4 = count4 + 1
+    } 
+    else if (temp2==10){ # COL
+     count5 = count5 + 1
+    } 
+    else if (temp2==11){ # GRAD
+     count6 = count6 + 1
+    }
+    
+    #SCHLTYPE
+    temp3 <- tempdat[b,"SCHLTYPE"]
+    if(is.na(temp3)){ #Public
+     count7 = count7
+    } else if (temp3 == FALSE){
+     count7=count7
+    } else {count7=count7+1}
+   } 
+  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc70[state,"HIGRADE"]<- (count1/total)*100
+  soc70[state,"EDUC-ELEM"] <- (count2/total)*100
+  soc70[state,"EDUC-SOMEHS"] <- (count3/total)*100
+  soc70[state,"EDUC-SOMECOL"] <- (count4/total)*100
+  soc70[state,"EDUC-COL"] <- (count5/total)*100
+  soc70[state,"EDUC-GRAD"] <- (count5/total)*100
+  soc70[state,"SCHLTYPE-PUB"] <- (count5/total)*100
+
+  }
+}
+head(soc70)
+
+#############################
+#Dat4
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat4,YEAR==1970 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #Langugage
+    #temp1 <- tempdat[b,"LANGUAGE"]
+    #if(!(temp2==1) | !(temp1==0) | (!temp==96)){
+     #count1 = count1 + 1
+    #} 
+    
+    #IMMIG
+    temp2 <- tempdat[b,"MIGRATE5"]
+    if(is.na(temp2)){ #Moved
+     count2 = count2
+    } else if (temp2 == FALSE){
+     count2=count2
+    } else {count2=count2+1}
+     
+    
+    #VETSTAT
+    temp3 <- tempdat[b,"VETSTAT"]
+    if(is.na(temp3)){ #Served
+     count3 = count3
+    } else if (temp3 == FALSE){
+     count3=count3
+    } else {count3=count3+1}
+    
+    
+    #VETWWII
+    temp4 <- tempdat[b,"VETWWII"]
+    if(is.na(temp4)){ #Served
+     count4 = count4
+    } else if (temp4 == FALSE){
+     count4=count4
+    } else {count4=count4+1}
+    
+    
+    #VETWWI
+    temp5 <- tempdat[b,"VETWWI"]
+    if(is.na(temp5)){ #Served
+     count5 = count5
+    } else if (temp5 == FALSE){
+     count5=count5
+    } else {count5=count5+1}
+    
+   } 
+  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc70[state,"LANGUAGE"]<- (count1/total)*100
+  soc70[state,"MIGRATE5"] <- (count2/total)*100
+  soc70[state,"VETSTAT"] <- (count3/total)*100
+  soc70[state,"VETWWII"] <- (count4/total)*100
+  soc70[state,"VETWWI"] <- (count5/total)*100
+  }
+}
+head(soc70)
+#############################
+#Dat5
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat5,YEAR==1970 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #Race
+    temp1 <- tempdat[b,"RACESING"]
+    if(temp1==1){ #White
+     count1 = count1 +1
+    } 
+    else if (temp1 == 2){
+     count2=count2 +1
+    }
+    else if (temp1 == 3){
+     count3=count3 +1
+    }
+    else if (temp1 == 4){
+     count4=count4 +1
+    } 
+    else if (temp1 == 5){
+     count5=count5 +1
+    }
+    
+    #Hispanic
+    temp2<-tempdat[b,"HISPAN"]
+    if(temp2==1 | temp2==2| temp2==3| temp2==4){ #Hispanic
+     count6=count6+1
+    }
+   }  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc70[state,"RACESING-WH"]<- (count1/total)*100
+  soc70[state,"RACESING-BL"] <- (count2/total)*100
+  soc70[state,"RACESING-IN"] <- (count3/total)*100
+  soc70[state,"RACESING-AS"] <- (count4/total)*100
+  soc70[state,"RACESING-OT"] <- (count5/total)*100
+  soc70[state,"RACESING-HI"] <- (count6/total)*100
+
+  }
+}
+#############################
+#Clean and save
+#############################
+write.csv(soc70,"complete_soc_1970.csv")
+
+#Remove row names from soc after adding state column
+for (i in 1:nrow(soc70)){
+ soc70[i,"ST"]<-rownames(soc70[i,])
+}
+head(soc70)
+rownames(soc70)<-c()
+#hide<-soc70
+```
+
+#7B.Subset Socio data - 1980's
+```{r}
+#Create 1980 database -For variables of interest, count and merge
+##############################
+#Create 1980 social info
+soc80<-data.frame()
+rownames(tempdat) <- c()
+
+##############################
+#Dat 1
+##############################
+##Subset for year, and for data with state information
+##Remove column 3 - not relevant for dataset
+tempdat <- subset(dat1,YEAR==1980 & STATEFIP>0)
+tempdat <- tempdat[,-3]
+
+##Randomly select subset of data to assess- only need to do this once
+total <- nrow(tempdat)*.001
+total
+random <- sample.int(nrow(tempdat),total)
+length(random)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+tempdat <- tempdat2
+#remove(tempdat2)
+
+#Review data
+head(tempdat)
+nrow(tempdat)
+
+#Read in state list and add to datatable
+states <- read.csv("Data/StateList_FIPS.csv")
+states$ST <- as.character(states$ST)
+states2 <- states$ST
+ 
+#Convert FIPS code to state, remove any errors
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+
+#Merge data1 from all rows together
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0; 
+
+ for (b in 1:nrow(tempdat)){
+   state <- tempdat[b,"STATEFIP"]
+   
+   if(a==state){
+    #HHIncome
+    #temp1 <- tempdat[b,"HHINCOME"]
+    #if(temp1>15000){
+     #count1 = count1 + 1
+    #}
+    
+    #VALUEH
+    temp2 <- tempdat[b,"VALUEH"]
+    if(temp2>15000){ #100K in current times, adjustd for inflation
+     count2 = count2 + 1
+    }
+    
+    #EMPSTAT
+    temp3 <- tempdat[b,"EMPSTAT"]
+    if(temp3==2 | temp3==3){ #UNEMP / not in workforce
+     count3 = count3+ temp3
+    }
+    
+    #TOT INCOME
+    temp4 <- tempdat[b,"FTOTINC"]
+    if(temp4>0 && temp4<9999997){
+     count4 = count4 + temp4
+    } 
+    
+    #WEL INCOME
+    temp5 <- tempdat[b,"INCWELFR"]
+    if(temp5>0 && temp5<99998){
+     count5 = count5 + temp5
+    } 
+    
+    #POVERTY
+    temp6 <- tempdat[b,"POVERTY"]
+    if(temp6==501){ #5x's the threshold
+     count6 = count6 + 1
+    }
+   }
+   else{next}
+   total <- sum(tempdat$STATEFIP==state)
+   soc80[state,"HHINCOME"]<- 0
+   soc80[state,"VALUEH"]<- (count2/total)
+   soc80[state,"EMPSTAT"] <- (count3/total)*100
+   soc80[state,"FTOTINC"] <- (count4/total)
+   soc80[state,"INCWELFR"] <- (count5/total)
+   soc80[state,"POVERTY"] <- (count6/total)*100
+  }
+  
+}
+head(soc80)
+#write.csv(soc80,"temp.csv")
+
+#############################
+#Dat2
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat2,YEAR==1980 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0; 
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+  if(a==state){
+   #FAMSIZE
+   temp1 <- tempdat[b,"FAMSIZE"]
+   if(temp1>0){
+     count1 = count1 + temp1
+    } 
+    #NCHILD
+    temp2 <- tempdat[b,"NCHILD"]
+    if(temp2>0){
+     count2 = count2 + temp2
+    }
+    
+    #MARST
+    temp3 <- tempdat[b,"MARST"]
+    if(temp3==1 | temp3==2){
+     count3 = count3 + 1
+    } else if (temp3==6){
+     count4 = count4 + 1
+    } else if (temp3==4){
+     count5 = count5 + 1
+    }
+   }
+   else{next}
+   total <- sum(tempdat$STATEFIP==state)
+   soc80[state,"FAMSIZE"]<- (count1/total)*100
+   soc80[state,"NCHILD"] <- (count2/total)*100
+   soc80[state,"MARST-MAR"] <- (count3/total)*100
+   soc80[state,"MARST-SING"] <- (count4/total)*100
+   soc80[state,"MARST-DIV"] <- (count5/total)*100
+  }
+ }
+
+head(soc80)
+#############################
+#Dat3
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat3,YEAR==1980 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #HIGHGADE
+    temp1 <- tempdat[b,"HIGRADE"]
+    if(temp1>15){ #comleted HS
+     count1 = count1+1
+    }
+    
+    #EDUC
+    temp2 <- tempdat[b,"EDUC"]
+    if(temp2==1 | temp2==2){ #Element only
+     count2 = count2 + 1
+    } 
+    else if (temp2==3 | temp2==4 | temp2==5){ #Some HS
+     count3 = count3 + 1
+    } 
+    else if (temp2==6 | temp2==7 | temp2==8 | temp2==9){ #Some COL
+     count4 = count4 + 1
+    } 
+    else if (temp2==10){ # COL
+     count5 = count5 + 1
+    } 
+    else if (temp2==11){ # GRAD
+     count6 = count6 + 1
+    }
+    
+    #SCHLTYPE
+    temp3 <- tempdat[b,"SCHLTYPE"]
+    if(is.na(temp3)){ #Public
+     count7 = count7
+    } else if (temp3 == FALSE){
+     count7=count7
+    } else {count7=count7+1}
+   } 
+  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc80[state,"HIGRADE"]<- (count1/total)*100
+  soc80[state,"EDUC-ELEM"] <- (count2/total)*100
+  soc80[state,"EDUC-SOMEHS"] <- (count3/total)*100
+  soc80[state,"EDUC-SOMECOL"] <- (count4/total)*100
+  soc80[state,"EDUC-COL"] <- (count5/total)*100
+  soc80[state,"EDUC-GRAD"] <- (count5/total)*100
+  soc80[state,"SCHLTYPE-PUB"] <- (count5/total)*100
+
+  }
+}
+head(soc80)
+
+#############################
+#Dat4
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat4,YEAR==1980 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #Langugage
+    #temp1 <- tempdat[b,"LANGUAGE"]
+    #if(!(temp2==1) | !(temp1==0) | (!temp==96)){
+     #count1 = count1 + 1
+    #} 
+    
+    #IMMIG
+    temp2 <- tempdat[b,"MIGRATE5"]
+    if(is.na(temp2)){ #Moved
+     count2 = count2
+    } else if (temp2 == FALSE){
+     count2=count2
+    } else {count2=count2+1}
+     
+    
+    #VETSTAT
+    temp3 <- tempdat[b,"VETSTAT"]
+    if(is.na(temp3)){ #Served
+     count3 = count3
+    } else if (temp3 == FALSE){
+     count3=count3
+    } else {count3=count3+1}
+    
+    
+    #VETWWII
+    temp4 <- tempdat[b,"VETWWII"]
+    if(is.na(temp4)){ #Served
+     count4 = count4
+    } else if (temp4 == FALSE){
+     count4=count4
+    } else {count4=count4+1}
+    
+    
+    #VETWWI
+    temp5 <- tempdat[b,"VETWWI"]
+    if(is.na(temp5)){ #Served
+     count5 = count5
+    } else if (temp5 == FALSE){
+     count5=count5
+    } else {count5=count5+1}
+    
+   } 
+  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc80[state,"LANGUAGE"]<- (count1/total)*100
+  soc80[state,"MIGRATE5"] <- (count2/total)*100
+  soc80[state,"VETSTAT"] <- (count3/total)*100
+  soc80[state,"VETWWII"] <- (count4/total)*100
+  soc80[state,"VETWWI"] <- (count5/total)*100
+  }
+}
+head(soc80)
+
+#############################
+#Dat5
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat5,YEAR==1980 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #Race
+    temp1 <- tempdat[b,"RACESING"]
+    if(temp1==1){ #White
+     count1 = count1 +1
+    } 
+    else if (temp1 == 2){
+     count2=count2 +1
+    }
+    else if (temp1 == 3){
+     count3=count3 +1
+    }
+    else if (temp1 == 4){
+     count4=count4 +1
+    } 
+    else if (temp1 == 5){
+     count5=count5 +1
+    }
+    
+    #Hispanic
+    temp2<-tempdat[b,"HISPAN"]
+    if(temp2==1 | temp2==2| temp2==3| temp2==4){ #Hispanic
+     count6=count6+1
+    }
+   }  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc80[state,"RACESING-WH"]<- (count1/total)*100
+  soc80[state,"RACESING-BL"] <- (count2/total)*100
+  soc80[state,"RACESING-IN"] <- (count3/total)*100
+  soc80[state,"RACESING-AS"] <- (count4/total)*100
+  soc80[state,"RACESING-OT"] <- (count5/total)*100
+  soc80[state,"RACESING-HI"] <- (count6/total)*100
+
+  }
+}
+
+#############################
+#Clean and save
+#############################
+write.csv(soc80,"complete_soc_1980.csv")
+
+#Remove row names from soc after adding state column
+for (i in 1:nrow(soc80)){
+ soc80[i,"ST"]<-rownames(soc80[i,])
+}
+head(soc80)
+rownames(soc80)<-c()
+```
+
+#7C.Subset Socio data - 1990's
+```{r}
+#Create 1990 database -For variables of interest, count and merge
+##############################
+#Create 1990 social info
+soc90<-data.frame()
+rownames(tempdat) <- c()
+
+##############################
+#Dat 1
+##############################
+##Subset for year, and for data with state information
+##Remove column 3 - not relevant for dataset
+tempdat <- subset(dat1,YEAR==1990 & STATEFIP>0)
+tempdat <- tempdat[,-3]
+
+##Randomly select subset of data to assess- only need to do this once
+total <- nrow(tempdat)*.001
+total
+random <- sample.int(nrow(tempdat),total)
+length(random)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+tempdat <- tempdat2
+#remove(tempdat2)
+
+#Review data
+head(tempdat)
+nrow(tempdat)
+
+#Read in state list and add to datatable
+states <- read.csv("Data/StateList_FIPS.csv")
+states$ST <- as.character(states$ST)
+states2 <- states$ST
+ 
+#Convert FIPS code to state, remove any errors
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+
+#Merge data1 from all rows together
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0; 
+
+ for (b in 1:nrow(tempdat)){
+   state <- tempdat[b,"STATEFIP"]
+   
+   if(a==state){
+    #HHIncome
+    #temp1 <- tempdat[b,"HHINCOME"]
+    #if(temp1>15000){
+     #count1 = count1 + 1
+    #}
+    
+    #VALUEH
+    temp2 <- tempdat[b,"VALUEH"]
+    if(temp2>15000){ #100K in current times, adjustd for inflation
+     count2 = count2 + 1
+    }
+    
+    #EMPSTAT
+    temp3 <- tempdat[b,"EMPSTAT"]
+    if(temp3==2 | temp3==3){ #UNEMP / not in workforce
+     count3 = count3+ temp3
+    }
+    
+    #TOT INCOME
+    temp4 <- tempdat[b,"FTOTINC"]
+    if(temp4>0 && temp4<9999997){
+     count4 = count4 + temp4
+    } 
+    
+    #WEL INCOME
+    temp5 <- tempdat[b,"INCWELFR"]
+    if(temp5>0 && temp5<99998){
+     count5 = count5 + temp5
+    } 
+    
+    #POVERTY
+    temp6 <- tempdat[b,"POVERTY"]
+    if(temp6==501){ #5x's the threshold
+     count6 = count6 + 1
+    }
+   }
+   else{next}
+   total <- sum(tempdat$STATEFIP==state)
+   soc90[state,"HHINCOME"]<- 0
+   soc90[state,"VALUEH"]<- (count2/total)
+   soc90[state,"EMPSTAT"] <- (count3/total)*100
+   soc90[state,"FTOTINC"] <- (count4/total)
+   soc90[state,"INCWELFR"] <- (count5/total)
+   soc90[state,"POVERTY"] <- (count6/total)*100
+  }
+  
+}
+head(soc90)
+#write.csv(soc90,"temp.csv")
+
+#############################
+#Dat2
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat2,YEAR==1990 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0; 
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+  if(a==state){
+   #FAMSIZE
+   temp1 <- tempdat[b,"FAMSIZE"]
+   if(temp1>0){
+     count1 = count1 + temp1
+    } 
+    #NCHILD
+    temp2 <- tempdat[b,"NCHILD"]
+    if(temp2>0){
+     count2 = count2 + temp2
+    }
+    
+    #MARST
+    temp3 <- tempdat[b,"MARST"]
+    if(temp3==1 | temp3==2){
+     count3 = count3 + 1
+    } else if (temp3==6){
+     count4 = count4 + 1
+    } else if (temp3==4){
+     count5 = count5 + 1
+    }
+   }
+   else{next}
+   total <- sum(tempdat$STATEFIP==state)
+   soc90[state,"FAMSIZE"]<- (count1/total)*100
+   soc90[state,"NCHILD"] <- (count2/total)*100
+   soc90[state,"MARST-MAR"] <- (count3/total)*100
+   soc90[state,"MARST-SING"] <- (count4/total)*100
+   soc90[state,"MARST-DIV"] <- (count5/total)*100
+  }
+ }
+
+head(soc90)
+
+#############################
+#Dat3
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat3,YEAR==1990 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #HIGHGADE - missing in dataset
+    #temp1 <- tempdat[b,"HIGRADE"]
+    #if(temp1>15){ #completed HS
+    # count1 = count1+1
+    #}
+    
+    #EDUC
+    temp2 <- tempdat[b,"EDUC"]
+    if(temp2==1 | temp2==2){ #Element only
+     count2 = count2 + 1
+    } 
+    else if (temp2==3 | temp2==4 | temp2==5){ #Some HS
+     count3 = count3 + 1
+    } 
+    else if (temp2==6 | temp2==7 | temp2==8 | temp2==9){ #Some COL
+     count4 = count4 + 1
+    } 
+    else if (temp2==10){ # COL
+     count5 = count5 + 1
+    } 
+    else if (temp2==11){ # GRAD
+     count6 = count6 + 1
+    }
+    
+    #SCHLTYPE
+    temp3 <- tempdat[b,"SCHLTYPE"]
+    if(is.na(temp3)){ #Public
+     count7 = count7
+    } else if (temp3 == FALSE){
+     count7=count7
+    } else {count7=count7+1}
+   } 
+  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc90[state,"HIGRADE"]<- (count1/total)*100
+  soc90[state,"EDUC-ELEM"] <- (count2/total)*100
+  soc90[state,"EDUC-SOMEHS"] <- (count3/total)*100
+  soc90[state,"EDUC-SOMECOL"] <- (count4/total)*100
+  soc90[state,"EDUC-COL"] <- (count5/total)*100
+  soc90[state,"EDUC-GRAD"] <- (count5/total)*100
+  soc90[state,"SCHLTYPE-PUB"] <- (count5/total)*100
+
+  }
+}
+head(soc90)
+
+#############################
+#Dat4
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat4,YEAR==1990 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #Langugage
+    #temp1 <- tempdat[b,"LANGUAGE"]
+    #if(!(temp2==1) | !(temp1==0) | (!temp==96)){
+     #count1 = count1 + 1
+    #} 
+    
+    #IMMIG
+    temp2 <- tempdat[b,"MIGRATE5"]
+    if(is.na(temp2)){ #Moved
+     count2 = count2
+    } else if (temp2 == FALSE){
+     count2=count2
+    } else {count2=count2+1}
+     
+    
+    #VETSTAT
+    temp3 <- tempdat[b,"VETSTAT"]
+    if(is.na(temp3)){ #Served
+     count3 = count3
+    } else if (temp3 == FALSE){
+     count3=count3
+    } else {count3=count3+1}
+    
+    
+    #VETWWII
+    temp4 <- tempdat[b,"VETWWII"]
+    if(is.na(temp4)){ #Served
+     count4 = count4
+    } else if (temp4 == FALSE){
+     count4=count4
+    } else {count4=count4+1}
+    
+    
+    #VETWWI
+    temp5 <- tempdat[b,"VETWWI"]
+    if(is.na(temp5)){ #Served
+     count5 = count5
+    } else if (temp5 == FALSE){
+     count5=count5
+    } else {count5=count5+1}
+    
+   } 
+  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc90[state,"LANGUAGE"]<- (count1/total)*100
+  soc90[state,"MIGRATE5"] <- (count2/total)*100
+  soc90[state,"VETSTAT"] <- (count3/total)*100
+  soc90[state,"VETWWII"] <- (count4/total)*100
+  soc90[state,"VETWWI"] <- (count5/total)*100
+  }
+}
+head(soc90)
+#############################
+#Dat5
+#############################
+##Subset for year, and for data with state information
+tempdat <- subset(dat5,YEAR==1990 & STATEFIP>0)
+
+#Create new dataframe to hold data
+tempdat2<-data.frame()
+
+##Create subset
+for (i in random){
+ tempdat2 <- rbind(tempdat2,tempdat[i,])
+}
+
+#Remove inital temp dataframe
+#Review data
+tempdat <- tempdat2
+head(tempdat)
+nrow(tempdat)
+remove(tempdat2)
+
+#Convert FIPS code to state
+for (i in 1:nrow(tempdat)){
+ code <- tempdat[i,"STATEFIP"]
+ state <- states[code,"ST"]
+ tempdat[i,"STATEFIP"]<-state
+}
+
+#Remove errors from final dataset
+tempdat <- tempdat[complete.cases(tempdat[,"STATEFIP"]),]
+tempdat<- subset(tempdat,!(STATEFIP=="USA"))
+nrow(tempdat)
+rownames(tempdat)<-c()
+
+#Loop through variables
+#loop through all variables
+for (a in states2){
+ count1=0; count2=0;
+ count3=0; count4=0; 
+ count5=0; count6=0;
+ count7=0;
+ 
+ for (b in 1:nrow(tempdat)){
+  state <- tempdat[b,"STATEFIP"]
+  
+   if(a==state){
+    #Race
+    temp1 <- tempdat[b,"RACESING"]
+    if(temp1==1){ #White
+     count1 = count1 +1
+    } 
+    else if (temp1 == 2){
+     count2=count2 +1
+    }
+    else if (temp1 == 3){
+     count3=count3 +1
+    }
+    else if (temp1 == 4){
+     count4=count4 +1
+    } 
+    else if (temp1 == 5){
+     count5=count5 +1
+    }
+    
+    #Hispanic
+    temp2<-tempdat[b,"HISPAN"]
+    if(temp2==1 | temp2==2| temp2==3| temp2==4){ #Hispanic
+     count6=count6+1
+    }
+   }  else{next}
+  total <- sum(tempdat$STATEFIP==state)
+  soc90[state,"RACESING-WH"]<- (count1/total)*100
+  soc90[state,"RACESING-BL"] <- (count2/total)*100
+  soc90[state,"RACESING-IN"] <- (count3/total)*100
+  soc90[state,"RACESING-AS"] <- (count4/total)*100
+  soc90[state,"RACESING-OT"] <- (count5/total)*100
+  soc90[state,"RACESING-HI"] <- (count6/total)*100
+
+  }
+}
+#############################
+#Clean and save
+#############################
+write.csv(soc90,"complete_soc_1990.csv")
+
+#Remove row names from soc after adding state column
+for (i in 1:nrow(soc90)){
+ soc90[i,"ST"]<-rownames(soc90[i,])
+}
+head(soc90)
+rownames(soc90)<-c()
+```
+
+#8.Merge with Crime-data
+```{r}
+#Remove USA from data
+crime_raw <- subset(crime_raw,!ST=="USA")
+crime_final <- crime_raw
+
+#1970's
+for (a in 1:nrow(crime_raw)){
+ year_crime <- crime_raw[a,"Yr"]
+ state_crime <- crime_raw[a,"ST"]
+ 
+ if(year_crime==1970){
+  for (b in 1:nrow(soc70)){
+   state_pop <- soc70[b,"ST"]
+   
+   if(state_crime==state_pop){
+    crime_final[a,"EMPSTAT"] <- soc70[b,"EMPSTAT"]
+    crime_final[a,"FTOTINC"] <- soc70[b,"FTOTINC"]
+    crime_final[a,"INCWELFR"] <- soc70[b,"INCWELFR"]
+    crime_final[a,"POVERTY"] <- soc70[b,"POVERTY"]
+    crime_final[a,"FAMSIZE"] <- soc70[b,"FAMSIZE"]
+    crime_final[a,"NCHILD"] <- soc70[b,"NCHILD"]
+    crime_final[a,"MARST-MAR"] <- soc70[b,"MARST-MAR"]
+    crime_final[a,"MARST-SING"] <- soc70[b,"MARST-SING"] 
+    crime_final[a,"MARST-DIV"] <- soc70[b,"MARST-DIV"]
+    crime_final[a,"HIGRADE"] <- soc70[b,"HIGRADE"]   
+    crime_final[a,"EDUC-ELEM"] <- soc70[b,"EDUC-ELEM"]
+    crime_final[a,"EDUC-SOMEHS"] <- soc70[b,"EDUC-SOMEHS"]
+    crime_final[a,"EDUC-SOMECOL"] <- soc70[b,"EDUC-SOMECOL"]
+
+    crime_final[a,"EDUC-COL"] <- soc70[b,"EDUC-COL"]
+    crime_final[a,"EDUC-GRAD"] <- soc70[b,"EDUC-GRAD"]
+    crime_final[a,"SCHLTYPE-PUB"] <- soc70[b,"SCHLTYPE-PUB"]
+    crime_final[a,"LANGUAGE"]    <- soc70[b,"LANGUAGE"]   
+    crime_final[a,"MIGRATE5"] <- soc70[b,"MIGRATE5"]
+
+    crime_final[a,"VETSTAT"] <- soc70[b,"VETSTAT"]
+    crime_final[a,"VETWWII"] <- soc70[b,"VETWWII"]               
+    crime_final[a,"VETWWI"] <- soc70[b,"VETWWI"]      
+
+    crime_final[a,"RACESING-WH"] <- soc70[b,"RACESING-WH"]
+    crime_final[a, "RACESING-BL"] <- soc70[b, "RACESING-BL"]
+    crime_final[a,"RACESING-IN"] <- soc70[b,"RACESING-IN"]
+    crime_final[a,"RACESING-AS"] <- soc70[b,"RACESING-AS"]
+    crime_final[a,"RACESING-OT"] <- soc70[b,"RACESING-OT"]
+    crime_final[a,"RACESING-HI"] <- soc70[b,"RACESING-HI"]
+   }
+  }
+ }
+}
+
+#1980's
+for (a in 1:nrow(crime_raw)){
+ year_crime <- crime_raw[a,"Yr"]
+ state_crime <- crime_raw[a,"ST"]
+ 
+ if(year_crime==1980){
+  for (b in 1:nrow(soc80)){
+   state_pop <- soc80[b,"ST"]
+   
+   if(state_crime==state_pop){
+    crime_final[a,"EMPSTAT"] <- soc80[b,"EMPSTAT"]
+    crime_final[a,"FTOTINC"] <- soc80[b,"FTOTINC"]
+    crime_final[a,"INCWELFR"] <- soc80[b,"INCWELFR"]
+    crime_final[a,"POVERTY"] <- soc80[b,"POVERTY"]
+    crime_final[a,"FAMSIZE"] <- soc80[b,"FAMSIZE"]
+    crime_final[a,"NCHILD"] <- soc80[b,"NCHILD"]
+    crime_final[a,"MARST-MAR"] <- soc80[b,"MARST-MAR"]
+    crime_final[a,"MARST-SING"] <- soc80[b,"MARST-SING"] 
+    crime_final[a,"MARST-DIV"] <- soc80[b,"MARST-DIV"]
+    crime_final[a,"HIGRADE"] <- soc80[b,"HIGRADE"]   
+    crime_final[a,"EDUC-ELEM"] <- soc80[b,"EDUC-ELEM"]
+    crime_final[a,"EDUC-SOMEHS"] <- soc80[b,"EDUC-SOMEHS"]
+    crime_final[a,"EDUC-SOMECOL"] <- soc80[b,"EDUC-SOMECOL"]
+
+    crime_final[a,"EDUC-COL"] <- soc80[b,"EDUC-COL"]
+    crime_final[a,"EDUC-GRAD"] <- soc80[b,"EDUC-GRAD"]
+    crime_final[a,"SCHLTYPE-PUB"] <- soc80[b,"SCHLTYPE-PUB"]
+    crime_final[a,"LANGUAGE"]    <- soc80[b,"LANGUAGE"]   
+    crime_final[a,"MIGRATE5"] <- soc80[b,"MIGRATE5"]
+
+    crime_final[a,"VETSTAT"] <- soc80[b,"VETSTAT"]
+    crime_final[a,"VETWWII"] <- soc80[b,"VETWWII"]               
+    crime_final[a,"VETWWI"] <- soc80[b,"VETWWI"]      
+
+    crime_final[a,"RACESING-WH"] <- soc80[b,"RACESING-WH"]
+    crime_final[a, "RACESING-BL"] <- soc80[b, "RACESING-BL"]
+    crime_final[a,"RACESING-IN"] <- soc80[b,"RACESING-IN"]
+    crime_final[a,"RACESING-AS"] <- soc80[b,"RACESING-AS"]
+    crime_final[a,"RACESING-OT"] <- soc80[b,"RACESING-OT"]
+    crime_final[a,"RACESING-HI"] <- soc80[b,"RACESING-HI"]
+   }
+  }
+ }
+}
+
+#1990's
+for (a in 1:nrow(crime_raw)){
+ year_crime <- crime_raw[a,"Yr"]
+ state_crime <- crime_raw[a,"ST"]
+ 
+ if(year_crime==1990){
+  for (b in 1:nrow(soc90)){
+   state_pop <- soc90[b,"ST"]
+   
+   if(state_crime==state_pop){
+    crime_final[a,"EMPSTAT"] <- soc90[b,"EMPSTAT"]
+    crime_final[a,"FTOTINC"] <- soc90[b,"FTOTINC"]
+    crime_final[a,"INCWELFR"] <- soc90[b,"INCWELFR"]
+    crime_final[a,"POVERTY"] <- soc90[b,"POVERTY"]
+    crime_final[a,"FAMSIZE"] <- soc90[b,"FAMSIZE"]
+    crime_final[a,"NCHILD"] <- soc90[b,"NCHILD"]
+    crime_final[a,"MARST-MAR"] <- soc90[b,"MARST-MAR"]
+    crime_final[a,"MARST-SING"] <- soc90[b,"MARST-SING"] 
+    crime_final[a,"MARST-DIV"] <- soc90[b,"MARST-DIV"]
+    crime_final[a,"HIGRADE"] <- soc90[b,"HIGRADE"]   
+    crime_final[a,"EDUC-ELEM"] <- soc90[b,"EDUC-ELEM"]
+    crime_final[a,"EDUC-SOMEHS"] <- soc90[b,"EDUC-SOMEHS"]
+    crime_final[a,"EDUC-SOMECOL"] <- soc90[b,"EDUC-SOMECOL"]
+
+    crime_final[a,"EDUC-COL"] <- soc90[b,"EDUC-COL"]
+    crime_final[a,"EDUC-GRAD"] <- soc90[b,"EDUC-GRAD"]
+    crime_final[a,"SCHLTYPE-PUB"] <- soc90[b,"SCHLTYPE-PUB"]
+    crime_final[a,"LANGUAGE"]    <- soc90[b,"LANGUAGE"]   
+    crime_final[a,"MIGRATE5"] <- soc90[b,"MIGRATE5"]
+
+    crime_final[a,"VETSTAT"] <- soc90[b,"VETSTAT"]
+    crime_final[a,"VETWWII"] <- soc90[b,"VETWWII"]               
+    crime_final[a,"VETWWI"] <- soc90[b,"VETWWI"]      
+
+    crime_final[a,"RACESING-WH"] <- soc90[b,"RACESING-WH"]
+    crime_final[a, "RACESING-BL"] <- soc90[b, "RACESING-BL"]
+    crime_final[a,"RACESING-IN"] <- soc90[b,"RACESING-IN"]
+    crime_final[a,"RACESING-AS"] <- soc90[b,"RACESING-AS"]
+    crime_final[a,"RACESING-OT"] <- soc90[b,"RACESING-OT"]
+    crime_final[a,"RACESING-HI"] <- soc90[b,"RACESING-HI"]
+   }
+  }
+ }
+}
+
+head(crime_final)
+write.csv(crime_final,"complete_crimedata.csv")
+hide<-crime_final
+```
+
+#9.Clean missing data
+```{r}
+#Remove data with missing violent information
+bad <- is.na(crime_clean[,4])
+crime_clean <- crime_clean[!bad,]
+dim(crime_clean)
+
+caseMiss <- apply(crime_clean, 1, myNA)
+table(caseMiss)  
+
+crime_clean <- crime_clean[caseMiss == 0, ]
+dim(crime_clean)
+write.csv(crime_clean,file="crime_cleaned.csv",quote=FALSE)
+
+#Subset
+varNum <- function(x){
+  val <- 1:ncol(x)
+  names(val)<- colnames(x)
+  return(val)
+} 
+varNum(crime_clean)
+crime_violent<-crime_clean[,c(4,3,13,15:34,36:45,2)]
+varNum(crime_violent)
+
+#Subset by year
+crime70<-subset(crime_violent,Yr==1970)
+crime70<-crime70[,c(1:2,4:33)]
+
+crime80<-subset(crime_violent,Yr==1980)
+crime80<-crime80[,c(1:2,4:33)]
+
+crime90<-subset(crime_violent,Yr==1990)
+crime90<-crime90[,c(1:2,4:16,18:26,28:33)]
+
+varNum(crime70)
+summary(crime70)
+summary(crime80)
+summary(crime90)
+```
+
+#10.Review crime rates for variable selection
+```{r}
+crimeRates <- crime_raw[,c(3:11)]
+colnames(crimeRates) <-  c('Violent Crimes','Murder', 'Rape','Robbery',
+  'Agg Assault','Property Crime','Burglary','Larceny','AutoTheft') 
+
+#Plot Data
+lab1 <- colnames(crimeRates)
+for (i in 1:9){
+  windows()
+  classEda(crimeRates[,i],
+  lab1=lab1[i],
+  units = "Rate per 100,000")
+}
+#Plot Transformed Data
+for (i in 1:9){
+  windows()
+  classEda(crimeRates[,i]**.2,
+  lab1=lab1[i],
+  lab2 = "Raised to the .2 Power",
+  units = "Rate per 100,000 **.2")
+}
+
+#Correlation 
+ound( cor(crimeRates), 2)
+
+corMat <- cor(crimeRates)
+distMat <- 1-abs(corMat)
+xloc <- cmdscale(distMat,k=1)
+ord <- order(xloc)
+xloc[ord,1]
+corMatOrd <- corMat[ord,ord]
+
+{windows()
+levelplot(corMatOrd, at = do.breaks(c(-1.01,1.01),20), 
+ xlab=NULL, ylab=NULL, colorkey = list(space="top"),
+ scales = list(x=list(rot=90)),
+ panel = panel.corrgram, label=TRUE,
+ main="Correlation of crime rate variables for 1970's, 1980's, and 1990's data")
+}
+
+#Hexagon Binning of variables
+{windows(width=8,height=8)
+splom(crimeRates,
+ cex.labels =.1,
+ pscale=0,
+ panel = panel.hexbinplot,
+ main="All crime rate variables for 1970's, 1980's, and 1990's data"
+)
+}
+#Add smooth
+{windows(width=8,height=8)
+splom(crimeRates,
+  main="Rates per 100000",lwd =2 ,col.line="red",
+  pscale=0, type=c('p','g','smooth'))
+}
+
+```
+
+#11.Boxplots
+```{r}
+#1970
+par(mfrow=c(2,4))
+for (i in 1:8){
+ boxplot(crime70[,i], main=(names(crime70)[i]))
+}
+for (i in 1:8){
+ boxplot(crime80[,i], main=(names(crime80)[i]))
+}
+for (i in 1:8){
+ boxplot(crime90[,i], main=(names(crime90)[i]))
+}
+
+for (i in 9:16){
+ boxplot(crime70[,i], main=(names(crime70)[i]))
+}
+for (i in 9:16){
+ boxplot(crime80[,i], main=(names(crime80)[i]))
+}
+for (i in 9:16){
+ boxplot(crime90[,i], main=(names(crime90)[i]))
+}
+
+for (i in 17:24){
+ boxplot(crime70[,i], main=(names(crime70)[i]))
+}
+for (i in 17:24){
+ boxplot(crime80[,i], main=(names(crime80)[i]))
+}
+for (i in 17:23){
+ boxplot(crime90[,i], main=(names(crime90)[i]))
+}
+
+for (i in 25:32){
+ boxplot(crime70[,i], main=(names(crime70)[i]))
+}
+for (i in 25:32){
+ boxplot(crime80[,i], main=(names(crime80)[i]))
+}
+for (i in 25:30){
+ boxplot(crime90[,i], main=(names(crime90)[i]))
+}
+```
+
+#12.Residual Analysis
+```{r}
+#########
+#1970's
+##########
+model <- lm(violent~.,data=crime70)
+ols_test_normality(model) #p value is >0.5, reject the null hypot that this is normal dist.
+ols_plot_resid_qq(model) #positive skew
+ols_test_correlation(model)
+ols_plot_resid_fit(model)
+ols_plot_resid_hist(model)
+anova(model)
+
+#Residuals vs predicted
+crime70$resids <- residuals(model)
+crime70$preds <- predict(model)
+plot(resids ~ preds,data= crime70,
+     xlab="Predicted",
+     ylab="Residucals",
+     main="Plot of 1970's data - Residuals vs Predicted (Raw)")
+
+##Perform a log transformation, add to dataframe
+crime70$violent2<-log10(crime70$violent)
+
+##Remove added info
+colnames(crime70)
+crime70 <- crime70[,c(35,1:32)]
+
+##Test new model
+model <- lm(violent2~.,data=crime70)
+ols_test_normality(model) #Improved
+ols_plot_resid_qq(model)
+anova(model)
+
+#Residuals vs predicted- Round 2
+crime70$resids <- residuals(model)
+crime70$preds <- predict(model)
+plot(resids ~ preds,data= crime70,
+     xlab="Predicted",
+     ylab="Residucals",
+     main="Plot of 1970's data - Residuals vs Predicted (Transformed)"
+)
+
+##Remove added info
+colnames(crime70)
+crime70 <- crime70[,c(1,3:32)]
+#########
+#1980's
+##########
+model <- lm(violent~.,data=crime80)
+ols_test_normality(model)
+ols_test_correlation(model)
+ols_plot_resid_qq(model)
+ols_plot_resid_fit(model)
+ols_plot_resid_hist(model)
+
+#########
+#1990's
+#########
+model <- lm(violent~.,data=crime90)
+ols_test_normality(model)
+ols_test_correlation(model)
+ols_plot_resid_qq(model)
+ols_plot_resid_fit(model)
+ols_plot_resid_hist(model)
+```
+
+#13.view Scatterplot Matrix
+```{r}
+featurePlot(x=crime70[,2:31],y=crime70[,1],plot="pairs", main="1970's Scatter plot of variables")
+featurePlot(x=crime70[,2:31],y=crime80[,1],plot="pairs", main="1980's Scatter plot of variables")
+featurePlot(x=crime70[,2:30],y=crime90[,1],plot="pairs", main="1990's Scatter plot of variables")
+
+featurePlot(x=crime70[,2:10],y=crime70[,1],plot="pairs")
+featurePlot(x=crime80[,2:10],y=crime80[,1],plot="pairs")
+featurePlot(x=crime90[,2:10],y=crime90[,1],plot="pairs")
+
+featurePlot(x=crime70[,11:19],y=crime70[,1],plot="pairs")
+featurePlot(x=crime80[,11:19],y=crime80[,1],plot="pairs")
+featurePlot(x=crime90[,11:19],y=crime90[,1],plot="pairs")
+
+featurePlot(x=crime70[,20:28],y=crime70[,1],plot="pairs")
+featurePlot(x=crime80[,20:28],y=crime80[,1],plot="pairs")
+featurePlot(x=crime90[,20:28],y=crime90[,1],plot="pairs")
+
+featurePlot(x=crime70[,29:32],y=crime70[,1],plot="pairs")
+featurePlot(x=crime80[,29:32],y=crime80[,1],plot="pairs")
+featurePlot(x=crime90[,29:30],y=crime90[,1],plot="pairs")
+```
+
+#14.Modeling with KNN, SVM, and RF
+```{r}
+# 1970's
+set.seed(1234)
+model.knn <- train(violent2~., data=crime70, method="knn")
+model.svm <- train(violent2~., data=crime70, method="svmRadial")
+model.rf <- train(violent2~., data=crime70, method="rf")
+results <- resamples(list(cart=model.knn, knn=model.svm, svm=fit.svm, rf=model.rf))
+summary(results)
+write.csv(results,"models_1970.csv")
+
+# 1980's
+set.seed(1234)
+model.knn <- train(violent~., data=crime80, method="knn")
+model.svm <- train(violent~., data=crime80, method="svmRadial")
+model.rf <- train(violent~., data=crime80, method="rf")
+results <- resamples(list(cart=model.knn, knn=model.svm, svm=fit.svm, rf=model.rf))
+summary(results)
+write.csv(results,"models_1980.csv")
+
+#1990's
+set.seed(1234)
+model.svm <- train(violent~., data=crime90, method="svmRadial")
+model.rf <- train(violent~., data=crime90, method="rf")
+model.knn <- train(violent~., data=crime90, method="knn")
+results <- resamples(list(cart=model.knn, knn=model.svm, svm=fit.svm, rf=model.rf))
+summary(results)
+write.csv(results,"models_1990.csv")
+
+```
+
+#15.Random Forest
+```{r}
+###################
+#Review 1970's data
+####################
+crime_final<-crime70
+set.seed(1234)
+##Initial Call
+crimeRf <- randomForest(x = crime_final[ , c(2:31)], y=crime_final[, 1],
+          importance=TRUE,  proximity=FALSE, ntree=500,
+          keepForest=TRUE)
+crimeRf
+
+#Plot importance variables
+imp <- importance(crimeRf)
+imp
+varImpPlot(crimeRf,cex=.8,main="Importance variables 1970's data")
+
+# Decrese to top 15 variables
+n <- 15
+ord1 <- order(imp[, 1],decreasing=TRUE) #INCMSE
+nam1 <- row.names(imp[ord1, ])[1:n]
+nam1
+
+ord2 <- order(imp[, 2],decreasing=TRUE) #INCPURITY
+nam2 <- row.names(imp[ord2,])[1:n]
+nam2
+
+varNam <- union(nam1,nam2) #UNITE LIST
+varNam
+
+# Spearman rho rank correlation
+SpearCor <- round( cor(crime_final[,varNam], method="spearman"),2)
+SpearCor
+
+#Run RF on top variables only
+set.seed(1234)
+crimeFocus1 <- randomForest(x = crime_final[,varNam], y=crime_final[,1],
+  importance=TRUE,  proximity=FALSE, ntree=500, keepForest=FALSE)
+crimeFocus1
+
+impF1 <- importance(crimeFocus1)
+impF1
+varImpPlot(crimeFocus1,cex=.9, main="Correlation of top variables - 1970's")
+varNam4 <- c("Pop","RACESING.BL","RACESING.WH","MARST.DIV","EMPSTAT","Pop_20to40")
+
+ord <- order(impF1[,1],decreasing=TRUE)
+varNam2 <- row.names(impF1[ord,])[1:7]
+varNam2
+
+set.seed(1234)
+crimeFocus2 <- randomForest(x = crime_final[, varNam2], y=crime_final[,1],
+  importance=TRUE, proximity=FALSE, ntree=500, keepForest=FALSE)
+
+crimeFocus2
+imp4 <- importance(crimeFocus2)
+imp4
+varImpPlot(crimeFocus2)
+varNam4 <- c("Pop","RACESING.BL","RACESING.WH","MARST.DIV","EMPSTAT","Pop_20to40")
+
+labs <- c(
+paste("POP","Crimes",sep="\n"),
+paste("%RACESING.BL",sep="\n"),
+paste("RACESING.WH%",sep="\n"),
+paste("%MARITAL.DIV",sep="\n"),
+paste("%EMPSTAT",sep="\n"),
+paste("%Pop_20to40",sep="\n")
+)
+
+set.seed(1234)
+crimeFocus4a <- randomForest(x = crime_final[, varNam4],
+  y=crime_final[,1], importance=TRUE,localImp=TRUE,
+  proximity=TRUE, ntree=500, keepForest=FALSE)
+crimeFocus4a  
+ 
+head(crimeFocus4a$importance)
+tmp <- head(crimeFocus4a$localImportance)
+
+prox <- crimeFocus4a$proximity
+caseN <- nrow(prox)
+table(diag(prox))
+pct0Leaf5 <- 100*sum(prox==0)/(caseN*(caseN-1))
+pct0Leaf5 
+
+set.seed(1234)
+crimeFocus4b <- randomForest(x = crime_final[, varNam4],
+  y=crime_final[,4], importance=TRUE, localImp=TRUE,
+  nodesize=20,
+  proximity=TRUE, ntree=500, keepForest=FALSE)
+
+crimeFocus4b
+
+proxLeaf20 <- crimeFocus4b$proximity
+pct0Leaf20 <- 100*sum(proxLeaf20>0)/(caseN*(caseN-1))
+pct0Leaf20 
+
+
+proximityDist <- 1-crimeFocus4a$proximity
+cases3dLeaf5 <- cmdscale(proximityDist,k=3)
+head(cases3dLeaf5)
+
+{windows()
+rval <- range(cases3dLeaf5[,1:2])
+plot(cases3dLeaf5[,1],cases3dLeaf5[,2],pty="s",
+     xlim=rval,ylim=rval,
+     main="Communities: Leaf Size = 5, Proximity MDS")
+}
+{
+windows()
+rval <- range(cases3dLeaf5[,2:3])
+plot(cases3dLeaf5[,2],cases3dLeaf5[,3],pty="s",
+     xlim=rval,ylim=rval,
+     main="Communities: Leaf Size = 5, Proximity MDS")
+}
+
+open3d(FOV=0)
+aspect3d(x=c(1,1,1))
+bg3d(color=c("white","black"))
+plot3d(cases3dLeaf5,radius=.004,col="red",type='s',
+      main="Minimum Leaf Size = 5")
+
+###################
+#Review 1980's data
+####################
+crime_final<-crime80
+set.seed(1234)
+###Initial Call
+crimeRf <- randomForest(x = crime_final[ , c(2:32)], y=crime_final[, 1],
+          importance=TRUE,  proximity=FALSE, ntree=500,
+          keepForest=TRUE)
+crimeRf
+
+#Plot importance variables
+imp <- importance(crimeRf)
+imp
+varImpPlot(crimeRf,cex=.8,main="Importance variables 1980's data")
+
+# Decrese to top 15 variables
+n <- 15
+ord1 <- order(imp[, 1],decreasing=TRUE) #INCMSE
+nam1 <- row.names(imp[ord1, ])[1:n]
+nam1
+
+ord2 <- order(imp[, 2],decreasing=TRUE) #INCPURITY
+nam2 <- row.names(imp[ord2,])[1:n]
+nam2
+
+varNam <- union(nam1,nam2) #UNITE LIST
+varNam
+
+# Spearman rho rank correlation
+SpearCor <- round( cor(crime_final[,varNam], method="spearman"),2)
+SpearCor
+
+#Run RF on top variables only
+set.seed(1234)
+crimeFocus1 <- randomForest(x = crime_final[,varNam], y=crime_final[,1],
+  importance=TRUE,  proximity=FALSE, ntree=500, keepForest=FALSE)
+crimeFocus1
+
+impF1 <- importance(crimeFocus1)
+impF1
+varImpPlot(crimeFocus1,cex=.9, main="Correlation of top variables - 1980's")
+varNam4 <- c("Pop","RACESING.BL","RACESING.WH","EDUC.SOMEHS","RACESINGE.OT","EDUC.GRAD")
+
+ord <- order(impF1[,1],decreasing=TRUE)
+varNam2 <- row.names(impF1[ord,])[1:7]
+varNam2
+
+set.seed(1234)
+crimeFocus2 <- randomForest(x = crime_final[, varNam2], y=crime_final[,1],
+  importance=TRUE, proximity=FALSE, ntree=500, keepForest=FALSE)
+
+crimeFocus2
+imp4 <- importance(crimeFocus2)
+imp4
+varImpPlot(crimeFocus2)
+varNam4 <- c("Pop","RACESING.BL","RACESING.WH","EDUC.SOMEHS","RACESING.OT","EDUC.GRAD")
+
+labs <- c(
+paste("POP","Crimes",sep="\n"),
+paste("%RACESING.BL",sep="\n"),
+paste("RACESING.WH%",sep="\n"),
+paste("%EDUC.SOMEHS",sep="\n"),
+paste("%RACESINGE.OT",sep="\n"),
+paste("%EDUC.GRAD",sep="\n")
+)
+
+set.seed(1234)
+crimeFocus4a <- randomForest(x = crime_final[, varNam4],
+  y=crime_final[,1], importance=TRUE,localImp=TRUE,
+  proximity=TRUE, ntree=500, keepForest=FALSE)
+crimeFocus4a  
+ 
+head(crimeFocus4a$importance)
+tmp <- head(crimeFocus4a$localImportance)
+
+prox <- crimeFocus4a$proximity
+caseN <- nrow(prox)
+table(diag(prox))
+pct0Leaf5 <- 100*sum(prox==0)/(caseN*(caseN-1))
+pct0Leaf5 
+
+set.seed(1234)
+crimeFocus4b <- randomForest(x = crime_final[, varNam4],
+  y=crime_final[,4], importance=TRUE, localImp=TRUE,
+  nodesize=20,
+  proximity=TRUE, ntree=500, keepForest=FALSE)
+
+crimeFocus4b
+
+proxLeaf20 <- crimeFocus4b$proximity
+pct0Leaf20 <- 100*sum(proxLeaf20>0)/(caseN*(caseN-1))
+pct0Leaf20 
+
+
+proximityDist <- 1-crimeFocus4a$proximity
+cases3dLeaf5 <- cmdscale(proximityDist,k=3)
+head(cases3dLeaf5)
+
+{windows()
+rval <- range(cases3dLeaf5[,1:2])
+plot(cases3dLeaf5[,1],cases3dLeaf5[,2],pty="s",
+     xlim=rval,ylim=rval,
+     main="Communities: Leaf Size = 0, Proximity MDS")
+}
+{
+windows()
+rval <- range(cases3dLeaf5[,2:3])
+plot(cases3dLeaf5[,2],cases3dLeaf5[,3],pty="s",
+     xlim=rval,ylim=rval,
+     main="Communities: Leaf Size = 5, Proximity MDS")
+}
+
+open3d(FOV=0)
+aspect3d(x=c(1,1,1))
+bg3d(color=c("white","black"))
+plot3d(cases3dLeaf5,radius=.004,col="red",type='s',
+      main="Minimum Leaf Size = 20")
+
+
+###################
+#Review 1990's data
+####################
+crime_final<-crime90
+set.seed(1234)
+###Initial Call
+crimeRf <- randomForest(x = crime_final[ , c(2:30)], y=crime_final[, 1],
+          importance=TRUE,  proximity=FALSE, ntree=500,
+          keepForest=TRUE)
+crimeRf
+
+###Change to .2 (remove total population)
+crimeRf <- randomForest(x = crime_final[ , c(2:30)], y=crime_final[, 1]**.2,
+          importance=TRUE,  proximity=FALSE, ntree=500,
+          keepForest=TRUE)
+crimeRf
+
+#Plot importance variables
+imp <- importance(crimeRf)
+imp
+varImpPlot(crimeRf,cex=.8,main="Importance variables 1990's data")
+
+# Decrese to top 15 variables
+n <- 15
+ord1 <- order(imp[, 1],decreasing=TRUE) #INCMSE
+nam1 <- row.names(imp[ord1, ])[1:n]
+nam1
+
+ord2 <- order(imp[, 2],decreasing=TRUE) #INCPURITY
+nam2 <- row.names(imp[ord2,])[1:n]
+nam2
+
+varNam <- union(nam1,nam2) #UNITE LIST
+varNam
+
+# Spearman rho rank correlation
+SpearCor <- round( cor(crime_final[,varNam], method="spearman"),2)
+SpearCor
+
+#Run RF on top variables only
+set.seed(1234)
+crimeFocus1 <- randomForest(x = crime_final[,varNam], y=crime_final[,1],
+  importance=TRUE,  proximity=FALSE, ntree=500, keepForest=FALSE)
+crimeFocus1
+
+impF1 <- importance(crimeFocus1)
+impF1
+varImpPlot(crimeFocus1,cex=.9, main="Correlation of top variables - 1990's")
+
+```
+
+#NOT USED Create Micrographs to track population and violent changes
+```{r}
+#1970's
+crime_70<-subset(crime_raw,Yr==1970)
+crime_70<-subset(crime_70,!(ST=="USA"))
+crime_70
+rownames(crime_70)<-c()
+
+#Dots
+panelDesc <- data.frame(
+type=c('map','id','dot','dot'),
+lab1=rep("",4),
+lab2=c('' ,'','Population','Violent Crimes'),
+lab3=c('' ,'','Total','Rate per 100,000'),
+col1 = c(NA,NA,'Pop','violent')
+)
+
+fName = "1970's_popandviolentD.pdf"
+pdf(file=fName,width=7.5,height=10)
+
+micromapST(crime_70, panelDesc,
+  rowNamesCol='ST',
+  rowNames='ab',
+  sortVar='Pop',
+  ignoreNoMatches=TRUE)
+
+dev.off()
+
+panelDesc <- data.frame(
+type=c('mapcum','id','arrow','arrow'),
+lab1=c('','','Population','Violent Crimes'),
+col1 = c(NA,NA,'Pop','violent'),
+col2 = c(NA,NA,'violent','Pop'),
+refVals=c(NA,NA,0,NA))
+
+fName = "1970 Arrows.pdf"
+pdf(file=fName,width=7.5,height=10)
+micromapST(crime_70,panelDesc,
+  rowNamesCol='ST',
+  rowNames='ab',
+  sortVar='Pop',ascend=FALSE,
+  title=c("1970's Data"),
+  ignoreNoMatches=TRUE)
+
+dev.off()
+
+panelDesc <- data.frame(
+type=c('mapcum','id','arrow','arrow'),
+lab1=c('','','Population','Violent Crimes'),
+col1 = c(NA,NA,'Pop',NA),
+col2 = c(NA,NA,NA,'violent'),
+refVals=c(NA,NA,0,NA))
+
+
+fName = "1970 Arrows.pdf"
+pdf(file=fName,width=7.5,height=10)
+micromapST(crime_70,panelDesc,
+  rowNamesCol='ST',
+  rowNames='ab',
+  sortVar='Pop',ascend=FALSE,
+  title=c("1970's Data"),
+  ignoreNoMatches=TRUE)
+
+dev.off()
+```

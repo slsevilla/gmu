@@ -1,0 +1,156 @@
+---
+title: "Landers Examples"
+author: "Daniel Carr"
+date: "October 12, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 0. Setup
+
+
+
+```{r}
+library(ggplot2)
+library(useful)
+library(coefplot)
+source('hw.R')
+
+ acs <- read.table("http://jaredlander.com/data/acs_ny.csv",
+  sep = ',', header = TRUE, stringsAsFactors = FALSE)
+```
+## 1. A look at the 2010 American Community Survery (ACS) for New York State
+
+Below, Landers creates an a binary income variable called Income.
+In a numeric setting 
+values of TRUE are interpreted  as 1 and values of FALSE
+are intrpreted as 0.  
+The variable can be thought of as Bernoulli random variable
+or a binomial random variable with a sample size of 1.  
+
+```{r}
+
+acs$Income <- with(acs,FamilyIncome >= 150000)
+```
+Below look at the density for Family Income and threshhold 
+used to defined the binary variable Income.
+
+```{r}
+
+ggplot(acs, aes(x = FamilyIncome)) + 
+  geom_density(fill = 'cyan', color = 'black') +
+  geom_vline(xintercept = 150000) +
+  scale_x_continuous(label = multiple.dollar, limits = c(0,1000000)) +
+  labs(x = 'Family Income',y =  'Density',
+    title = 'Threshold creating Bernoulli (0 or 1) variables') + hw
+```
+
+Look at the first six cases.
+
+```{r}
+
+head( acs)
+```
+
+## 2.  Fitting binomal data
+
+Below we use generalized linear model function, glm(), 
+to model probability that Income = 1 as inverse logit
+function (equation 20.2) oa a linear combination of fixed
+explanatory variables.  That is, we choose the binomial
+distribution as the probability family and 'logit' as the
+function that links the linear combination of explanatory
+variables to the probability of income being 1.  
+
+```{r}
+income1 <- glm( Income ~ HouseCosts + NumWorkers + OwnRent+
+  NumBedrooms + FamilyType, data = acs, 
+  family = binomial(link = 'logit'))
+summary( income1 )
+```
+```{r}
+
+coefplot(income1)
+```
+Above, the housing cost filled circle hides the confidence interal that
+is very small.  The table indicates this the regression cooefficient
+is also statistically significant. 
+
+Interpreting the coefficents for a logistic regression in their
+original units involves using the inverse logit function.
+
+```{r}
+invlogit <- function(x) {
+  1/(1+exp(-x))
+}
+
+invlogit(income1$coefficients)
+
+```
+
+
+## 3. Fitting Count Data  with Poisson and Negative Binomal models
+
+Next we modelthe number of children in the acs data.  These are 
+counts.  
+
+The Poisson distribution is a popular distribution for fitting
+count data. The Poisson distribution has one parameter, denoted lambda in 
+Lander's equation 17.6).  (The distribution in wrong in Table 17.2)
+The parameter is both the mean and the
+variance of the distribution. 
+
+```{r}
+mean(acs$NumChildren)
+var(acs$NumChildren)
+```
+Perhaps fitting the model results look better.  
+
+```{r}
+
+children1 <- glm(NumChildren ~ FamilyIncome + FamilyType + OwnRent,
+  family = poisson(link = 'log'),data = acs)
+summary(children1)
+```
+
+```{r}
+coefplot(children1)
+```
+
+
+Overdispersion, OD, is defined by the sum of studentized
+residuals squared divided by n-p, the degrees of freedom.
+
+```{r}
+
+check1 <- acs$NumChildren - children1$fitted.values
+check2 <- children1$residuals
+
+z <- (acs$NumChildren - children1$fitted.values) /
+  sqrt(children1$fitted.values)
+
+sum(z^2)/children1$df.residual
+
+
+pchisq(sum(z^2),children1$df.residual)
+```
+I have not verified the above calculation methods. The overdispersion
+is statistically significant. Using an apparent rule of thumb
+the 1.469 is not bigger than 2 the Poisson model is not so bad.  
+
+
+While not obvious from the function call modeling below is really
+based onnegative binomial model, that address the overdisperion issue.  
+
+
+```{r}
+children2 <- glm(NumChildren ~ FamilyIncome + FamilyType + OwnRent,
+  data = acs, family = quasipoisson(link='log'))
+multiplot(children1, children2)
+```
+
+"Because the overdispersion is not too big the coefficient estimates in
+the second model have just a bit more uncertainty." 
