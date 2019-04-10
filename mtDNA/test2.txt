@@ -1,0 +1,9 @@
+@SRR4436218.3 4 length=1139
++
+letersssssssssss
+@SRR4436218.4 4 length=1139
++
+letersssssssssss
+@SRR4436218.5 5 length=1319
++
+letersssssssssss

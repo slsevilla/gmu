@@ -1,0 +1,9 @@
+@SRR4436218.1 1 length=119
++
+leteraaaaaaa
+@SRR4436218.1 1 length=1119
++
+letersssdddddss
+@SRR4436218.1 1 length=145s19
++
+leterssssgvvvvsssssss
