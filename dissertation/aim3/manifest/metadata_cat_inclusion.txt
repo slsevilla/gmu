@@ -1,0 +1,203 @@
+metadata	Inclusion	cat	response	answerkey
+acid_reflux	N	otherdis	0.384270992	
+acne_medication	N	N	0.967815509	
+acne_medication_otc	N	N	0.967731036	
+add_adhd	N	disease	0.702061159	"""I do not have this condition"" | ""Self-diagnosed"" | ""Diagnosed by a medical professional (doctor, physician assistant)"" | ""Diagnosed by an alternative medicine practitioner"""
+age_cat	a	N		
+age_corrected	N	des		0 - 101
+age_years	N	N	0.961902348	
+alcohol_consumption	c	drugs	0.977192093	"""true"" | ""false"""
+alcohol_frequency	c	drugs	0.977192093	"""Never"" | ""Rarely (a few times/month)"" | ""Occasionally (1-2 times/week)"" | ""Regularly (3-5 times/week)"" | ""Daily"""
+alcohol_types_beercider	c	drugs		"""true"" | ""false"""
+alcohol_types_red_wine	c	drugs		"""true"" | ""false"""
+alcohol_types_sour_beers	c	drugs		"""true"" | ""false"""
+alcohol_types_spiritshard_alcohol	c	drugs		"""true"" | ""false"""
+alcohol_types_unspecified	c	drugs		"""true"" | ""false"""
+alcohol_types_white_wine	c	drugs		"""true"" | ""false"""
+allergic_to_i_have_no_food_allergies_that_i_know_of	N	N		
+allergic_to_other	N	N		
+allergic_to_peanuts	N	N		
+allergic_to_shellfish	N	N		
+allergic_to_tree_nuts	N	N		
+allergic_to_unspecified	N	N		
+altitude	N	N		
+alzheimers	b	disease	0.708312215	"""I do not have this condition"" | ""Self-diagnosed"" | ""Diagnosed by a medical professional (doctor, physician assistant)"" | ""Diagnosed by an alternative medicine practitioner"""
+anonymized_name	N	N		
+antibiotic_history	N	med	0.972208143	
+appendix_removed	N	otherdis	0.96874472	
+artificial_sweeteners	N	food	0.387312046	
+asd	N	N	0.705271161	
+assigned_from_geo	N	N		
+autoimmune	N	otherdis	0.700878527	
+birth_year	N	N	0.969082615	
+bmi	N	N	0.966717351	
+bmi_cat	a	N		
+bmi_corrected	N	des		9.6 - 79
+body_habitat	N	N		
+body_product	a	des		"UBERON:feces | ""UBERON:saliva"" | ""UBERON:sebum"" | ""UBERON:mucus"" | ""UBERON:tears"" | ""UBERON:cerumen"""
+body_site	n	des		"UBERON:feces | ""UBERON:tongue"" | ""UBERON:skin of head"" | ""UBERON:skin of hand"" | ""UBERON:nostril"" | ""UBERON:vaginal introitus"" | ""UBERON:hair"" | ""UBERON:eye"" | ""UBERON:external auditory meatus"" | ""UBERON:skin of trunk"" | ""UBERON:skin of leg"""
+bowel_movement_frequency	N	random	0.669876668	
+bowel_movement_quality	N	random	0.704088528	
+breastmilk_formula_ensure	N	food	0.684828518	
+cancer	N	otherdis	0.384355465	
+cancer_treatment	N	otherdis	0.029143436	
+cardiovascular_disease	N	otherdis	0.706115898	
+cat	N	N	0.971194459	
+cdiff	N	otherdis	0.696232472	
+census_region	N	N		
+chickenpox	N	N	0.968322352	
+clinical_condition	N	otherdis	0.681196148	
+collection_date	N	N		
+collection_month	N	N		
+collection_season	N	N		
+collection_time	N	N		
+collection_timestamp	N	N		
+consume_animal_products_abx	N	food	0.710677479	
+contraceptive	N	N	0.822858591	
+cosmetics_frequency	N	N	0.970518669	
+country	N	N	0.996029735	
+country_of_birth	N	N	0.982176043	
+country_residence	N	N	0.389846258	
+csection	N	random	0.972377091	
+deodorant_use	N	N	0.973475249	
+depression_bipolar_schizophrenia	b	disease	0.29405305	"""I do not have this condition"" | ""Self-diagnosed"" | ""Diagnosed by a medical professional (doctor, physician assistant)"" | ""Diagnosed by an alternative medicine practitioner"""
+depth	N	N		
+description	N	N		
+diabetes	N	otherdis	0.96147998	
+diabetes_type	N	otherdis		
+diet_type	N	food	0.973982092	
+dna_extracted	N	des		
+dog	N	N	0.974995776	
+dominant_hand	N	N	0.967393141	
+drinking_water_source	N	N	0.979134989	
+drinks_per_session	c	drugs	0.188629836	"I don't drink | ""1"" | ""1-2"" | ""2-3"" | ""3-4"" | ""4+"""
+economic_region	N	N		
+elevation	N	N		
+env_biome	N	N		
+env_feature	N	N		
+env_material	N	N		
+env_package	N	N		
+epilepsy_or_seizure_disorder	b	disease	0.70662274	"""I do not have this condition"" | ""Self-diagnosed"" | ""Diagnosed by a medical professional (doctor, physician assistant)"" | ""Diagnosed by an alternative medicine practitioner"""
+exercise_frequency	N	random	0.972968407	
+exercise_location	N	random	0.954891029	
+fed_as_infant	N	food	0.710001689	
+fermented_plant_frequency	N	food	0.696316945	
+flossing_frequency	N	N	0.974151039	
+flu_vaccine_date	N	N	0.96942051	
+frozen_dessert_frequency	N	food	0.707889846	
+fruit_frequency	N	food	0.706031424	
+fungal_overgrowth	N	otherdis	0.690910627	
+geo_loc_name	N	N		
+gluten	N	food	0.894323365	
+has_physical_specimen	N	N		
+height_cm	N	N	0.972546038	
+height_units	N	N		
+high_fat_red_meat_frequency	N	food	0.702061159	
+homecooked_meals_frequency	N	food	0.707383004	
+host_common_name	N	N		
+host_subject_id	N	N		
+host_taxid	N	N		
+ibd	b	disease	0.936729177	"""I do not have this condition"" | ""Self-diagnosed"" | ""Diagnosed by a medical professional (doctor, physician assistant)"" | ""Diagnosed by an alternative medicine practitioner"""
+ibd_diagnosis	b	disease		"""Ulcerative colitis"" | ""Crohn's disease"""
+ibd_diagnosis_refined	b	disease		"Microcolitis | ""Ulcerative colitis"" | ""Colonic Crohn's Disease"" | ""Ileal Crohn's Disease"" | ""Ileal and Colonic Crohn's Disease"""
+ibs	N	disease	0.697837473	"""I do not have this condition"" | ""Self-diagnosed"" | ""Diagnosed by a medical professional (doctor, physician assistant)"" | ""Diagnosed by an alternative medicine practitioner"""
+kidney_disease	N	otherdis	0.705186687	
+lactose	N	food	0.954299713	
+last_move	N	N	0.7109309	
+last_travel	N	N	0.961648927	
+latitude	N	N		
+level_of_education	N	N	0.686940362	
+liver_disease	N	otherdis	0.703750634	
+livingwith	N	N	0.966548403	
+longitude	N	N		
+lowgrain_diet_type	N	food	0.507856057	
+lung_disease	N	otherdis	0.941037337	
+meat_eggs_frequency	N	food	0.710761953	
+mental_illness	b	disease	0.382581517	"""true"" | ""false"""
+mental_illness_type_anorexia_nervosa	N	disease	0.381229937	"""true"" | ""false"""
+mental_illness_type_bipolar_disorder	b	disease	0.381229937	"""true"" | ""false"""
+mental_illness_type_bulimia_nervosa	N	disease	0.381229937	"""true"" | ""false"""
+mental_illness_type_depression	b	disease	0.381229937	"""true"" | ""false"""
+mental_illness_type_ptsd_posttraumatic_stress_disorder	b	disease	0.381229937	"""true"" | ""false"""
+mental_illness_type_schizophrenia	b	disease	0.381229937	"""true"" | ""false"""
+mental_illness_type_substance_abuse	b	disease	0.381229937	"""true"" | ""false"""
+mental_illness_type_unspecified	N	disease	0.381229937	"""true"" | ""false"""
+migraine	N	otherdis	0.933603649	
+milk_cheese_frequency	N	food	0.708058794	
+milk_substitute_frequency	N	food	0.707129583	
+multivitamin	N	med	0.971785775	
+nail_biter	N	random	0.961902348	
+non_food_allergies_beestings	N	food		
+non_food_allergies_drug_eg_penicillin	N	food		
+non_food_allergies_pet_dander	N	food		
+non_food_allergies_poison_ivyoak	N	food		
+non_food_allergies_sun	N	food		
+non_food_allergies_unspecified	N	food		
+olive_oil	N	food	0.705440108	
+one_liter_of_water_a_day_frequency	N	food	0.704679845	
+other_supplement_frequency	N	food	0.968660247	
+pets_other	N	N	0.387818888	
+physical_specimen_location	N	N		
+physical_specimen_remaining	N	N		
+pku	N	N	0.957932083	
+pool_frequency	N	N	0.973644197	
+poultry_frequency	N	food	0.709663795	
+pregnant	N	otherdis	0.774455144	
+prepared_meals_frequency	N	food	0.710677479	
+probiotic_frequency	N	med	0.709494847	
+public	N	N		
+race	a	des	0.979557358	"""African American"" | ""Asian or Pacific Islander"" | ""Caucasian"" | ""Hispanic"" | ""Other"""
+ready_to_eat_meals_frequency	N	food	0.709156952	
+red_meat_frequency	N	food	0.705862477	
+roommates	N	N	0.730528806	
+roommates_in_study	N	N	0.656698767	
+salted_snacks_frequency	N	food	0.706876162	
+sample_name	a	des		10317.[nine-digit-barcode]
+sample_type	N	N		
+scientific_name	N	N		
+seafood_frequency	N	food	0.706200372	
+seasonal_allergies	N	N	0.95514445	
+sex	a	des	0.962409191	"""female"" | ""male"" | ""other"""
+sibo	N	N	0.685842203	
+skin_condition	N	otherdis	0.916371009	
+sleep_duration	N	random	0.978628147	
+smoking_frequency	N	drugs	0.977867883	"""Never"" | ""Rarely (a few times/month)"" | ""Occasionally (1-2 times/week)"" | ""Regularly (3-5 times/week)"" | ""Daily"""
+softener	N	med	0.96147998	
+specialized_diet_exclude_dairy	N	food		
+specialized_diet_exclude_nightshades	N	food		
+specialized_diet_exclude_refined_sugars	N	food		
+specialized_diet_fodmap	N	food		
+specialized_diet_halaal	N	food		
+specialized_diet_i_do_not_eat_a_specialized_diet	N	food		
+specialized_diet_kosher	N	food		
+specialized_diet_modified_paleo_diet	N	food		
+specialized_diet_other_restrictions_not_described_here	N	food		
+specialized_diet_paleodiet_or_primal_diet	N	food		
+specialized_diet_raw_food_diet	N	food		
+specialized_diet_unspecified	N	food		
+specialized_diet_westenprice_or_other_lowgrain_low_processed_fo	N	food		
+state	N	N	0.826068593	
+subset_age	N	N		
+subset_antibiotic_history	N	med		
+subset_bmi	N	des		
+subset_diabetes	N	otherdis		
+subset_healthy	N	disease		"""true"" | ""false"""
+subset_ibd	N	disease		"""true"" | ""false"""
+sugar_sweetened_drink_frequency	N	food	0.707129583	
+sugary_sweets_frequency	N	food	0.708734584	
+survey_id	N	N		
+taxon_id	N	N		
+teethbrushing_frequency	N	N	0.977023146	
+thyroid	N	otherdis	0.702905896	
+title	N	N		
+tonsils_removed	N	otherdis	0.96646393	
+types_of_plants	N	food	0.655769556	
+vegetable_frequency	N	food	0.707383004	
+vitamin_b_supplement_frequency	N	med	0.706031424	
+vitamin_d_supplement_frequency	N	med	0.706960635	
+vivid_dreams	N	N	0.378526778	
+weight_change	N	N	0.964943403	
+weight_kg	N	N	0.973306302	
+weight_units	N	N		
+whole_eggs	N	food	0.707720899	
+whole_grain_frequency	N	food	0.701976685	

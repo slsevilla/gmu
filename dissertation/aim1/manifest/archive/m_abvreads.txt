@@ -1,0 +1,294 @@
+Source-PCR-Plate	Run-ID	Project-ID	CGR-Sample-ID	Sample-Type	Sample-Des	Subject-ID	Reciept	Ext-Company	Ext-Kit	Ext-Robotics	Homo-Status	Homo-Method	Homo-Holder	input	filtered	denoised	merged	non-chimeric	Sequence_count
+PC04924	Run1	NP0084-MB4	SC284724	Seq_Control	MSA	MSA1000								156844	117368	117368	108161	94113	156844
+PC04924	Run1	NP0084-MB4	SC284725	Seq_Control	MSA	MSA1001								128819	98888	98888	93463	81631	128819
+PC04924	Run1	NP0084-MB4	SC284726	Seq_Control	MSA	MSA1002								166125	115152	115152	105007	95010	166125
+PC04924	Run1	NP0084-MB4	SC284727	Seq_Control	MSA	MSA1003								146609	93934	93934	80002	70921	146609
+PC04925	Run2	NP0084-MB4	SC284730	Seq_Control	MSA	MSA1000								162325	146316	146316	142828	121737	162325
+PC04925	Run2	NP0084-MB4	SC284731	Seq_Control	MSA	MSA1001								118299	108976	108976	107206	93326	118299
+PC04925	Run2	NP0084-MB4	SC284732	Seq_Control	MSA	MSA1002								144504	124701	124701	117984	103749	144504
+PC04925	Run2	NP0084-MB4	SC284733	Seq_Control	MSA	MSA1003								155060	131923	131923	120551	104872	155060
+PC07578	Run3	NP0084-MB5	SC326764	Seq_Control	MSA	MSA1001								149904	121949	121949	119930	106842	149904
+PC07578	Run3	NP0084-MB5	SC326765	Seq_Control	MSA	MSA1002								175315	130730	130730	122692	111720	175315
+PC07578	Run3	NP0084-MB5	SC326766	Seq_Control	MSA	MSA1003								169905	118849	118849	103561	92277	169905
+PC22190	Run4	NP0084-MB6	SC555339	Seq_Control	MSA	MSA1001								37615	35264	35264	34685	29682	37615
+PC22190	Run4	NP0084-MB6	SC555341	Seq_Control	MSA	MSA1000								40148	36966	36966	36040	35640	40148
+PC22190	Run4	NP0084-MB6	SC555342	Seq_Control	MSA	MSA1002								34286	29984	29984	28191	25198	34286
+PC22190	Run4	NP0084-MB6	SC555343	Seq_Control	MSA	MSA1003								45313	40348	40348	36508	32241	45313
+PC22192	Run4	NP0084-MB6	SC555346	Seq_Control	MSA	MSA1002								48935	44344	44344	41582	37436	48935
+PC22192	Run4	NP0084-MB6	SC555347	Seq_Control	MSA	MSA1000								46724	43598	43598	41530	40859	46724
+PC22192	Run4	NP0084-MB6	SC555349	Seq_Control	MSA	MSA1001								62086	58180	58180	57353	49511	62086
+PC22192	Run4	NP0084-MB6	SC555350	Seq_Control	MSA	MSA1003								48859	44266	44266	40252	35255	48859
+PC04924	Run1	NP0084-MB4	SC284728	Seq_Control	ZymoBiomics	D6305								136927	99783	99783	92034	80068	136927
+PC04924	Run1	NP0084-MB4	SC284729	Seq_Control	ZymoBiomics	D6306								135305	93309	93309	85507	73800	135305
+PC22190	Run4	NP0084-MB6	SC555344	Seq_Control	ZymoBiomics	D6306								41845	38268	38268	36984	29662	41845
+PC22192	Run4	NP0084-MB6	SC555345	Seq_Control	ZymoBiomics	D6306								46757	42771	42771	41048	31926	46757
+PC22192	Run4	NP0084-MB6	SC555348	Seq_Control	ZymoBiomics	D6305								55692	51344	51344	49895	40819	55692
+PC22192	Run4	NP0084-MB6	SC555351	Seq_Control	ZymoBiomics	D6311								39931	37211	37211	37123	36684	39931
+PC04925	Run2	NP0084-MB4	SC284734	Seq_Control	ZymoBiomics	D6305								121033	109263	109263	104484	88377	121033
+PC04925	Run2	NP0084-MB4	SC284735	Seq_Control	ZymoBiomics	D6306								130186	114829	114829	108961	91422	130186
+PC07578	Run3	NP0084-MB5	SC326767	Seq_Control	ZymoBiomics	D6305								152901	117235	117235	113503	102863	152901
+PC07578	Run3	NP0084-MB5	SC326768	Seq_Control	ZymoBiomics	D6306								157461	116822	116822	112201	94147	157461
+PC22190	Run4	NP0084-MB6	SC555338	Seq_Control	ZymoBiomics	D6311								21707	20270	20270	20183	19983	21707
+PC22190	Run4	NP0084-MB6	SC555340	Seq_Control	ZymoBiomics	D6305								35786	32798	32798	31905	26727	35786
+PC22190	Run4	NP0084-MB6	SC502454	Ext_Control	art_col	DZ35322	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	40658	37051	37051	35512	35233	40658
+PC22192	Run4	NP0084-MB6	SC552982	Ext_Control	art_col	DZ35316	sFEMB-001-R-039	Qiagen	DNeasy PowerSoil Pro kit	None	Altered	Vertical	Tubes	46549	41895	41895	35726	29534	46549
+PC22190	Run4	NP0084-MB6	SC552997	Ext_Control	art_col	DZ35316	sFEMB-001-R-040	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Altered	TissueLyzer	Plate	42879	39423	39423	32836	29841	42879
+PC22190	Run4	NP0084-MB6	SC552980	Ext_Control	Ext_Blank	Water	sFEMB-001-R-039	Qiagen	DNeasy PowerSoil Pro kit	None	Altered	Vertical	Tubes	11982	11120	11120	10934	10901	11982
+PC22192	Run4	NP0084-MB6	SC552989	Ext_Control	Ext_Blank	Water	sFEMB-001-R-039	Qiagen	DNeasy PowerSoil Pro kit	None	Altered	Vertical	Tubes	3010	2794	2794	2727	2727	3010
+PC22190	Run4	NP0084-MB6	SC552991	Ext_Control	Ext_Blank	Water	sFEMB-001-R-040	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Altered	TissueLyzer	Plate	42786	39227	39227	38587	38583	42786
+PC22192	Run4	NP0084-MB6	SC552995	Ext_Control	Ext_Blank	Water	sFEMB-001-R-040	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Altered	TissueLyzer	Plate	56507	50353	50353	48945	46802	56507
+PC22190	Run4	NP0084-MB6	SC553004	Ext_Control	Ext_Blank	Water	sFEMB-001-R-040	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Altered	TissueLyzer	Plate	42784	39903	39903	39625	39601	42784
+PC22192	Run4	NP0084-MB6	SC502441	Study	human_1	human_1	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	53664	49652	49652	47062	37901	53664
+PC22190	Run4	NP0084-MB6	SC502443	Study	human_1	human_1	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	47380	42360	42360	40413	32106	47380
+PC22192	Run4	NP0084-MB6	SC502444	Study	human_1	human_1	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	59762	52995	52995	50628	38646	59762
+PC22190	Run4	NP0084-MB6	SC502447	Study	human_1	human_1	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	37219	34292	34292	32271	24985	37219
+PC22192	Run4	NP0084-MB6	SC502448	Study	human_1	human_1	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	49455	45642	45642	43112	33780	49455
+PC22192	Run4	NP0084-MB6	SC553000	Study	human_1	human_1	sFEMB-001-R-040	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Altered	TissueLyzer	Plate	53886	50067	50067	48174	41357	53886
+PC22190	Run4	NP0084-MB6	SC502453	Study	Robogut	DZ35298	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	36076	33387	33387	32809	32547	36076
+PC22192	Run4	NP0084-MB6	SC552978	Study	Robogut	DZ35298	sFEMB-001-R-039	Qiagen	DNeasy PowerSoil Pro kit	None	Altered	Vertical	Tubes	50300	46667	46667	45322	42557	50300
+PC22190	Run4	NP0084-MB6	SC552993	Study	Robogut	DZ35298	sFEMB-001-R-040	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Altered	TissueLyzer	Plate	35811	33232	33232	32651	30584	35811
+PC22190	Run4	NP0084-MB6	SC502451	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	38202	32590	32590	32057	32016	38202
+PC22192	Run4	NP0084-MB6	SC502452	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	48364	44749	44749	43602	40252	48364
+PC22190	Run4	NP0084-MB6	SC552987	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-039	Qiagen	DNeasy PowerSoil Pro kit	None	Altered	Vertical	Tubes	39650	36322	36322	34838	22672	39650
+PC22190	Run4	NP0084-MB6	SC552990	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-039	Qiagen	DNeasy PowerSoil Pro kit	None	Altered	Vertical	Tubes	32476	30428	30428	30293	29695	32476
+PC22190	Run4	NP0084-MB6	SC553002	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-040	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Altered	TissueLyzer	Plate	29624	27378	27378	26524	22132	29624
+PC22190	Run4	NP0084-MB6	SC510683	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	46452	42688	42688	42571	42402	46452
+PC22192	Run4	NP0084-MB6	SC510684	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-034	Qiagen	DNeasy PowerSoil Pro kit	QIACube HT	Altered	Vertical	Tubes	40161	37305	37305	37151	36987	40161
+PC22192	Run4	NP0084-MB6	SC552988	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-039	Qiagen	DNeasy PowerSoil Pro kit	None	Altered	Vertical	Tubes	45069	42235	42235	42104	41356	45069
+PC22192	Run4	NP0084-MB6	SC553003	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-040	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Altered	TissueLyzer	Plate	41232	38394	38394	38133	36951	41232
+PC22192	Run4	NP0084-MB6	SC553068	Ext_Control	Ext_Blank	Water	sFEMB-001-R-051	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Covaris	AFA	Tubes	39913	37270	37270	37066	36230	39913
+PC22190	Run4	NP0084-MB6	SC553066	Study	human_1	human_1	sFEMB-001-R-051	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Covaris	AFA	Tubes	42030	38976	38976	37232	31761	42030
+PC22192	Run4	NP0084-MB6	SC553069	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	48292	45132	45132	43564	39482	48292
+PC22190	Run4	NP0084-MB6	SC553070	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	44134	41073	41073	39602	36261	44134
+PC22192	Run4	NP0084-MB6	SC553071	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	58431	53347	53347	51660	45947	58431
+PC22190	Run4	NP0084-MB6	SC553072	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	38473	35588	35588	34196	32478	38473
+PC22192	Run4	NP0084-MB6	SC553073	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	54994	51379	51379	49212	42140	54994
+PC22190	Run4	NP0084-MB6	SC553074	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	41202	38281	38281	37111	33661	41202
+PC22192	Run4	NP0084-MB6	SC553075	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	52727	48024	48024	46671	43144	52727
+PC22190	Run4	NP0084-MB6	SC553076	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	44885	41984	41984	41134	37727	44885
+PC22192	Run4	NP0084-MB6	SC553077	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	56332	52821	52821	51181	45427	56332
+PC22190	Run4	NP0084-MB6	SC553078	Study	human_1	human_1	sFEMB-001-R-052	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Covaris	AFA	Tubes	40090	37230	37230	36565	35837	40090
+PC22192	Run4	NP0084-MB6	SC553084	Study	human_1	human_1	sFEMB-001-R-053	Qiagen	DNeasy PowerSoil Pro kit	None	Covaris	AFA	Tubes	51007	46706	46706	44634	36844	51007
+PC22192	Run4	NP0084-MB6	SC553065	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-051	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Covaris	AFA	Tubes	51202	47179	47179	45937	37006	51202
+PC22190	Run4	NP0084-MB6	SC553083	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-053	Qiagen	DNeasy PowerSoil Pro kit	None	Covaris	AFA	Tubes	41494	38369	38369	37188	29092	41494
+PC22190	Run4	NP0084-MB6	SC553087	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-054	ZymoResearch	96 MagBead DNA Extraction Kit	None	Covaris	AFA	Tubes	43344	39608	39608	38646	33745	43344
+PC22190	Run4	NP0084-MB6	SC553091	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-055	ThermoFisher	MagMax Microbiome Ultra Kit	KingFisher	Covaris	AFA	Tubes	41026	37349	37349	36315	30314	41026
+PC22192	Run4	NP0084-MB6	SC553085	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-053	Qiagen	DNeasy PowerSoil Pro kit	None	Covaris	AFA	Tubes	46274	42700	42700	42495	41693	46274
+PC22192	Run4	NP0084-MB6	SC553089	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-054	ZymoResearch	96 MagBead DNA Extraction Kit	None	Covaris	AFA	Tubes	50718	47111	47111	46905	46187	50718
+PC22190	Run4	NP0084-MB6	SC553093	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-055	ThermoFisher	MagMax Microbiome Ultra Kit	KingFisher	Covaris	AFA	Tubes	33038	30913	30913	30865	30487	33038
+PC22190	Run4	NP0084-MB6	SC553034	Study	human_1	human_1	sFEMB-001-R-043	Qiagen	DNeasy PowerSoil Pro kit	None	Horizontal	Horizontal	Tubes	45129	41495	41495	39848	32638	45129
+PC22192	Run4	NP0084-MB6	SC553038	Study	human_1	human_1	sFEMB-001-R-044	ZymoResearch	96 MagBead DNA Extraction Kit	None	Horizontal	Horizontal	Tubes	57793	53107	53107	50642	39070	57793
+PC22192	Run4	NP0084-MB6	SC553033	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-043	Qiagen	DNeasy PowerSoil Pro kit	None	Horizontal	Horizontal	Tubes	47244	43620	43620	42142	35067	47244
+PC22192	Run4	NP0084-MB6	SC553037	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-044	ZymoResearch	96 MagBead DNA Extraction Kit	None	Horizontal	Horizontal	Tubes	50764	47039	47039	45745	37319	50764
+PC22190	Run4	NP0084-MB6	SC553035	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-043	Qiagen	DNeasy PowerSoil Pro kit	None	Horizontal	Horizontal	Tubes	47295	43898	43898	43350	41526	47295
+PC22190	Run4	NP0084-MB6	SC553039	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-044	ZymoResearch	96 MagBead DNA Extraction Kit	None	Horizontal	Horizontal	Tubes	39430	37038	37038	36875	36334	39430
+PC22190	Run4	NP0084-MB6	SC553048	Ext_Control	Ext_Blank	Water	sFEMB-001-R-046	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	SPEX	SPEX	Plate	41810	39121	39121	39043	38512	41810
+PC22190	Run4	NP0084-MB6	SC553042	Study	human_1	human_1	sFEMB-001-R-045	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	SPEX	SPEX	Plate	45293	41979	41979	41394	40086	45293
+PC22192	Run4	NP0084-MB6	SC553046	Study	human_1	human_1	sFEMB-001-R-046	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	SPEX	SPEX	Plate	43537	40066	40066	38622	35071	43537
+PC22190	Run4	NP0084-MB6	SC553050	Study	human_1	human_1	sFEMB-001-R-047	Qiagen	DNeasy PowerSoil Pro kit	None	SPEX	SPEX	Tubes	48446	44852	44852	42971	35166	48446
+PC22192	Run4	NP0084-MB6	SC553054	Study	human_1	human_1	sFEMB-001-R-048	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	SPEX	SPEX	Plate	36050	32873	32873	31177	21585	36050
+PC22192	Run4	NP0084-MB6	SC553041	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-045	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	SPEX	SPEX	Plate	57975	54132	54132	52763	42066	57975
+PC22192	Run4	NP0084-MB6	SC553045	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-046	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	SPEX	SPEX	Plate	54228	50094	50094	48980	39909	54228
+PC22192	Run4	NP0084-MB6	SC553049	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-047	Qiagen	DNeasy PowerSoil Pro kit	None	SPEX	SPEX	Tubes	53856	49536	49536	47739	40932	53856
+PC22192	Run4	NP0084-MB6	SC553053	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-048	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	SPEX	SPEX	Plate	57145	52784	52784	51106	36787	57145
+PC22192	Run4	NP0084-MB6	SC553057	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-049	ZymoResearch	96 MagBead DNA Extraction Kit	None	SPEX	SPEX	Plate	48551	44306	44306	43425	37441	48551
+PC22192	Run4	NP0084-MB6	SC553061	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-050	ThermoFisher	MagMax Microbiome Ultra Kit	KingFisher	SPEX	SPEX	Plate	54279	50067	50067	48485	37788	54279
+PC22192	Run4	NP0084-MB6	SC553043	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-045	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	SPEX	SPEX	Plate	55824	52788	52788	52600	51210	55824
+PC22190	Run4	NP0084-MB6	SC553051	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-047	Qiagen	DNeasy PowerSoil Pro kit	None	SPEX	SPEX	Tubes	38229	36024	36024	35958	35370	38229
+PC22190	Run4	NP0084-MB6	SC553055	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-048	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	SPEX	SPEX	Plate	46991	44274	44274	44140	42982	46991
+PC04924	Run1	NP0084-MB4	SC249358	Ext_Control	art_col	DZ35322	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	89727	61850	61850	58682	58312	89727
+PC04924	Run1	NP0084-MB4	SC249363	Ext_Control	art_col	DZ35322	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	122059	80844	80844	74631	74225	122059
+PC04924	Run1	NP0084-MB4	SC249383	Ext_Control	art_col	DZ35322	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	137758	96793	96793	90085	89593	137758
+PC04924	Run1	NP0084-MB4	SC249388	Ext_Control	art_col	DZ35322	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	124290	89410	89410	82201	81427	124290
+PC04924	Run1	NP0084-MB4	SC249409	Ext_Control	art_col	DZ35322	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	148484	102838	102838	95537	95463	148484
+PC04924	Run1	NP0084-MB4	SC249413	Ext_Control	art_col	DZ35322	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	136246	94097	94097	86856	86659	136246
+PC04924	Run1	NP0084-MB4	SC249427	Ext_Control	art_col	DZ35322	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	157223	111787	111787	102711	101441	157223
+PC04924	Run1	NP0084-MB4	SC249428	Ext_Control	art_col	DZ35322	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	116385	80906	80906	75244	74392	116385
+PC04924	Run1	NP0084-MB4	SC249434	Ext_Control	art_col	DZ35322	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	157294	107507	107507	99294	98842	157294
+PC04924	Run1	NP0084-MB4	SC249439	Ext_Control	art_col	DZ35322	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	155148	108490	108490	102379	101546	155148
+PC07578	Run3	NP0084-MB5	SC249439	Ext_Control	art_col	DZ35322	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	144077	111808	111808	110325	109883	144077
+PC04924	Run1	NP0084-MB4	SC249443	Ext_Control	art_col	DZ35322	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	159127	108416	108416	102051	101913	159127
+PC07578	Run3	NP0084-MB5	SC249443	Ext_Control	art_col	DZ35322	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	142684	106355	106355	104935	104462	142684
+PC04924	Run1	NP0084-MB4	SC249446	Ext_Control	art_col	DZ35322	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	131423	93725	93725	89090	88252	131423
+PC04925	Run2	NP0084-MB4	SC253185	Ext_Control	art_col	DZ35322	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	125102	111278	111278	107604	107599	125102
+PC04925	Run2	NP0084-MB4	SC253192	Ext_Control	art_col	DZ35322	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	125819	108590	108590	107688	107658	125819
+PC04925	Run2	NP0084-MB4	SC253195	Ext_Control	art_col	DZ35322	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	120778	108415	108415	107591	107585	120778
+PC07578	Run3	NP0084-MB5	SC253195	Ext_Control	art_col	DZ35322	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	149608	115887	115887	109952	109939	149608
+PC04925	Run2	NP0084-MB4	SC253204	Ext_Control	art_col	DZ35322	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	42174	37195	37195	36924	36924	42174
+PC04924	Run1	NP0084-MB4	SC253848	Ext_Control	art_col	DZ35322	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	149802	103790	103790	93798	89190	149802
+PC04924	Run1	NP0084-MB4	SC253851	Ext_Control	art_col	DZ35322	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	151808	104592	104592	94878	92672	151808
+PC07578	Run3	NP0084-MB5	SC304093	Ext_Control	art_col	DZ35322	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	147559	111537	111537	101439	101145	147559
+PC07578	Run3	NP0084-MB5	SC304926	Ext_Control	art_col	DZ35322	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	168833	130761	130761	120278	118594	168833
+PC22192	Run4	NP0084-MB6	SC552954	Ext_Control	art_col	DZ35316	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	44942	41018	41018	34078	31686	44942
+PC22192	Run4	NP0084-MB6	SC553011	Ext_Control	art_col	DZ35316	sFEMB-001-R-041	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	22222	20682	20682	18414	16744	22222
+PC22190	Run4	NP0084-MB6	SC553025	Ext_Control	art_col	DZ35316	sFEMB-001-R-042	ThermoFisher	MagMax Microbiome Ultra Kit	KingFisher	Standard	TissueLyzer	Plate	45152	41034	41034	33758	30220	45152
+PC04925	Run2	NP0084-MB4	SC249387	Ext_Control	Ext_Blank	Water	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	126192	113548	113548	112455	111860	126192
+PC07578	Run3	NP0084-MB5	SC249387	Ext_Control	Ext_Blank	Water	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	115745	92147	92147	90710	90225	115745
+PC04924	Run1	NP0084-MB4	SC249393	Ext_Control	Ext_Blank	Water	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	131475	96915	96915	93635	93244	131475
+PC04924	Run1	NP0084-MB4	SC249415	Ext_Control	Ext_Blank	Water	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	74823	56179	56179	54242	53932	74823
+PC04925	Run2	NP0084-MB4	SC249422	Ext_Control	Ext_Blank	Water	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	5165	4660	4660	4549	4549	5165
+PC07578	Run3	NP0084-MB5	SC249422	Ext_Control	Ext_Blank	Water	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	13871	10198	10198	9984	9984	13871
+PC04924	Run1	NP0084-MB4	SC249438	Ext_Control	Ext_Blank	Water	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	64383	48090	48090	46298	46263	64383
+PC04925	Run2	NP0084-MB4	SC249444	Ext_Control	Ext_Blank	Water	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	135488	122254	122254	120374	119994	135488
+PC04925	Run2	NP0084-MB4	SC253191	Ext_Control	Ext_Blank	Water	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	13145	12079	12079	11784	11712	13145
+PC04925	Run2	NP0084-MB4	SC253202	Ext_Control	Ext_Blank	Water	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	3235	2722	2722	2620	2620	3235
+PC07578	Run3	NP0084-MB5	SC253202	Ext_Control	Ext_Blank	Water	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	128711	103059	103059	102063	101755	128711
+PC07578	Run3	NP0084-MB5	SC304094	Ext_Control	Ext_Blank	Water	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	85116	68352	68352	67413	67020	85116
+PC07578	Run3	NP0084-MB5	SC304099	Ext_Control	Ext_Blank	Water	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	85636	68461	68461	67106	66783	85636
+PC07578	Run3	NP0084-MB5	SC304928	Ext_Control	Ext_Blank	Water	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	118789	94130	94130	92775	92638	118789
+PC22192	Run4	NP0084-MB6	SC552948	Ext_Control	Ext_Blank	Water	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	49696	45462	45462	44856	44680	49696
+PC22190	Run4	NP0084-MB6	SC552952	Ext_Control	Ext_Blank	Water	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	37145	32031	32031	31492	31386	37145
+PC22192	Run4	NP0084-MB6	SC552961	Ext_Control	Ext_Blank	Water	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	48855	45488	45488	45276	43953	48855
+PC22190	Run4	NP0084-MB6	SC552962	Ext_Control	Ext_Blank	Water	sFEMB-001-R-038	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	25632	22987	22987	21571	19002	25632
+PC22192	Run4	NP0084-MB6	SC552966	Ext_Control	Ext_Blank	Water	sFEMB-001-R-038	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	61713	57386	57386	55010	49999	61713
+PC22190	Run4	NP0084-MB6	SC552975	Ext_Control	Ext_Blank	Water	sFEMB-001-R-038	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	36715	34149	34149	33994	33100	36715
+PC22192	Run4	NP0084-MB6	SC553009	Ext_Control	Ext_Blank	Water	sFEMB-001-R-041	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	56962	52182	52182	50246	45565	56962
+PC22192	Run4	NP0084-MB6	SC553032	Ext_Control	Ext_Blank	Water	sFEMB-001-R-042	ThermoFisher	MagMax Microbiome Ultra Kit	KingFisher	Standard	TissueLyzer	Plate	53751	49841	49841	48790	47920	53751
+PC04924	Run1	NP0084-MB4	SC249407	Study	human_1	human_1	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	135708	104058	104058	95067	84542	135708
+PC07578	Run3	NP0084-MB5	SC249411	Study	human_1	human_1	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	116800	91681	91681	85907	78550	116800
+PC04924	Run1	NP0084-MB4	SC249411	Study	human_1	human_1	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	142515	111330	111330	102585	92072	142515
+PC04925	Run2	NP0084-MB4	SC249411	Study	human_1	human_1	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	124203	113021	113021	108696	96438	124203
+PC07578	Run3	NP0084-MB5	SC249414	Study	human_1	human_1	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	111728	89026	89026	83585	76117	111728
+PC04924	Run1	NP0084-MB4	SC249414	Study	human_1	human_1	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	168250	129258	129258	117849	108945	168250
+PC04925	Run2	NP0084-MB4	SC249414	Study	human_1	human_1	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	98075	90052	90052	87085	77640	98075
+PC04924	Run1	NP0084-MB4	SC249418	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	161414	127134	127134	115443	102303	161414
+PC04925	Run2	NP0084-MB4	SC249418	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	136700	126129	126129	121431	103350	136700
+PC04924	Run1	NP0084-MB4	SC249419	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	157145	123018	123018	109241	95359	157145
+PC04925	Run2	NP0084-MB4	SC249419	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	113567	103553	103553	99332	86931	113567
+PC07578	Run3	NP0084-MB5	SC249424	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	156742	127188	127188	119562	106618	156742
+PC04924	Run1	NP0084-MB4	SC249424	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	150708	113755	113755	103517	92624	150708
+PC04925	Run2	NP0084-MB4	SC249424	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	137349	127061	127061	122518	105049	137349
+PC07578	Run3	NP0084-MB5	SC249429	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	150422	121914	121914	111430	90858	150422
+PC04924	Run1	NP0084-MB4	SC249429	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	147862	116654	116654	109075	100778	147862
+PC04925	Run2	NP0084-MB4	SC249429	Study	human_1	human_1	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	144835	133435	133435	128269	108183	144835
+PC07578	Run3	NP0084-MB5	SC249430	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	148771	118015	118015	107955	91631	148771
+PC04924	Run1	NP0084-MB4	SC249430	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	156275	120496	120496	105044	88895	156275
+PC04925	Run2	NP0084-MB4	SC249430	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	114117	104368	104368	99505	83231	114117
+PC04924	Run1	NP0084-MB4	SC249435	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	148638	116969	116969	107287	94137	148638
+PC04925	Run2	NP0084-MB4	SC249435	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	137104	127482	127482	122723	103509	137104
+PC04924	Run1	NP0084-MB4	SC249440	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	125528	98826	98826	90660	78816	125528
+PC04925	Run2	NP0084-MB4	SC249440	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	132402	124532	124532	120418	102420	132402
+PC07578	Run3	NP0084-MB5	SC249441	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	166918	134520	134520	123594	102531	166918
+PC04924	Run1	NP0084-MB4	SC249441	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	152524	116115	116115	103090	85014	152524
+PC04925	Run2	NP0084-MB4	SC249441	Study	human_1	human_1	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	125800	116113	116113	110759	89044	125800
+PC04924	Run1	NP0084-MB4	SC249445	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	147712	117379	117379	105600	87242	147712
+PC04925	Run2	NP0084-MB4	SC249445	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	132783	121744	121744	116541	93020	132783
+PC07578	Run3	NP0084-MB5	SC249448	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	161954	132392	132392	127008	114214	161954
+PC04924	Run1	NP0084-MB4	SC249448	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	132179	102958	102958	96555	89386	132179
+PC04925	Run2	NP0084-MB4	SC249448	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	153090	141755	141755	137729	123554	153090
+PC04925	Run2	NP0084-MB4	SC249448	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	140946	130182	130182	126121	111544	140946
+PC04924	Run1	NP0084-MB4	SC249449	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	188720	146668	146668	133666	111584	188720
+PC04925	Run2	NP0084-MB4	SC249449	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	135398	124893	124893	120183	98111	135398
+PC07578	Run3	NP0084-MB5	SC249453	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	120937	99100	99100	93436	81153	120937
+PC04924	Run1	NP0084-MB4	SC249453	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	142396	111489	111489	103110	90233	142396
+PC04925	Run2	NP0084-MB4	SC249453	Study	human_1	human_1	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	131366	121652	121652	117569	96974	131366
+PC04925	Run2	NP0084-MB4	SC253183	Study	human_1	human_1	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	147713	134878	134878	131154	119635	147713
+PC07578	Run3	NP0084-MB5	SC253183	Study	human_1	human_1	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	148587	120058	120058	113606	102039	148587
+PC04925	Run2	NP0084-MB4	SC253184	Study	human_1	human_1	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	116269	107298	107298	103535	91198	116269
+PC07578	Run3	NP0084-MB5	SC253184	Study	human_1	human_1	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	162932	130930	130930	124253	112958	162932
+PC04925	Run2	NP0084-MB4	SC253188	Study	human_1	human_1	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	128687	120467	120467	117393	106237	128687
+PC04925	Run2	NP0084-MB4	SC253190	Study	human_1	human_1	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	153833	141504	141504	136434	122251	153833
+PC04925	Run2	NP0084-MB4	SC253190	Study	human_1	human_1	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	120034	111053	111053	107644	96791	120034
+PC04925	Run2	NP0084-MB4	SC253197	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	139266	126523	126523	122444	109750	139266
+PC04925	Run2	NP0084-MB4	SC253197	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	162823	149343	149343	143465	122070	162823
+PC04925	Run2	NP0084-MB4	SC253199	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	154876	142015	142015	136375	112879	154876
+PC04925	Run2	NP0084-MB4	SC253199	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	128569	119298	119298	114444	95309	128569
+PC04925	Run2	NP0084-MB4	SC253199	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	133438	120592	120592	115238	98001	133438
+PC07578	Run3	NP0084-MB5	SC253201	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	176006	139438	139438	125537	105502	176006
+PC04925	Run2	NP0084-MB4	SC253201	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	140650	130481	130481	125057	102693	140650
+PC04925	Run2	NP0084-MB4	SC253201	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	170409	153283	153283	145258	119924	170409
+PC04925	Run2	NP0084-MB4	SC253203	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	118489	106550	106550	101889	88183	118489
+PC04925	Run2	NP0084-MB4	SC253203	Study	human_1	human_1	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	158038	143279	143279	137278	118809	158038
+PC07578	Run3	NP0084-MB5	SC304095	Study	human_1	human_1	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	77045	62665	62665	58855	51395	77045
+PC07578	Run3	NP0084-MB5	SC304096	Study	human_1	human_1	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	172547	141800	141800	128918	100355	172547
+PC07578	Run3	NP0084-MB5	SC304098	Study	human_1	human_1	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	203269	166467	166467	154555	137395	203269
+PC07578	Run3	NP0084-MB5	SC304929	Study	human_1	human_1	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	152705	125336	125336	116076	97527	152705
+PC07578	Run3	NP0084-MB5	SC304931	Study	human_1	human_1	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	165996	134982	134982	120057	97123	165996
+PC22190	Run4	NP0084-MB6	SC552955	Study	human_1	human_1	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	36218	33331	33331	32068	29083	36218
+PC22192	Run4	NP0084-MB6	SC552957	Study	human_1	human_1	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	52269	48896	48896	47857	45745	52269
+PC22190	Run4	NP0084-MB6	SC552969	Study	human_1	human_1	sFEMB-001-R-038	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	35821	33386	33386	32784	32771	35821
+PC22192	Run4	NP0084-MB6	SC552971	Study	human_1	human_1	sFEMB-001-R-038	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	53716	49651	49651	48657	48368	53716
+PC04924	Run1	NP0084-MB4	SC249360	Study	Robogut	DZ35298	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	116484	87705	87705	83661	79923	116484
+PC07578	Run3	NP0084-MB5	SC249360	Study	Robogut	DZ35298	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	159433	123092	123092	119347	113357	159433
+PC04924	Run1	NP0084-MB4	SC249365	Study	Robogut	DZ35298	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	125858	95993	95993	91518	86712	125858
+PC07578	Run3	NP0084-MB5	SC249365	Study	Robogut	DZ35298	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	165425	133263	133263	131776	128251	165425
+PC07578	Run3	NP0084-MB5	SC249382	Study	Robogut	DZ35298	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	145652	115835	115835	113841	107825	145652
+PC04924	Run1	NP0084-MB4	SC249382	Study	Robogut	DZ35298	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	109011	83449	83449	79813	76132	109011
+PC04924	Run1	NP0084-MB4	SC249385	Study	Robogut	DZ35298	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	125095	90409	90409	85134	77978	125095
+PC07578	Run3	NP0084-MB5	SC249385	Study	Robogut	DZ35298	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	148085	117056	117056	113482	102224	148085
+PC07578	Run3	NP0084-MB5	SC249410	Study	Robogut	DZ35298	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	132761	104794	104794	103458	102444	132761
+PC04924	Run1	NP0084-MB4	SC249410	Study	Robogut	DZ35298	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	142273	105834	105834	100688	95736	142273
+PC04925	Run2	NP0084-MB4	SC249410	Study	Robogut	DZ35298	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	109314	97301	97301	95322	90064	109314
+PC04924	Run1	NP0084-MB4	SC249417	Study	Robogut	DZ35298	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	156717	117227	117227	111243	103319	156717
+PC04924	Run1	NP0084-MB4	SC249421	Study	Robogut	DZ35298	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	139689	105427	105427	100393	95798	139689
+PC07578	Run3	NP0084-MB5	SC249421	Study	Robogut	DZ35298	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	130223	99543	99543	96919	92889	130223
+PC07578	Run3	NP0084-MB5	SC249426	Study	Robogut	DZ35298	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	168435	130504	130504	127871	125664	168435
+PC04924	Run1	NP0084-MB4	SC249426	Study	Robogut	DZ35298	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	154407	112212	112212	106835	101630	154407
+PC04925	Run2	NP0084-MB4	SC249426	Study	Robogut	DZ35298	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	95582	84745	84745	83504	79786	95582
+PC07578	Run3	NP0084-MB5	SC249433	Study	Robogut	DZ35298	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	133366	103482	103482	100152	95316	133366
+PC04924	Run1	NP0084-MB4	SC249433	Study	Robogut	DZ35298	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	163021	126634	126634	119612	110621	163021
+PC04925	Run2	NP0084-MB4	SC249433	Study	Robogut	DZ35298	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	118355	108648	108648	105949	97731	118355
+PC07578	Run3	NP0084-MB5	SC249436	Study	Robogut	DZ35298	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	152950	122945	122945	119763	115018	152950
+PC04924	Run1	NP0084-MB4	SC249436	Study	Robogut	DZ35298	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	173966	128722	128722	120672	114530	173966
+PC04925	Run2	NP0084-MB4	SC249436	Study	Robogut	DZ35298	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	145470	134134	134134	130854	122546	145470
+PC04924	Run1	NP0084-MB4	SC249447	Study	Robogut	DZ35298	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	162443	119891	119891	110167	102661	162443
+PC04925	Run2	NP0084-MB4	SC249447	Study	Robogut	DZ35298	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	125331	113899	113899	109434	95415	125331
+PC04924	Run1	NP0084-MB4	SC249452	Study	Robogut	DZ35298	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	154474	119262	119262	112393	105604	154474
+PC04925	Run2	NP0084-MB4	SC253182	Study	Robogut	DZ35298	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	117852	108090	108090	107053	105551	117852
+PC07578	Run3	NP0084-MB5	SC253182	Study	Robogut	DZ35298	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	83327	65012	65012	64130	63820	83327
+PC04925	Run2	NP0084-MB4	SC253186	Study	Robogut	DZ35298	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	128645	117106	117106	115935	114769	128645
+PC07578	Run3	NP0084-MB5	SC253186	Study	Robogut	DZ35298	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	152857	120443	120443	119362	118666	152857
+PC04925	Run2	NP0084-MB4	SC253193	Study	Robogut	DZ35298	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	123336	113480	113480	110936	104274	123336
+PC04925	Run2	NP0084-MB4	SC253200	Study	Robogut	DZ35298	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	126412	116003	116003	113730	106472	126412
+PC07578	Run3	NP0084-MB5	SC253200	Study	Robogut	DZ35298	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	146496	116132	116132	114828	113867	146496
+PC07578	Run3	NP0084-MB5	SC253845	Study	Robogut	DZ35298	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	141909	110133	110133	107863	104658	141909
+PC04924	Run1	NP0084-MB4	SC253845	Study	Robogut	DZ35298	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	145154	106329	106329	101472	98842	145154
+PC07578	Run3	NP0084-MB5	SC253846	Study	Robogut	DZ35298	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	170692	131783	131783	128970	124810	170692
+PC04924	Run1	NP0084-MB4	SC253846	Study	Robogut	DZ35298	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	139888	103190	103190	98330	95061	139888
+PC04925	Run2	NP0084-MB4	SC253846	Study	Robogut	DZ35298	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	150908	134645	134645	131583	126180	150908
+PC07578	Run3	NP0084-MB5	SC304090	Study	Robogut	DZ35298	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	137009	111413	111413	107820	103084	137009
+PC07578	Run3	NP0084-MB5	SC304930	Study	Robogut	DZ35298	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	155559	126183	126183	122883	114769	155559
+PC22192	Run4	NP0084-MB6	SC552950	Study	Robogut	DZ35298	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	52298	48712	48712	47464	46094	52298
+PC22190	Run4	NP0084-MB6	SC552964	Study	Robogut	DZ35298	sFEMB-001-R-038	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	45926	42003	42003	40563	38558	45926
+PC22192	Run4	NP0084-MB6	SC553007	Study	Robogut	DZ35298	sFEMB-001-R-041	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	50611	46539	46539	45802	43712	50611
+PC22190	Run4	NP0084-MB6	SC553021	Study	Robogut	DZ35298	sFEMB-001-R-042	ThermoFisher	MagMax Microbiome Ultra Kit	KingFisher	Standard	TissueLyzer	Plate	48408	44709	44709	43724	40243	48408
+PC04924	Run1	NP0084-MB4	SC249368	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	110081	76486	76486	70766	62810	110081
+PC07578	Run3	NP0084-MB5	SC249368	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	149042	101698	101698	99301	95757	149042
+PC04924	Run1	NP0084-MB4	SC249390	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	105748	72300	72300	66752	59004	105748
+PC04924	Run1	NP0084-MB4	SC249391	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	123181	83466	83466	77537	68571	123181
+PC04925	Run2	NP0084-MB4	SC249391	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-003	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Plate Adaptor	Plate	98660	88848	88848	82151	70605	98660
+PC07578	Run3	NP0084-MB5	SC249408	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	119001	89313	89313	86257	78112	119001
+PC04924	Run1	NP0084-MB4	SC249408	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	125890	83649	83649	76897	65823	125890
+PC04925	Run2	NP0084-MB4	SC249408	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	91014	80339	80339	74298	65055	91014
+PC04924	Run1	NP0084-MB4	SC249412	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	153876	105640	105640	96814	83149	153876
+PC04924	Run1	NP0084-MB4	SC249420	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	156047	108850	108850	100733	85472	156047
+PC07578	Run3	NP0084-MB5	SC249420	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	161378	119162	119162	115146	104215	161378
+PC04924	Run1	NP0084-MB4	SC249425	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	131756	91428	91428	83973	71072	131756
+PC04924	Run1	NP0084-MB4	SC249432	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	119918	87842	87842	81695	68558	119918
+PC04925	Run2	NP0084-MB4	SC249432	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	111172	101088	101088	96933	78922	111172
+PC07578	Run3	NP0084-MB5	SC249437	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	160537	124093	124093	118840	92084	160537
+PC04924	Run1	NP0084-MB4	SC249437	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	171942	124659	124659	115712	94444	171942
+PC04925	Run2	NP0084-MB4	SC249437	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-007	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	106780	96608	96608	91826	72602	106780
+PC04924	Run1	NP0084-MB4	SC249442	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	133005	94737	94737	86188	68837	133005
+PC04924	Run1	NP0084-MB4	SC249451	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	153276	100643	100643	92464	80189	153276
+PC07578	Run3	NP0084-MB5	SC249451	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	113914	87425	87425	84095	74538	113914
+PC04925	Run2	NP0084-MB4	SC253181	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	142038	127437	127437	117763	106159	142038
+PC07578	Run3	NP0084-MB5	SC253181	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	150154	110547	110547	107069	97733	150154
+PC04925	Run2	NP0084-MB4	SC253189	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-009	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	120148	108174	108174	100612	84391	120148
+PC04925	Run2	NP0084-MB4	SC253194	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	142480	123218	123218	115612	106486	142480
+PC04925	Run2	NP0084-MB4	SC253196	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	116107	103442	103442	97240	92310	116107
+PC07578	Run3	NP0084-MB5	SC253196	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	145852	109824	109824	107076	101836	145852
+PC04924	Run1	NP0084-MB4	SC253844	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	157766	107626	107626	99621	89829	157766
+PC04924	Run1	NP0084-MB4	SC253854	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-011	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	158539	110188	110188	101910	90301	158539
+PC07578	Run3	NP0084-MB5	SC304092	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	132797	99985	99985	96917	89229	132797
+PC07578	Run3	NP0084-MB5	SC304097	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-015	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	141958	106574	106574	104543	101192	141958
+PC07578	Run3	NP0084-MB5	SC304924	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	157433	116007	116007	110818	95218	157433
+PC07578	Run3	NP0084-MB5	SC304924	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	215575	157807	157807	152690	148291	215575
+PC07578	Run3	NP0084-MB5	SC304927	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	126309	95490	95490	91811	77041	126309
+PC22190	Run4	NP0084-MB6	SC552959	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	33648	31231	31231	31127	31127	33648
+PC22192	Run4	NP0084-MB6	SC553030	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-042	ThermoFisher	MagMax Microbiome Ultra Kit	KingFisher	Standard	TissueLyzer	Plate	53104	47935	47935	46825	40199	53104
+PC22192	Run4	NP0084-MB6	SC552960	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-037	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	54014	49864	49864	48181	34270	54014
+PC22192	Run4	NP0084-MB6	SC552974	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-038	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	52609	49038	49038	48039	42410	52609
+PC22190	Run4	NP0084-MB6	SC553031	Ext_Control	ZymoBiomics	D6310	sFEMB-001-R-042	ThermoFisher	MagMax Microbiome Ultra Kit	KingFisher	Standard	TissueLyzer	Plate	40288	35625	35625	34307	29827	40288
+PC04924	Run1	NP0084-MB4	SC249362	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	115886	80171	80171	73882	64375	115886
+PC07578	Run3	NP0084-MB5	SC249362	Ext_Control	ZymoBiomics	D6300	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	136506	98717	98717	95481	87808	136506

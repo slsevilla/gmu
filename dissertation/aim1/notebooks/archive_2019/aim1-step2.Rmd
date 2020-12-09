@@ -1,0 +1,714 @@
+---
+title: "Aim1_Step2"
+author: "S.Chill"
+date: "April 17, 2020"
+output: word_document
+---
+
+#To Update
+```{r}
+parent_dir = c("T:\\DCEG\\Projects\\MicroBiome\\Analysis\\Project_NP0084_MB4\\")
+project_name=c("Complete_Run\\MB4,MB5,MBpt6","Complete_Run\\MB6")
+manifest_name=c("NP0084-MB4_08_29_19_metadata.txt", "NP0084-MB6.txt")
+
+output_location=c("T:\\DCEG\\CGF\\TechTransfer\\Microbiome\\Extraction\\Optimization\\Fecal\\Fresh Fecal Optimization_2017.08\\Phase I\\Analysis\\NP0084-MB4,5,6\\R_Complete\\")
+
+sample_depth=100000
+reference_db=c("greengenes")
+taxa_levels=c("Family","Genus")
+```
+
+#Load required libraries
+############### 
+```{r}
+library("biom")
+library(ape)
+library(data.table)
+library(ggplot2)
+library(tm)
+library(vegan)
+library("biom")
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(scales)
+library(phyloseq)
+library(qiime2R)
+library(tibble)
+library(gridExtra)
+source("sources/miseqR.R")
+library(tidyverse)
+source("sources/ggrare.R") #github library: https://rdrr.io/github/gauravsk/ranacapa/
+library(ggplot2)
+```
+
+#Analysis
+############### 
+#Directory Creation
+```{r}
+#Create directories
+dir_create<-c("Data","OTUs","Taxa","Graphs")
+
+for(a in dir_create){
+ dir.create(paste(output_location,a,sep=""))
+}
+
+```
+
+
+#Create PhySeq Object
+```{r}
+count=1
+for (a in project_name){
+ print (a)
+ data_location = paste(parent_dir,a,sep="")
+
+ #Read OTUS
+ otus<-read_qza(paste(data_location,"\\Output\\qza_results\\table_dada2_qza_merged_parts_final\\table_dada2_merged_final_filt.qza",sep=""))
+ 
+ #Read rooted tree
+ tree<-read_qza(paste(data_location,"\\Output\\qza_results\\phylogeny_qza_results\\rooted_tree.qza",sep=""))
+ 
+ #Read Greengenes taxonomy file
+ taxonomy<-read_qza(paste(data_location,"\\Output\\qza_results\\taxonomy_qza_results\\taxonomy_",reference_db,".qza",sep=""))
+ 
+ #Edit table
+ tax_table<-do.call(rbind, strsplit(as.character(taxonomy$data$Taxon), "; "))
+   colnames(tax_table)<-c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
+   rownames(tax_table)<-taxonomy$data$Feature.ID
+ 
+ #read metadata
+ metadata<-read.table(paste(data_location,manifest_name[count],sep="\\"),sep='\t', header=T, row.names=1, comment="")
+ 
+ #Replace all Run IDs with shorthand
+ metadata$Run.ID <- replace(as.character(metadata$Run.ID), metadata$Run.ID == "180112_M01354_0104_000000000-BFN3F", "Run.1")
+ metadata$Run.ID <- replace(as.character(metadata$Run.ID), metadata$Run.ID == "180112_M03599_0134_000000000-BFD9Y", "Run.2")
+ metadata$Run.ID <- replace(as.character(metadata$Run.ID), metadata$Run.ID == "180328_M01354_0106_000000000-BFMHC", "Run.3")
+ metadata$Run.ID <- replace(as.character(metadata$Run.ID), metadata$Run.ID == "190617_M01354_0118_000000000-CHFG3", "Run.4")
+ 
+ #Create phylo object
+ phyloname<-paste("physeq_complete",count,sep="")
+ assign(phyloname,phyloseq(otu_table(otus$data, taxa_are_rows = T), phy_tree(tree$data), tax_table(tax_table), sample_data(metadata)))
+ 
+ phylo_number=count
+ count=count+1
+}
+```
+
+#Filter samples
+```{r}
+count=1
+#Create filtered list of samples
+for (a in project_name){
+ sample_name<-paste("samplelist1_passed_",count,sep="")
+ phy_name<-paste("physeq_complete",count,sep="")
+ assign(sample_name,as.list(sample_names(sample_data(get(phy_name))))) #create list of all samples within the phyloseq object
+ 
+ if(count>1){ #if there are more than one dataset, merge the sample data with overlaps only
+  merge_name<-paste("samplelist1_passed_",count-1,sep="")
+  
+  sample_list_intersect<-intersect(get(sample_name),get(merge_name)) #list of samples duplicated
+ } else{
+  sample_list_intersect<-get(sample_name) #first pass, intersect is named
+ }
+ count=count+1
+}
+
+#Remove all samples duplicated in phylo objects >1 - from objects >1 - do not need repeated samples
+count=2
+if(phylo_number>1){
+ 
+ for(i in 2:phylo_number){
+  phy_name<-paste("physeq_complete",count,sep="")
+  
+  for (b in sample_list_intersect){
+   assign(phy_name,subset_samples(get(phy_name),sample_names(get(phy_name))!=b)) 
+   
+  }
+  count=count+1
+ }
+}
+
+#Remove quarantined samples
+count=1
+for (a in project_name){
+ phy_name<-paste("physeq_complete",count,sep="")
+ 
+ assign(phy_name,subset_samples(get(phy_name),Vial.ID!="Quarantined"))
+ count=count+1
+}
+
+#Merge Sample Data
+sampledata1<-as.data.frame(sample_data(physeq_complete1))
+
+count=2
+if(phylo_number>1){
+ 
+ for (i in 2:phylo_number){
+  sample_name<-paste("sampledata",count,sep="")
+  phy_name<-paste("physeq_complete",count,sep="")
+  temp<-data.frame(lapply(sample_data(get(phy_name)),as.character), stringsAsFactors = FALSE)
+  rownames(temp)<-temp$Sample.ID
+  
+  for (a in colnames(temp)){
+   for (b in rownames(temp)){
+    
+    if(is.factor(sampledata1[[a]]) && is.na(table((levels(sampledata1[[a]])==temp[b,a]))["TRUE"]) ){
+     levels(sampledata1[[a]])<-c(levels(sampledata1[[a]]),temp[b,a]) #if factor level doesn't exist in df, add it before adding variable
+    }
+    
+    sampledata1[b,a]<-temp[b,a]
+   }
+  }
+  count=count+1
+ }
+}
+
+```
+
+#Create merges of OTU, Tax for final phylo object - only for projects > 1
+```{r}
+otu_final<-as.data.frame(otu_table(physeq_complete1))
+
+count=2
+if(phylo_number>1){
+ 
+ for(i in 2:phylo_number){
+  otu_name<-paste("otu",count,sep="")
+  phy_name<-paste("physeq_complete",count,sep="")
+  assign(otu_name,as.data.frame(otu_table(get(phy_name))))
+  
+  for (a in colnames(get(otu_name))){
+   for (b in rownames(get(otu_name))){
+    otu_final[b,a]<-get(otu_name)[b,a]
+   }
+  }
+  
+ count=count+1
+ }
+
+ otu<-otu_table(otu_final,taxa_are_rows = TRUE)
+ otu[is.na(otu)] <- 0 #convert NAs to 0
+
+ #Create taxa tables by flowcell (pulled from created filtered phyloseq objects)
+ tax_final<-as.data.frame(tax_table(physeq_complete1))
+ 
+ count=2
+ if(phylo_number>1){
+  for (i in 2:phylo_number){
+   tax_name<-paste("tax",count,sep="")
+   phy_name<-paste("physeq_complete",count,sep="")
+   assign(tax_name,as.data.frame(tax_table(get(phy_name))))
+   
+   for (a in colnames(get(tax_name))){
+    for (b in rownames(get(tax_name))){
+     tax_final[b,a]<-get(tax_name)[b,a]
+    }
+   }
+   count=count+1
+  }
+ }
+ 
+ tax<-as.matrix(tax_final) #Convert to matrix - str that phyloseq requires
+ tax<-tax_table(tax)
+ 
+ #Merge final object
+ physeq_complete<-phyloseq(otu,tax,sampledata1) #merged phylo object
+ random_tree = rtree(ntaxa(physeq_complete1), rooted=TRUE, tip.label=taxa_names(physeq_complete1))
+ physeq_complete<-phyloseq(otu,tax,sampledata1,random_tree) #merged phylo object
+
+} else{
+ physeq_complete<-physeq_complete1
+ otu<-otu_table(physeq_complete,taxa_are_rows = TRUE)
+}
+
+#Output
+s<-summary(sample_data(physeq_complete))
+capture.output(s, file = paste(output_location,"Data\\summary_prefilter.txt",sep=""))
+write.csv(otu, file = paste(output_location,"OTUs\\otu_table.csv",sep=""))
+
+```
+
+#Prune for bacteria only, Create prefilter summary files
+```{r}
+#Only bacteria
+physeq_filt<-physeq_complete %>%
+  subset_taxa(
+    Kingdom == "k__Bacteria" &
+    Family  != "k__Bacteria; p__Proteobacteria; c__Alphaproteobacteria; o__Rickettsiales; f__mitochondria" &
+    Class   != "k__Bacteria; p__Cyanobacteria; c__Chloroplast"
+  )
+
+#Print summaries
+sample_summary<-function(phyobj, filtcat, filename){
+ if(filtcat==""){
+  s<-summary(sample_data(phyobj))
+ }
+ else{
+  s<-summary(sample_data(phyobj)[,filtcat])
+ }
+ capture.output(s, file = paste(output_location,filename,sep=""))
+}
+
+sample_summary(physeq_filt,"Sample.Type","Data\\summary_prefilter_sample.type.txt")
+sample_summary(physeq_filt,"Sample.Cat","Data\\summary_prefilter_sample.cat.txt")
+
+```
+
+#Determine significance - TTests
+```{r}
+sig_values<-function(phyloobject,testname,filtercat,filtlist){
+ results = estimate_richness(phyloobject, measures = testname)
+
+ d = sample_data(phyloobject)
+ 
+ # calculate t-test
+ #Resource: https://www.investopedia.com/terms/t/t-test.asp
+ samp1 = results[d[,filtercat] == filtlist[1],]
+ samp2 = results[d[,filtercat] == filtlist[2],]
+
+ #Check normality
+ #Resource: http://www.sthda.com/english/wiki/normality-test-in-r
+ test1<-shapiro.test(samp1)
+ test2<-shapiro.test(samp2)
+ 
+ cat ("*********************************",sep="\n")
+ cat ("Results for the", testname, "test with the following variables:")
+ cat("",sep="\n")
+ cat(filtlist[1], "and",filtlist[2])
+ cat("",sep="\n")
+ cat ("*********************************",sep="\n")
+
+ 
+ if(test1$p.value<.05 || test1$p.value<0.5){
+  print ("********* Results: Pairing does not pass normality (p value <0.05)")
+  print(test1)
+  print(test2)
+  qqplot(samp1,samp2)
+ } else {
+  print ("********* Results: Pairing passes normality (p value >0.05")
+  
+  #Check Variance
+  #Resource: http://www.sthda.com/english/wiki/f-test-compare-two-variances-in-r
+  test1<-var.test(samp1,samp2)
+  
+  if(test1$p.value<0.05){
+   print ("********* Results: Paring does not pass variance test (p value <0.05; considered in t-test")
+   print(var.test(samp1,samp2))
+   
+   test1<-t.test(samp1, samp2,var.equal = FALSE)
+   
+  } else{
+   print ("********* Results: Paring passes the variance test (p value >0.05")
+   test1<-t.test(samp1, samp2)
+  }
+  
+  #Print result meaning
+  if(test1$p.value<0.05){
+   print ("********* Results: The results from are significant")
+  } else{
+   print ("********* Results: The results from are NOT significant")
+  }
+  print(test1)
+ }
+}
+
+#Run test
+test_list<-c('Shannon')
+sub_type<-c("Source.Descrip")
+sig_options<-c("MSA1000","MSA1001","MSA1002","MSA1003")
+
+#matrix will include repeats - need to delete them based on the number of variables
+#del_list<-c(3,5,6) #For 3 variables
+del_list<-c(4,7,8,10,11,12) #for 4 variables
+
+for (a in test_list){
+ 
+ #Create matrix of options
+ sig_matrix<-permutations(n=length(sig_options),r=2,v=sig_options)
+ rownames(sig_matrix)<-c(1:nrow(sig_matrix))
+ 
+ #Clean matrix
+ sig_matrix<-sig_matrix[!rownames(sig_matrix) %in% del_list, ]
+ 
+ for (i in 1:choose(n=length(sig_options),k=2)){ #calculates the number of permutations without repeating
+  sig_paring<-c(sig_matrix[i,1],sig_matrix[i,2])
+  
+  sig_values(physeq_scale,test_list,sub_type,sig_paring)
+ }
+}
+```
+
+#Determine significance - ANOVA
+```{r}
+sig_mul_values<-function(phyloobject,testname,filtercat){
+ results = estimate_richness(phyloobject, measures = testname)
+
+ #create merged column
+ temp<-sample_data(phyloobject)
+ results<-cbind(results,temp[,filtercat])
+ 
+ #Check normality
+ #Resource: http://www.sthda.com/english/wiki/normality-test-in-r
+ test1<-shapiro.test(results[,1])
+ 
+ cat ("*********************************",sep="\n")
+ cat ("Results for the", testname, "test")
+ cat ("",sep="\n")
+ cat ("*********************************",sep="\n")
+
+ 
+ if(test1$p.value<.05){
+  print ("********* Results: Data does not pass normality (p value <0.05)")
+  print(test1)
+  plot(lm(formula=results[,1]~results[,2],data=results))
+
+ } else {
+  print ("********* Results: Pairing passes normality (p value >0.05")
+  
+  # Compute the analysis of variance
+  #Resource: http://www.sthda.com/english/wiki/one-way-anova-test-in-r
+  res.aov <- aov(results[,1]~results[,2], data = results)
+  # Summary of the analysis
+  summary(res.aov)
+ }
+}
+
+#Run test
+#test_list<-c("Observed","Chao1","ACE","Shannon","Simpson","Fisher")
+test_list<-c("Chao1")
+sub_type<-c("Run.ID")
+#sub_type<-sub_type[c(2,6,8,9,10,12,13,14,15,16)]
+
+#Subfilter, as necessary
+colnames(sample_data(physeq_filt))
+unique(sample_data(physeq_filt)$Sample.Type)
+
+subset_list<-c("Study")
+physeq_scale_sub<-subset_samples(physeq_filt, Sample.Type %in% subset_list)
+
+subset_list<-c("sFEMB-001-R-011","sFEMB-001-R-041","sFEMB-001-R-038","sFEMB-001-R-037","sFEMB-001-R-039","sFEMB-001-R-042","sFEMB-001-R-009")
+subset_list<-c("sFEMB-001-R-038","sFEMB-001-R-037")
+physeq_scale_sub<-subset_samples(physeq_filt, Reciept %in% subset_list)
+physeq_scale_sub
+
+
+for (a in test_list){
+ for (b in sub_type){
+  sig_mul_values(physeq_scale_sub,a,b)
+ }
+}
+```
+
+#Filter taxa >.001 ; Determine read counts and plot
+```{r}
+# Histogram of sample read counts by sampletype
+histo_filtering_graph <- function(phyobject, filtcat, filename) {
+ 
+# Make a data frame with a column for the read counts of each sample
+sample_sum_df<-data.frame(sum = sample_sums(phyobject),sample_data(phyobject))
+colnames(sample_sum_df)
+ 
+ p1<-ggplot(sample_sum_df, aes(x = sum, fill=get(filtcat))) + 
+  labs(fill=filtcat) +
+  geom_histogram(binwidth = 2500) +
+  xlab("Sequencing Reads") +
+  ylab("Number of Samples") +
+  ggtitle("Distribution of Sample Sequencing Depth")
+
+ #Save file
+ file_name =paste(output_location,filename,sep="")
+ tiff(file_name, width=800)
+ print(p1)
+ dev.off()
+}
+
+#Create filtered phyloobject #All samples
+physeq_filt = filter_taxa(physeq_filt, function(x) mean(x) > 1e-2, TRUE)
+histo_filtering_graph(physeq_filt, "Sample.Type","Graphs\\SeqDepth_prefilter.tiff")
+histo_filtering_graph(physeq_filt, "Run.ID","Graphs\\SeqDepth_prefilter_runid.tiff")
+
+#Subset
+sub_types<-c("Water","PCR.Blank","NTC.Blank")
+physeq_filt_sub <- subset_samples(physeq_filt, Source.Descrip %in% sub_types)
+histo_filtering_graph(physeq_filt_sub, "Source.Descrip", "Graphs\\SeqDepth_prefilter_blanks.tiff")
+
+#Subset
+sub_types<-c("Seq.Control")
+physeq_filt_sub <- subset_samples(physeq_filt, Sample.Type %in% sub_types)
+histo_filtering_graph(physeq_filt_sub, "Source.Descrip", "Graphs\\SeqDepth_prefilter_seq.tiff")
+histo_filtering_graph(physeq_filt_sub, "Run.ID", "Graphs\\SeqDepth_prefilter_seq_runid.tiff")
+
+#Subset
+sub_types<-c("Ext.Control")
+physeq_filt_sub <- subset_samples(physeq_filt, Sample.Type %in% sub_types)
+histo_filtering_graph(physeq_filt_sub, "Ext.Kit","Graphs\\SeqDepth_prefilter_ext_extkit.tiff")
+```
+
+#Filter samples with less than 10000 reads: Review filtered read counts and plot
+```{r}
+#All samples
+physeq_filt_prune = prune_samples(sample_sums(physeq_filt) > 10000, physeq_filt)
+
+histo_filtering_graph(physeq_filt_prune,"Sample.Type", "Graphs\\SeqDepth_postfilter.tiff")
+histo_filtering_graph(physeq_filt_prune,"Run.ID", "Graphs\\SeqDepth_postfilter_runid.tiff") # Histogram of sample read counts by Run id - explain two clusters
+histo_filtering_graph(physeq_filt_prune,"Source.Descrip", "Graphs\\SeqDepth_postfilter_sdesc.tiff") # Histogram of sample read counts by Run id - explain two clusters
+
+#Print summaries
+sample_summary(physeq_filt_prune,"","Data\\summary_postfilter.txt")
+sample_summary(physeq_filt_prune,"Sample.Type","Data\\summary_postfilter_Sample.Type.txt")
+sample_summary(physeq_filt_prune,"Sample.Cat","Data\\summary_postfilter_Sample.Cat.txt")
+
+# Subset
+sub_types<-c("Water","PCR.Blank","NTC.Blank")
+physeq_filt_sub <- subset_samples(physeq_filt_prune, Source.Descrip %in% sub_types)
+histo_filtering_graph(physeq_filt_sub, "Source.Descrip", "Graphs\\SeqDepth_postfilter_blanks.tiff")
+
+sub_types<-c("Seq.Control")
+physeq_filt_sub <- subset_samples(physeq_filt_prune, Sample.Type %in% sub_types)
+histo_filtering_graph(physeq_filt_sub, "Source.Descrip", "Graphs\\SeqDepth_postfilter_seq.tiff")
+
+sub_types<-c("Ext.Control")
+physeq_filt_sub <- subset_samples(physeq_filt_prune, Sample.Type %in% sub_types)
+histo_filtering_graph(physeq_filt_sub, "Ext.Kit","Graphs\\SeqDepth_postfilter_ext_extkit.tiff")
+histo_filtering_graph(physeq_filt_sub, "Source.Descrip","Graphs\\SeqDepth_postfilter_ext_sdesc.tiff")
+
+sub_types<-c("DZ35298", "IE")
+physeq_filt_sub <- subset_samples(physeq_filt_prune, SubjectID %in% sub_types)
+histo_filtering_graph(physeq_filt_sub, "Ext.Kit","Graphs\\SeqDepth_postfilter_study_extkit.tiff")
+histo_filtering_graph(physeq_filt_sub, "SubjectID","Graphs\\SeqDepth_postfilter_study_sub.tiff")
+```
+
+#Subset filtered data, sample to specified depth
+```{r}
+# Create rarefaction curve
+rare_curves<-function(phyobject,coloroption,facetchoice,graphtitle){
+ p1 <- ggrare(phyobject, step = 1000, color = coloroption, se = FALSE)
+ 
+ if(facetchoice!=""){
+  p1 <- p1 + facet_wrap(~get(facetchoice))
+ }
+ 
+ file_name =paste(output_location,"Graphs\\",graphtitle,".tiff",sep="")
+ tiff(file_name, width=800)
+ print(p1)
+ dev.off()
+}
+
+downsample_reads<-function(phyobject){
+ temp<-phyobject %>% scale_reads(n=sample_depth)
+ return(temp)
+}
+
+#Curve before scaling
+rare_curves(physeq_filt_prune,"Run.ID","","Rarecurve_pre-ds")
+rare_curves(physeq_filt_prune,"Run.ID","Sample.Type","Rarecurve_pre-ds_sampletype")
+
+#Subset
+subset_list<-c("Seq.Control") 
+physeq_scale_sub<-subset_samples(physeq_filt_prune, Sample.Type %in% subset_list)
+rare_curves(physeq_scale_sub,"Run.ID","Sample.Type","Rarecurve_pre-ds_SeqC")
+rare_curves(physeq_scale_sub,"Run.ID","Source.Descrip","Rarecurve_pre-ds_SeqC_SDesc")
+
+#After scaling
+physeq_scale<-downsample_reads(physeq_filt_prune)
+rare_curves(physeq_scale,"Run.ID","","Rarecurve_post-ds")
+rare_curves(physeq_scale,"Run.ID","Sample.Type","Rarecurve_post-ds_sampletype")
+
+#Subset
+subset_list<-c("Ext.Control") 
+physeq_scale_sub<-subset_samples(physeq_scale, Sample.Type %in% subset_list)
+rare_curves(physeq_scale_sub,"Run.ID","","Rarecurve_post-ds_ExtC")
+
+subset_list<-c("Seq.Control") 
+physeq_scale_sub<-subset_samples(physeq_scale, Sample.Type %in% subset_list)
+rare_curves(physeq_scale_sub,"Run.ID","Sample.Type","Rarecurve_post-ds_SeqC")
+rare_curves(physeq_scale_sub,"Run.ID","Source.Descrip","Rarecurve_post-ds_SeqC_SDesc")
+
+```
+
+#Alpha Diversity - All samples, Run ID
+```{r}
+plot_diversity<-function(phyobject,filter,subfeat){
+ p<-plot_richness(phyobject, x=filter) + geom_boxplot()
+ file_name =paste(output_location,"Graphs\\alphadiv_",filter,"_",subfeat,".tiff",sep="")
+ tiff(file_name, width=800)
+ print(p)
+ dev.off()
+} 
+
+#Include all samples
+alpha_plots<-c("Sample.Type","Run.ID","Ext.Kit")
+
+for (a in alpha_plots){
+ plot_diversity(physeq_scale,a,"all")
+}
+
+#Subset for study samples only
+unique(sample_data(physeq_scale)$Sample.Type)
+
+subset_list<-c("Study")
+physeq_scale_sub<-subset_samples(physeq_scale, Sample.Type %in% subset_list)
+
+for (a in alpha_plots){
+ plot_diversity(physeq_scale_sub,a,"studyonly")
+}
+
+```
+
+#Beta diversity
+```{r}
+plot_beta<-function(phyobj,type,dist_meas,colby){
+ ordu = ordinate(phyobj, type, dist_meas, weighted=TRUE)
+ p1<-plot_ordination(phyobj, ordu, color=colby,title=paste("Beta Div (", type,") by ", colby,sep=""))
+ 
+ allGroupsColors<- c("grey0")
+ allGroupsColors<-append(allGroupsColors,brewer.pal(n = 9, name = "Set1"))
+ allGroupsColors<-append(allGroupsColors,brewer.pal(n = 12, name = "Paired"))
+
+ p1<-p1 + geom_point(size = 4) + scale_color_manual(values = allGroupsColors)
+
+ tiff(paste(output_location,"\\Graphs\\betadiv_",type,"_",colby,".tiff",sep=""))
+ grid.draw(p1)
+ dev.off()
+ 
+}
+
+plot_beta(physeq_scale,"PCoA","unifrac","Sample.Type")
+plot_beta(physeq_scale,"PCoA","unifrac","Ext.Kit")
+#plot_beta(physeq_scale,"NMDS","bray","Sample.Type")
+
+
+```
+
+#Save datatables for downstream use
+```{r}
+split_phyloobject<-function(taxa_level,physeqobject,ref_db,filename){
+ 
+ # Create a factor corresponding to the taxalevel
+ taxfac = factor(tax_table(physeqobject)[, taxa_level])
+  
+ # Tabulate the counts for each genera in each sample
+ taxtab = apply(otu_table(physeqobject), MARGIN = 2, function(x) {
+  tapply(x, INDEX = taxfac, FUN = sum, na.rm = TRUE, simplify = TRUE)
+ })
+ taxtab<-as.data.frame(taxtab)
+  
+ for (a in rownames(taxtab)){
+  taxa<-a
+  #Greengenes and silva have different taxonomic naming schemes - must address each
+  #If silva
+  if(!reference_db=="greengenes"){
+    
+   if(grepl("Unassigned",taxa)){ #Silva has unassigned tax 
+    taxtab[a,taxa_level]<-"Unassigned"
+     
+    #Genus and family levels will be named different (genus: D5, family: D4)
+    #If Genus
+   } else if(ref_db=="Genus"){
+    if(!grepl("D_5__",taxa)){ #if the name includes a D_ and number less than 5, it will be from a higher tax level
+     taxtab[a,taxa_level]<-"HigherGenus"
+    } else{
+     colname_update<-gsub("D_\\d__","",taxa) #Need to remove the formatting of taxonmy for each viewing downstream
+     taxtab[a,taxa_level]<-colname_update
+    }
+   #If not Genus
+   } else {
+    if(!grepl("D_4__",taxa)){
+     taxtab[a,taxa_level]<-"HigherFamily"
+    } else{
+     colname_update<-gsub("D_\\d__","",taxa)
+     taxtab[a,taxa_level]<-colname_update
+    }
+   }
+  #If greengenes
+  } else{
+   
+   if(taxa_level=="Genus"){
+    if(!grepl("g__",taxa)){
+     taxtab[a,taxa_level]<-"HigherGenus"
+    } else{
+     colname_update<-str_remove(a, "g__") #Need to remove the formatting of taxonmy for each viewing downstream
+     colname_update<-gsub("[","",colname_update,fixed=TRUE) #fixed = TRUE disables regex
+     colname_update<-gsub("]","",colname_update,fixed=TRUE)
+     taxtab[a,taxa_level]<-colname_update
+    }
+   #If higher than genus
+   } else{
+    if(!grepl("f__",taxa)){
+     taxtab[a,taxa_level]<-"HigherFamily"
+    } else{
+     colname_update<-str_remove(a, "f__") #Need to remove the formatting of taxonmy for each viewing downstream
+     colname_update<-gsub("[","",colname_update,fixed=TRUE) #fixed = TRUE disables regex
+     colname_update<-gsub("]","",colname_update,fixed=TRUE)
+     taxtab[a,taxa_level]<-colname_update
+    }
+   }
+  }
+ }
+  
+ taxtab<-aggregate(taxtab[-ncol(taxtab)],by=list(taxtab[,taxa_level]),FUN="sum") #use -ncol since first col should not be summed
+   
+ #Check if there is a blank first column because any unassigned taxa (originally was "g__") will be blank due to above
+ if(taxtab[1,1]==" "){
+  taxtab[1,1]<-"Unknown"
+ }
+ 
+ taxtab<-t(taxtab) #transpose for downstream metadata matching
+ colnames(taxtab)<-taxtab[1,]
+ taxtab<-taxtab[-1,]
+ colnames(taxtab) <- gsub(" ", "", colnames(taxtab)) #Remove any spaces in names
+  
+ file_name =paste(output_location,"Taxa\\taxa_",taxa_level,"_",ref_db,"_",filename,".csv",sep="")
+ write.csv(taxtab,file_name)
+  
+ metatab <- as.data.frame(sample_data(physeqobject))
+ file_name =paste(output_location,"Taxa\\metadata_",taxa_level,"_",ref_db,"_",filename,".csv",sep="")
+ write.csv(metatab,file_name)
+
+}
+
+#Subset data
+taxa_levels<-c("Genus","Family")
+
+#Seq Controls
+subset_list<-c("Seq.Control") #Ext.Control Seq.Control Study
+physeq_scale_sub<-subset_samples(physeq_scale, Sample.Type %in% subset_list)
+for (a in taxa_levels){
+ split_phyloobject(a,physeq_scale_sub,reference_db,"seqcontrol") 
+}
+
+#Standard ext only
+subset_list<-c("Ext.Control")
+physeq_scale_sub<-subset_samples(physeq_scale, Sample.Type %in% subset_list)
+subset_list<-unique((sample_data(physeq_scale_sub)$Reciept))
+subset_list<-subset_list[1:22]
+physeq_scale_sub<-subset_samples(physeq_scale_sub, Reciept %in% subset_list)
+unique(sample_data(physeq_scale_sub)$Reciept)
+for (a in taxa_levels){
+ split_phyloobject(a,physeq_scale_sub,reference_db,"extcontrol_std") 
+}
+
+#Homo ext only
+subset_list<-c("Ext.Control")
+physeq_scale_sub<-subset_samples(physeq_scale, Sample.Type %in% subset_list)
+subset_list<-unique((sample_data(physeq_scale_sub)$Reciept))
+subset_list<-subset_list[23:34]
+physeq_scale_sub<-subset_samples(physeq_scale, Reciept %in% subset_list)
+unique(sample_data(physeq_scale_sub)$Reciept)
+for (a in taxa_levels){
+ split_phyloobject(a,physeq_scale_sub,reference_db,"extcontrol_hmo") 
+}
+
+#Study
+subset_list<-c("Study") #Ext.Control Seq.Control Study
+physeq_scale_sub<-subset_samples(physeq_scale, Sample.Type %in% subset_list)
+for (a in taxa_levels){
+ split_phyloobject(a,physeq_scale_sub,reference_db,"study") 
+}
+```
+
+#Save worktable
+```{r}
+save.image(paste(output_location,"workspace_",Sys.Date(),".RData",sep=""))
+```

@@ -1,0 +1,41 @@
+##############################
+#Reference Taxonomy
+ref_tax_db = ['/data/sevillas2/gmu/gg_taxonomy.txt', '/data/sevillas2/gmu/si_taxonomy.txt']
+#gg downloaded: https://mothur.org/w/images/6/68/Gg_13_8_99.taxonomy.tgz/
+##gg_13_8_otus/taxonomy/99_otu_taxonomy.txt
+#silva downloaded: https://www.arb-silva.de/download/archive/qiime/
+##SILVA_132_QIIME_release/taxonomy/16S_only/99/taxonomy_all_levels.txt
+out_dir = '/data/sevillas2/gmu/ref/'
+
+ref_tax_Dict = {}
+for i in ref_tax_db:
+    refNoExt = i.split('_')[0]
+    ref_tax_Dict[refNoExt] = (ref_dir + i)
+
+def get_taxref_full_path(wildcards):
+    """
+    """
+    (refFullPath) = ref_tax_Dict[wildcards.ref_tax]
+    return refFullPath
+
+rule all:
+  expand(out_dir + 'refdb_tax_{ref_raw}.qza',ref_raw=ref_tax_Dict.keys()),
+
+#recreate taxonomy files
+rule create_ref_tax:
+    """ Create the reference database to be used for taxonomic_classification
+    used unaligned reads for this - creates ''FeatureData[Taxonomy]''
+    """
+    input:
+        ref_tax = get_taxref_full_path
+    output:
+        o1 = out_dir + 'refdb_tax_{ref_tax}.qza'
+    shell:
+      """
+      module load qiime2;
+      qiime tools import \
+        --type 'FeatureData[Taxonomy]' \
+        --input-path {input.ref_tax} \
+        --input-format HeaderlessTSVTaxonomyFormat \
+        --output-path {output.o1}')
+      """

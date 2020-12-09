@@ -1,0 +1,11 @@
+Source-PCR-Plate	Run-ID	Project-ID	CGR-Sample-ID	Sample-Type	Sample-Des	Subject-ID	Reciept	Ext-Company	Ext-Kit	Ext-Robotics	Homo-Status	Homo-Method	Homo-Holder	input	filtered	denoised	merged	non-chimeric
+PC07578	Run3	NP0084-MB5	NTC-PC07578-H-12	Seq_Control	Seq_Blank	NTC_Blank								205	135	135	93	93
+PC04924	Run1	NP0084-MB4	Water-PC04924-G-12	Seq_Control	Seq_Blank	PCR_Blank								303	122	122	110	110
+PC04925	Run2	NP0084-MB4	Water-PC04925-G-12	Seq_Control	Seq_Blank	PCR_Blank								70	22	22	22	22
+PC04924	Run1	NP0084-MB4	SC249358	Ext_Control	art_col	DZ35322	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	89727	61850	61850	58682	58312
+PC04924	Run1	NP0084-MB4	SC249367	Ext_Control	Ext_Blank	Water	sFEMB-001-R-002	Qiagen	DSP Virus	QIASymphony	Standard	Vertical	Tubes	1080	680	680	612	612
+PC04924	Run1	NP0084-MB4	SC249415	Ext_Control	Ext_Blank	Water	sFEMB-001-R-005	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	74823	56179	56179	54242	53932
+PC04924	Run1	NP0084-MB4	SC249423	Ext_Control	Ext_Blank	Water	sFEMB-001-R-006	Qiagen	MagAttract PowerSoil DNA Kit	KingFisher	Standard	TissueLyzer	Plate	460	243	243	163	163
+PC04924	Run1	NP0084-MB4	SC249450	Ext_Control	Ext_Blank	Water	sFEMB-001-R-008	Qiagen	MagAttract PowerMicrobiome Kit	KingFisher	Standard	TissueLyzer	Plate	2341	1633	1633	1314	1314
+PC04925	Run2	NP0084-MB4	SC253202	Ext_Control	Ext_Blank	Water	sFEMB-001-R-010	Qiagen	QIAamp with Modifications	None	Standard	Vertical	Tubes	3235	2722	2722	2620	2620
+PC07578	Run3	NP0084-MB5	SC304925	Study	human_1	human_1	sFEMB-001-R-016	ZymoResearch	96 MagBead DNA Extraction Kit	None	Standard	Vertical	Tubes	962	799	799	603	603

@@ -1,0 +1,115 @@
+Mount drives
+    sudo mount -t vboxsf Analysis ~/Public
+    sudo mount -t vboxsf Data ~/Data
+
+    #Error given: VirtualBox: mount.vboxsf: mounting failed with the error:
+    #No such device [closed]
+    $cd /opt/VBoxGuestAdditions-*/init
+    $sudo ./vboxadd setup
+##########################
+Jupyter notebook
+	Error with matlibplot - fixed by:
+
+		conda install freetype
+		conda install libpng
+		conda install matplotlib
+##########################
+QIIME2
+  following: https://docs.qiime2.org/2019.1/install/native/
+
+  install most recent miniconda 3 - multiple failures
+
+  install miniconda3 from 01/2019 - multiple failures
+  https://repo.anaconda.com/archive/
+
+  install miniconda2 - few failures
+  https://repo.anaconda.com/archive/
+    - bioconductor-summarizedexperiment=1.8.0
+    - r-tibble=1.4.2
+
+  followed notes: update yml
+  https://forum.qiime2.org/t/conda-install-error-with-qiime2-2019-1/9828
+  conda-forge/label/gcc7
+  conda-forge/label/cf201901
+
+  failures for size
+  -increase base system size
+
+  failures still
+  - run conda update conda
+
+  SUCCESS
+  conda activate qiime2-2019.1
+
+  download ERA file accessions
+  - click download report TSV
+  https://www.ebi.ac.uk/ena/browser/view/PRJEB11419
+
+  download python files
+  add two to alias
+  https://github.com/enasequence/enaBrowserTools
+
+  download ERR files
+  https://www.ebi.ac.uk/training/online/course/nucleotide-sequence-data-resources-ebi/accessing-ena-data-programmatically
+  https://github.com/enasequence/enaBrowserTools
+  usage: enaDataGet [-h] [-f {embl,fasta,submitted,fastq,sra}] [-d DEST] [-w]
+                    [-m] [-i] [-a] [-as ASPERA_SETTINGS] [-v]
+                    accession
+
+  Run python script that calls to command line
+  https://stackabuse.com/executing-shell-commands-with-python/
+
+  Install snakemake
+  https://snakemake.readthedocs.io/en/stable/getting_started/installation.html
+
+  $conda install -c conda-forge mamba
+  $ mamba create -c conda-forge -c bioconda -n snakemake snakemake
+  $ conda activate snakemake
+  $ snakemake --help
+##########################
+Snakemake
+  Can't create snakmake sep env
+
+  instead use
+  $sudo apt install snakemake
+
+########################
+Processing
+python has problems with ~ character
+use os.path.expanduser to expand but this is a pain
+
+restructure the dir so that all files are within the same drive
+run perl move_files
+C:\Users\slsevilla\Google Drive\MyDocuments_Current\Education\George Mason University\Dissertation\Analysis\Aim3\notebooks
+
+##not needed
+sudo mount -t vboxsf Analysis ~/Public
+##########################
+Startup
+  sudo mount -t vboxsf Data ~/Data
+  source activate qiime2-2019.1
+  bash Data/notebooks/QIIME_pipeline_v2/Q2_wrapper.sh
+
+##########################
+dada2 denoise step failed, attemped to readjust settings
+trim_l_f: 0
+trim_l_r: 0
+trunc_len_f: 0
+trunc_len_r: 0
+
+#failed
+trim_l_f: 0
+trim_l_r: 75
+trunc_len_f: 0
+trunc_len_r: 0
+
+#all failed - determined samples are single-end, not paired (reviewed on EBI by Run and Project - show additional attributes)
+#made updates to snakefile to match the single end data
+
+##########################
+taxonomic_classification failed
+#ref has to be Taxonomy - sci-kit used to create oriignal file is outdated... had to completely recreate the file
+- permanent location: E:\My Files\My Files\Dissertation\Analysis\Aim1\Project_taxclass\training
+- temp location: E:\My Files\My Files\Dissertation\Analysis\Aim3\notebooks\training\
+- working location: /home/slsevilla/Data/notebooks/
+- RAM was not sufficient - ended up downloading the file here: https://docs.qiime2.org/2019.1/data-resources/
