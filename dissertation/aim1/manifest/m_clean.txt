@@ -1,312 +1,312 @@
-Source-PCR-Plate	Run-ID	Project-ID	CGR-Sample-ID	Sample-Type	Sample-Des	Subject-ID	Reciept	Ext-Company	Ext-Kit	Ext-Robotics	Homo-Status	Homo-Method	Homo-Holder	Mag-Col	IR
-PC04924	SQ-1	NP0084-MB4	SC249383	Ext_Control	art_col	M22	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249388	Ext_Control	art_col	M22	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04925	SQ-2	NP0084-MB4	SC249387	Ext_Control	Ext_Blank	BW	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC249387	Ext_Control	Ext_Blank	BW	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249393	Ext_Control	Ext_Blank	BW	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249384	Study	H01	H01	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249386	Study	H01	H01	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249389	Study	H01	H01	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249392	Study	H01	H01	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC249382	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249382	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04925	SQ-2	NP0084-MB4	SC249382	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249385	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC249385	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249390	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC249391	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04924	SQ-1	NP0084-MB4	SC249391	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC04925	SQ-2	NP0084-MB4	SC249391	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304093	Ext_Control	art_col	M22	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304094	Ext_Control	Ext_Blank	BW	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304099	Ext_Control	Ext_Blank	BW	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304091	Study	H01	H01	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304095	Study	H01	H01	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304096	Study	H01	H01	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304098	Study	H01	H01	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304090	Study	Robogut	M98	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304092	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304097	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304926	Ext_Control	art_col	M22	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304928	Ext_Control	Ext_Blank	BW	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304925	Study	H01	H01	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304925	Study	H01	H01	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304929	Study	H01	H01	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304931	Study	H01	H01	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304930	Study	Robogut	M98	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304924	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304924	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC07578	SQ-3	NP0084-MB5	SC304927	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22192	SQ-4	NP0084-MB6	SC553011	Ext_Control	art_col	M16	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22190	SQ-4	NP0084-MB6	SC553005	Ext_Control	Ext_Blank	BW	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22192	SQ-4	NP0084-MB6	SC553009	Ext_Control	Ext_Blank	BW	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22190	SQ-4	NP0084-MB6	SC553018	Ext_Control	Ext_Blank	BW	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22190	SQ-4	NP0084-MB6	SC553012	Study	H01	H01	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22192	SQ-4	NP0084-MB6	SC553014	Study	H01	H01	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22192	SQ-4	NP0084-MB6	SC553007	Study	Robogut	M98	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22192	SQ-4	NP0084-MB6	SC553016	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22190	SQ-4	NP0084-MB6	SC553017	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
-PC22192	SQ-4	NP0084-MB6	SC552982	Ext_Control	art_col	M16	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22192	SQ-4	NP0084-MB6	SC552976	Ext_Control	Ext_Blank	BW	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22190	SQ-4	NP0084-MB6	SC552980	Ext_Control	Ext_Blank	BW	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22192	SQ-4	NP0084-MB6	SC552989	Ext_Control	Ext_Blank	BW	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22190	SQ-4	NP0084-MB6	SC552983	Study	H01	H01	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22192	SQ-4	NP0084-MB6	SC552985	Study	H01	H01	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22192	SQ-4	NP0084-MB6	SC552978	Study	Robogut	M98	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22190	SQ-4	NP0084-MB6	SC552987	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22190	SQ-4	NP0084-MB6	SC552990	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC22192	SQ-4	NP0084-MB6	SC552988	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
-PC04924	SQ-1	NP0084-MB4	SC249358	Ext_Control	art_col	M22	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249363	Ext_Control	art_col	M22	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC249366	Ext_Control	Ext_Blank	BW	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC249366	Ext_Control	Ext_Blank	BW	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249367	Ext_Control	Ext_Blank	BW	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249359	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC249359	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249361	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC249361	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC249361	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC249364	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249364	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC249364	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC249369	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249369	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC249369	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249360	Study	Robogut	M98	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC249360	Study	Robogut	M98	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249365	Study	Robogut	M98	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC249365	Study	Robogut	M98	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249368	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC249368	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249362	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC249362	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253848	Ext_Control	art_col	M22	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253851	Ext_Control	art_col	M22	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253853	Ext_Control	Ext_Blank	BW	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253843	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC253843	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253847	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC253847	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC253849	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253849	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC253849	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC253852	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253852	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC253852	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC253845	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253845	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC253845	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC07578	SQ-3	NP0084-MB5	SC253846	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253846	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04925	SQ-2	NP0084-MB4	SC253846	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253844	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC253854	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
-PC04924	SQ-1	NP0084-MB4	SC249434	Ext_Control	art_col	M22	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249439	Ext_Control	art_col	M22	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249439	Ext_Control	art_col	M22	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249431	Ext_Control	Ext_Blank	BW	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249438	Ext_Control	Ext_Blank	BW	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249430	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249430	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249430	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249435	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249435	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249440	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249440	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249441	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249441	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249441	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249433	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249433	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249433	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249436	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249436	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249436	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249432	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249432	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249437	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249437	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249437	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249443	Ext_Control	art_col	M22	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249443	Ext_Control	art_col	M22	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249446	Ext_Control	art_col	M22	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249444	Ext_Control	Ext_Blank	BW	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249450	Ext_Control	Ext_Blank	BW	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249445	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249445	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249448	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249448	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249448	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249448	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249449	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249449	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249453	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249453	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249453	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249447	Study	Robogut	M98	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249447	Study	Robogut	M98	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249452	Study	Robogut	M98	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249442	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249451	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249451	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552968	Ext_Control	art_col	M22	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552962	Ext_Control	Ext_Blank	BW	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552966	Ext_Control	Ext_Blank	BW	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552975	Ext_Control	Ext_Blank	BW	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552969	Study	H01	H01	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552971	Study	H01	H01	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552964	Study	Robogut	M98	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552973	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552974	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249409	Ext_Control	art_col	M22	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249413	Ext_Control	art_col	M22	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249406	Ext_Control	Ext_Blank	BW	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249415	Ext_Control	Ext_Blank	BW	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249407	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249411	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249411	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249411	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249414	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249414	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249414	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249416	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249416	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249410	Study	Robogut	M98	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249410	Study	Robogut	M98	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249410	Study	Robogut	M98	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249417	Study	Robogut	M98	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249408	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249408	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249408	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249412	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249427	Ext_Control	art_col	M22	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249428	Ext_Control	art_col	M22	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249422	Ext_Control	Ext_Blank	BW	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249422	Ext_Control	Ext_Blank	BW	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249423	Ext_Control	Ext_Blank	BW	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249418	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249418	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249419	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249419	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249424	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249424	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249424	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249429	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249429	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249429	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249421	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249421	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249426	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249426	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC249426	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249420	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC07578	SQ-3	NP0084-MB5	SC249420	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04924	SQ-1	NP0084-MB4	SC249425	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552954	Ext_Control	art_col	M16	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552948	Ext_Control	Ext_Blank	BW	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552952	Ext_Control	Ext_Blank	BW	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552961	Ext_Control	Ext_Blank	BW	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552955	Study	H01	H01	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552957	Study	H01	H01	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552950	Study	Robogut	M98	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552959	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552960	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552997	Ext_Control	art_col	M16	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552991	Ext_Control	Ext_Blank	BW	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC552995	Ext_Control	Ext_Blank	BW	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC553004	Ext_Control	Ext_Blank	BW	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552998	Study	H01	H01	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC553000	Study	H01	H01	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC552993	Study	Robogut	M98	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC553002	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC553003	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC553025	Ext_Control	art_col	M16	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC553019	Ext_Control	Ext_Blank	BW	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC553023	Ext_Control	Ext_Blank	BW	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC553032	Ext_Control	Ext_Blank	BW	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC553026	Study	H01	H01	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC553028	Study	H01	H01	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC553021	Study	Robogut	M98	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22192	SQ-4	NP0084-MB6	SC553030	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC22190	SQ-4	NP0084-MB6	SC553031	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
-PC04925	SQ-2	NP0084-MB4	SC253185	Ext_Control	art_col	M22	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253192	Ext_Control	art_col	M22	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253191	Ext_Control	Ext_Blank	BW	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253183	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253183	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253184	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253184	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253188	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253190	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253190	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253190	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253182	Study	Robogut	M98	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253182	Study	Robogut	M98	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253186	Study	Robogut	M98	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253186	Study	Robogut	M98	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253181	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253181	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253189	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253195	Ext_Control	art_col	M22	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253195	Ext_Control	art_col	M22	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253204	Ext_Control	art_col	M22	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253202	Ext_Control	Ext_Blank	BW	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253202	Ext_Control	Ext_Blank	BW	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253197	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253197	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253199	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253199	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253199	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253201	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253201	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253201	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253203	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253203	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253193	Study	Robogut	M98	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253200	Study	Robogut	M98	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253200	Study	Robogut	M98	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253194	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04925	SQ-2	NP0084-MB4	SC253196	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC07578	SQ-3	NP0084-MB5	SC253196	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
-PC04924	SQ-1	NP0084-MB4	SC284724	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04924	SQ-1	NP0084-MB4	SC284725	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04924	SQ-1	NP0084-MB4	SC284726	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04924	SQ-1	NP0084-MB4	SC284727	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04925	SQ-2	NP0084-MB4	SC284730	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04925	SQ-2	NP0084-MB4	SC284731	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04925	SQ-2	NP0084-MB4	SC284732	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04925	SQ-2	NP0084-MB4	SC284733	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC07578	SQ-3	NP0084-MB5	SC326763	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC07578	SQ-3	NP0084-MB5	SC326764	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC07578	SQ-3	NP0084-MB5	SC326765	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC07578	SQ-3	NP0084-MB5	SC326766	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	SC555339	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	SC555341	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	SC555342	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	SC555343	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	SC555346	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	SC555347	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	SC555349	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	SC555350	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04924	SQ-1	NP0084-MB4	NTC-PC04924-H-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04925	SQ-2	NP0084-MB4	NTC-PC04925-H-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC07578	SQ-3	NP0084-MB5	NTC-PC07578-H-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	NTC-PC22190-F-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	NTC-PC22192-D-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04924	SQ-1	NP0084-MB4	Water-PC04924-G-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04925	SQ-2	NP0084-MB4	Water-PC04925-G-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC07578	SQ-3	NP0084-MB5	Water-PC07578-G-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	Water-PC22190-E-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	Water-PC22192-C-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04924	SQ-1	NP0084-MB4	SC284728	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04924	SQ-1	NP0084-MB4	SC284729	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	SC555344	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	SC555345	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	SC555348	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22192	SQ-4	NP0084-MB6	SC555351	Seq_Control	ZymoBiomics	Z11	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04925	SQ-2	NP0084-MB4	SC284734	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC04925	SQ-2	NP0084-MB4	SC284735	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC07578	SQ-3	NP0084-MB5	SC326767	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC07578	SQ-3	NP0084-MB5	SC326768	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	SC555338	Seq_Control	ZymoBiomics	Z11	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
-PC22190	SQ-4	NP0084-MB6	SC555340	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SampleID	Source-PCR-Plate	Run-ID	Project-ID	CGR-Sample-ID	Sample-Type	Sample-Des	Subject-ID	Reciept	Ext-Company	Ext-Kit	Ext-Robotics	Homo-Status	Homo-Method	Homo-Holder	Mag-Col	IR
+SC249383	PC04924	SQ-1	NP0084-MB4	SC249383	Ext_Control	art_col	M22	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249388	PC04924	SQ-1	NP0084-MB4	SC249388	Ext_Control	art_col	M22	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249387-PC04925-G-01	PC04925	SQ-2	NP0084-MB4	SC249387	Ext_Control	Ext_Blank	BW	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249387-PC07578-G-01	PC07578	SQ-3	NP0084-MB5	SC249387	Ext_Control	Ext_Blank	BW	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249393	PC04924	SQ-1	NP0084-MB4	SC249393	Ext_Control	Ext_Blank	BW	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249384	PC04924	SQ-1	NP0084-MB4	SC249384	Study	H01	H01	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249386	PC04924	SQ-1	NP0084-MB4	SC249386	Study	H01	H01	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249389	PC04924	SQ-1	NP0084-MB4	SC249389	Study	H01	H01	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249392	PC04924	SQ-1	NP0084-MB4	SC249392	Study	H01	H01	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249382	PC07578	SQ-3	NP0084-MB5	SC249382	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249382-PC04924-D-02	PC04924	SQ-1	NP0084-MB4	SC249382	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249382-PC04925-F-01	PC04925	SQ-2	NP0084-MB4	SC249382	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249385-PC04924-G-02	PC04924	SQ-1	NP0084-MB4	SC249385	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249385-PC07578-C-07	PC07578	SQ-3	NP0084-MB5	SC249385	Study	Robogut	M98	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249390	PC04924	SQ-1	NP0084-MB4	SC249390	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249391	PC07578	SQ-3	NP0084-MB5	SC249391	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249391-PC04924-D-03	PC04924	SQ-1	NP0084-MB4	SC249391	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC249391-PC04925-H-01	PC04925	SQ-2	NP0084-MB4	SC249391	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-003	ZymoResearch	EX-7	Manual	Standard	Plate Adaptor	Plate	Magnetic	None
+SC304093	PC07578	SQ-3	NP0084-MB5	SC304093	Ext_Control	art_col	M22	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304094	PC07578	SQ-3	NP0084-MB5	SC304094	Ext_Control	Ext_Blank	BW	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304099	PC07578	SQ-3	NP0084-MB5	SC304099	Ext_Control	Ext_Blank	BW	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304091	PC07578	SQ-3	NP0084-MB5	SC304091	Study	H01	H01	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304095	PC07578	SQ-3	NP0084-MB5	SC304095	Study	H01	H01	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304096	PC07578	SQ-3	NP0084-MB5	SC304096	Study	H01	H01	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304098	PC07578	SQ-3	NP0084-MB5	SC304098	Study	H01	H01	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304090	PC07578	SQ-3	NP0084-MB5	SC304090	Study	Robogut	M98	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304092	PC07578	SQ-3	NP0084-MB5	SC304092	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304097	PC07578	SQ-3	NP0084-MB5	SC304097	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-015	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304926	PC07578	SQ-3	NP0084-MB5	SC304926	Ext_Control	art_col	M22	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304928	PC07578	SQ-3	NP0084-MB5	SC304928	Ext_Control	Ext_Blank	BW	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304925-PC07578-B-08	PC07578	SQ-3	NP0084-MB5	SC304925	Study	H01	H01	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304925-PC07578-D-07	PC07578	SQ-3	NP0084-MB5	SC304925	Study	H01	H01	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304929	PC07578	SQ-3	NP0084-MB5	SC304929	Study	H01	H01	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304931	PC07578	SQ-3	NP0084-MB5	SC304931	Study	H01	H01	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304930	PC07578	SQ-3	NP0084-MB5	SC304930	Study	Robogut	M98	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304924-PC07578-A-11	PC07578	SQ-3	NP0084-MB5	SC304924	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304924-PC07578-B-07	PC07578	SQ-3	NP0084-MB5	SC304924	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC304927	PC07578	SQ-3	NP0084-MB5	SC304927	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-016	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553011	PC22192	SQ-4	NP0084-MB6	SC553011	Ext_Control	art_col	M16	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553005	PC22190	SQ-4	NP0084-MB6	SC553005	Ext_Control	Ext_Blank	BW	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553009	PC22192	SQ-4	NP0084-MB6	SC553009	Ext_Control	Ext_Blank	BW	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553018	PC22190	SQ-4	NP0084-MB6	SC553018	Ext_Control	Ext_Blank	BW	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553012	PC22190	SQ-4	NP0084-MB6	SC553012	Study	H01	H01	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553014	PC22192	SQ-4	NP0084-MB6	SC553014	Study	H01	H01	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553007	PC22192	SQ-4	NP0084-MB6	SC553007	Study	Robogut	M98	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553016	PC22192	SQ-4	NP0084-MB6	SC553016	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC553017	PC22190	SQ-4	NP0084-MB6	SC553017	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-041	ZymoResearch	EX-7	Manual	Standard	Vertical	Tubes	Magnetic	None
+SC552982	PC22192	SQ-4	NP0084-MB6	SC552982	Ext_Control	art_col	M16	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552976	PC22192	SQ-4	NP0084-MB6	SC552976	Ext_Control	Ext_Blank	BW	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552980	PC22190	SQ-4	NP0084-MB6	SC552980	Ext_Control	Ext_Blank	BW	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552989	PC22192	SQ-4	NP0084-MB6	SC552989	Ext_Control	Ext_Blank	BW	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552983	PC22190	SQ-4	NP0084-MB6	SC552983	Study	H01	H01	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552985	PC22192	SQ-4	NP0084-MB6	SC552985	Study	H01	H01	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552978	PC22192	SQ-4	NP0084-MB6	SC552978	Study	Robogut	M98	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552987	PC22190	SQ-4	NP0084-MB6	SC552987	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552990	PC22190	SQ-4	NP0084-MB6	SC552990	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC552988	PC22192	SQ-4	NP0084-MB6	SC552988	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-039	Qiagen	EX-3	Manual	Standard	Vertical	Tubes	Column	Solution
+SC249358	PC04924	SQ-1	NP0084-MB4	SC249358	Ext_Control	art_col	M22	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249363	PC04924	SQ-1	NP0084-MB4	SC249363	Ext_Control	art_col	M22	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249366-PC04925-D-01	PC04925	SQ-2	NP0084-MB4	SC249366	Ext_Control	Ext_Blank	BW	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249366-PC07578-D-01	PC07578	SQ-3	NP0084-MB5	SC249366	Ext_Control	Ext_Blank	BW	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249367	PC04924	SQ-1	NP0084-MB4	SC249367	Ext_Control	Ext_Blank	BW	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249359-PC04924-B-01	PC04924	SQ-1	NP0084-MB4	SC249359	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249359-PC04925-A-01	PC04925	SQ-2	NP0084-MB4	SC249359	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249361-PC04924-D-01	PC04924	SQ-1	NP0084-MB4	SC249361	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249361-PC04925-A-10	PC04925	SQ-2	NP0084-MB4	SC249361	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249361-PC04925-B-01	PC04925	SQ-2	NP0084-MB4	SC249361	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249364	PC07578	SQ-3	NP0084-MB5	SC249364	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249364-PC04924-G-01	PC04924	SQ-1	NP0084-MB4	SC249364	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249364-PC04925-C-01	PC04925	SQ-2	NP0084-MB4	SC249364	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249369	PC07578	SQ-3	NP0084-MB5	SC249369	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249369-PC04924-C-02	PC04924	SQ-1	NP0084-MB4	SC249369	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249369-PC04925-E-01	PC04925	SQ-2	NP0084-MB4	SC249369	Study	H01	H01	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249360-PC04924-C-01	PC04924	SQ-1	NP0084-MB4	SC249360	Study	Robogut	M98	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249360-PC07578-B-09	PC07578	SQ-3	NP0084-MB5	SC249360	Study	Robogut	M98	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249365-PC04924-H-01	PC04924	SQ-1	NP0084-MB4	SC249365	Study	Robogut	M98	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249365-PC07578-E-09	PC07578	SQ-3	NP0084-MB5	SC249365	Study	Robogut	M98	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249368-PC04924-B-02	PC04924	SQ-1	NP0084-MB4	SC249368	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249368-PC07578-C-10	PC07578	SQ-3	NP0084-MB5	SC249368	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249362-PC04924-E-01	PC04924	SQ-1	NP0084-MB4	SC249362	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249362-PC07578-H-08	PC07578	SQ-3	NP0084-MB5	SC249362	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-002	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253848	PC04924	SQ-1	NP0084-MB4	SC253848	Ext_Control	art_col	M22	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253851	PC04924	SQ-1	NP0084-MB4	SC253851	Ext_Control	art_col	M22	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253853	PC04924	SQ-1	NP0084-MB4	SC253853	Ext_Control	Ext_Blank	BW	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253843-PC04924-F-10	PC04924	SQ-1	NP0084-MB4	SC253843	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253843-PC04925-B-09	PC04925	SQ-2	NP0084-MB4	SC253843	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253847-PC04924-B-11	PC04924	SQ-1	NP0084-MB4	SC253847	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253847-PC04925-E-09	PC04925	SQ-2	NP0084-MB4	SC253847	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253849	PC07578	SQ-3	NP0084-MB5	SC253849	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253849-PC04924-D-11	PC04924	SQ-1	NP0084-MB4	SC253849	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253849-PC04925-F-09	PC04925	SQ-2	NP0084-MB4	SC253849	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253852	PC07578	SQ-3	NP0084-MB5	SC253852	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253852-PC04924-F-11	PC04924	SQ-1	NP0084-MB4	SC253852	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253852-PC04925-G-09	PC04925	SQ-2	NP0084-MB4	SC253852	Study	H01	H01	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253845	PC07578	SQ-3	NP0084-MB5	SC253845	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253845-PC04924-H-10	PC04924	SQ-1	NP0084-MB4	SC253845	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253845-PC04925-C-09	PC04925	SQ-2	NP0084-MB4	SC253845	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253846	PC07578	SQ-3	NP0084-MB5	SC253846	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253846-PC04924-A-11	PC04924	SQ-1	NP0084-MB4	SC253846	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253846-PC04925-D-09	PC04925	SQ-2	NP0084-MB4	SC253846	Study	Robogut	M98	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253844	PC04924	SQ-1	NP0084-MB4	SC253844	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC253854	PC04924	SQ-1	NP0084-MB4	SC253854	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-011	Qiagen	EX-1	QIASymphony	Standard	Vertical	Tubes	Magnetic	Tablet
+SC249434	PC04924	SQ-1	NP0084-MB4	SC249434	Ext_Control	art_col	M22	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249439-PC04924-H-08	PC04924	SQ-1	NP0084-MB4	SC249439	Ext_Control	art_col	M22	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249439-PC07578-G-07	PC07578	SQ-3	NP0084-MB5	SC249439	Ext_Control	art_col	M22	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249431	PC04925	SQ-2	NP0084-MB4	SC249431	Ext_Control	Ext_Blank	BW	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249438	PC04924	SQ-1	NP0084-MB4	SC249438	Ext_Control	Ext_Blank	BW	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249430	PC07578	SQ-3	NP0084-MB5	SC249430	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249430-PC04924-H-07	PC04924	SQ-1	NP0084-MB4	SC249430	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249430-PC04925-H-03	PC04925	SQ-2	NP0084-MB4	SC249430	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249435-PC04924-D-08	PC04924	SQ-1	NP0084-MB4	SC249435	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249435-PC04925-D-04	PC04925	SQ-2	NP0084-MB4	SC249435	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249440-PC04924-A-09	PC04924	SQ-1	NP0084-MB4	SC249440	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249440-PC04925-G-04	PC04925	SQ-2	NP0084-MB4	SC249440	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249441	PC07578	SQ-3	NP0084-MB5	SC249441	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249441-PC04924-B-09	PC04924	SQ-1	NP0084-MB4	SC249441	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249441-PC04925-H-04	PC04925	SQ-2	NP0084-MB4	SC249441	Study	H01	H01	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249433	PC07578	SQ-3	NP0084-MB5	SC249433	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249433-PC04924-B-08	PC04924	SQ-1	NP0084-MB4	SC249433	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249433-PC04925-C-04	PC04925	SQ-2	NP0084-MB4	SC249433	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249436	PC07578	SQ-3	NP0084-MB5	SC249436	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249436-PC04924-E-08	PC04924	SQ-1	NP0084-MB4	SC249436	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249436-PC04925-E-04	PC04925	SQ-2	NP0084-MB4	SC249436	Study	Robogut	M98	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249432-PC04924-A-08	PC04924	SQ-1	NP0084-MB4	SC249432	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249432-PC04925-B-04	PC04925	SQ-2	NP0084-MB4	SC249432	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249437	PC07578	SQ-3	NP0084-MB5	SC249437	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249437-PC04924-F-08	PC04924	SQ-1	NP0084-MB4	SC249437	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249437-PC04925-F-04	PC04925	SQ-2	NP0084-MB4	SC249437	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-007	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249443-PC04924-D-09	PC04924	SQ-1	NP0084-MB4	SC249443	Ext_Control	art_col	M22	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249443-PC07578-E-05	PC07578	SQ-3	NP0084-MB5	SC249443	Ext_Control	art_col	M22	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249446	PC04924	SQ-1	NP0084-MB4	SC249446	Ext_Control	art_col	M22	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249444	PC04925	SQ-2	NP0084-MB4	SC249444	Ext_Control	Ext_Blank	BW	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249450	PC04924	SQ-1	NP0084-MB4	SC249450	Ext_Control	Ext_Blank	BW	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249445-PC04924-E-09	PC04924	SQ-1	NP0084-MB4	SC249445	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249445-PC04925-B-05	PC04925	SQ-2	NP0084-MB4	SC249445	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249448	PC07578	SQ-3	NP0084-MB5	SC249448	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249448-PC04924-H-09	PC04924	SQ-1	NP0084-MB4	SC249448	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249448-PC04925-A-11	PC04925	SQ-2	NP0084-MB4	SC249448	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249448-PC04925-D-05	PC04925	SQ-2	NP0084-MB4	SC249448	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249449-PC04924-A-10	PC04924	SQ-1	NP0084-MB4	SC249449	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249449-PC04925-E-05	PC04925	SQ-2	NP0084-MB4	SC249449	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249453	PC07578	SQ-3	NP0084-MB5	SC249453	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249453-PC04924-E-10	PC04924	SQ-1	NP0084-MB4	SC249453	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249453-PC04925-F-05	PC04925	SQ-2	NP0084-MB4	SC249453	Study	H01	H01	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249447-PC04924-G-09	PC04924	SQ-1	NP0084-MB4	SC249447	Study	Robogut	M98	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249447-PC04925-C-05	PC04925	SQ-2	NP0084-MB4	SC249447	Study	Robogut	M98	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249452	PC04924	SQ-1	NP0084-MB4	SC249452	Study	Robogut	M98	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249442	PC04924	SQ-1	NP0084-MB4	SC249442	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249451-PC04924-C-10	PC04924	SQ-1	NP0084-MB4	SC249451	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249451-PC07578-F-06	PC07578	SQ-3	NP0084-MB5	SC249451	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-008	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552968	PC22190	SQ-4	NP0084-MB6	SC552968	Ext_Control	art_col	M22	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552962	PC22190	SQ-4	NP0084-MB6	SC552962	Ext_Control	Ext_Blank	BW	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552966	PC22192	SQ-4	NP0084-MB6	SC552966	Ext_Control	Ext_Blank	BW	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552975	PC22190	SQ-4	NP0084-MB6	SC552975	Ext_Control	Ext_Blank	BW	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552969	PC22190	SQ-4	NP0084-MB6	SC552969	Study	H01	H01	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552971	PC22192	SQ-4	NP0084-MB6	SC552971	Study	H01	H01	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552964	PC22190	SQ-4	NP0084-MB6	SC552964	Study	Robogut	M98	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552973	PC22190	SQ-4	NP0084-MB6	SC552973	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552974	PC22192	SQ-4	NP0084-MB6	SC552974	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-038	Qiagen	EX-2	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249409	PC04924	SQ-1	NP0084-MB4	SC249409	Ext_Control	art_col	M22	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249413	PC04924	SQ-1	NP0084-MB4	SC249413	Ext_Control	art_col	M22	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249406	PC04925	SQ-2	NP0084-MB4	SC249406	Ext_Control	Ext_Blank	BW	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249415	PC04924	SQ-1	NP0084-MB4	SC249415	Ext_Control	Ext_Blank	BW	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249407	PC04924	SQ-1	NP0084-MB4	SC249407	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249411	PC07578	SQ-3	NP0084-MB5	SC249411	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249411-PC04924-F-05	PC04924	SQ-1	NP0084-MB4	SC249411	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249411-PC04925-G-02	PC04925	SQ-2	NP0084-MB4	SC249411	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249414	PC07578	SQ-3	NP0084-MB5	SC249414	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249414-PC04924-A-06	PC04924	SQ-1	NP0084-MB4	SC249414	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249414-PC04925-H-02	PC04925	SQ-2	NP0084-MB4	SC249414	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249416-PC04924-C-06	PC04924	SQ-1	NP0084-MB4	SC249416	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249416-PC04925-A-03	PC04925	SQ-2	NP0084-MB4	SC249416	Study	H01	H01	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249410	PC07578	SQ-3	NP0084-MB5	SC249410	Study	Robogut	M98	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249410-PC04924-E-05	PC04924	SQ-1	NP0084-MB4	SC249410	Study	Robogut	M98	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249410-PC04925-F-02	PC04925	SQ-2	NP0084-MB4	SC249410	Study	Robogut	M98	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249417	PC04924	SQ-1	NP0084-MB4	SC249417	Study	Robogut	M98	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249408	PC07578	SQ-3	NP0084-MB5	SC249408	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249408-PC04924-C-05	PC04924	SQ-1	NP0084-MB4	SC249408	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249408-PC04925-E-02	PC04925	SQ-2	NP0084-MB4	SC249408	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249412	PC04924	SQ-1	NP0084-MB4	SC249412	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-005	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249427	PC04924	SQ-1	NP0084-MB4	SC249427	Ext_Control	art_col	M22	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249428	PC04924	SQ-1	NP0084-MB4	SC249428	Ext_Control	art_col	M22	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249422-PC04925-D-03	PC04925	SQ-2	NP0084-MB4	SC249422	Ext_Control	Ext_Blank	BW	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249422-PC07578-D-03	PC07578	SQ-3	NP0084-MB5	SC249422	Ext_Control	Ext_Blank	BW	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249423	PC04924	SQ-1	NP0084-MB4	SC249423	Ext_Control	Ext_Blank	BW	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249418-PC04924-E-06	PC04924	SQ-1	NP0084-MB4	SC249418	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249418-PC04925-B-03	PC04925	SQ-2	NP0084-MB4	SC249418	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249419-PC04924-F-06	PC04924	SQ-1	NP0084-MB4	SC249419	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249419-PC04925-C-03	PC04925	SQ-2	NP0084-MB4	SC249419	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249424	PC07578	SQ-3	NP0084-MB5	SC249424	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249424-PC04924-B-07	PC04924	SQ-1	NP0084-MB4	SC249424	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249424-PC04925-E-03	PC04925	SQ-2	NP0084-MB4	SC249424	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249429	PC07578	SQ-3	NP0084-MB5	SC249429	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249429-PC04924-G-07	PC04924	SQ-1	NP0084-MB4	SC249429	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249429-PC04925-G-03	PC04925	SQ-2	NP0084-MB4	SC249429	Study	H01	H01	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249421-PC04924-H-06	PC04924	SQ-1	NP0084-MB4	SC249421	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249421-PC07578-F-02	PC07578	SQ-3	NP0084-MB5	SC249421	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249426	PC07578	SQ-3	NP0084-MB5	SC249426	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249426-PC04924-D-07	PC04924	SQ-1	NP0084-MB4	SC249426	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249426-PC04925-F-03	PC04925	SQ-2	NP0084-MB4	SC249426	Study	Robogut	M98	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249420-PC04924-G-06	PC04924	SQ-1	NP0084-MB4	SC249420	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249420-PC07578-H-07	PC07578	SQ-3	NP0084-MB5	SC249420	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC249425	PC04924	SQ-1	NP0084-MB4	SC249425	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-006	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552954	PC22192	SQ-4	NP0084-MB6	SC552954	Ext_Control	art_col	M16	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552948	PC22192	SQ-4	NP0084-MB6	SC552948	Ext_Control	Ext_Blank	BW	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552952	PC22190	SQ-4	NP0084-MB6	SC552952	Ext_Control	Ext_Blank	BW	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552961	PC22192	SQ-4	NP0084-MB6	SC552961	Ext_Control	Ext_Blank	BW	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552955	PC22190	SQ-4	NP0084-MB6	SC552955	Study	H01	H01	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552957	PC22192	SQ-4	NP0084-MB6	SC552957	Study	H01	H01	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552950	PC22192	SQ-4	NP0084-MB6	SC552950	Study	Robogut	M98	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552959	PC22190	SQ-4	NP0084-MB6	SC552959	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552960	PC22192	SQ-4	NP0084-MB6	SC552960	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-037	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552997	PC22190	SQ-4	NP0084-MB6	SC552997	Ext_Control	art_col	M16	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552991	PC22190	SQ-4	NP0084-MB6	SC552991	Ext_Control	Ext_Blank	BW	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552995	PC22192	SQ-4	NP0084-MB6	SC552995	Ext_Control	Ext_Blank	BW	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553004	PC22190	SQ-4	NP0084-MB6	SC553004	Ext_Control	Ext_Blank	BW	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552998	PC22190	SQ-4	NP0084-MB6	SC552998	Study	H01	H01	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553000	PC22192	SQ-4	NP0084-MB6	SC553000	Study	H01	H01	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC552993	PC22190	SQ-4	NP0084-MB6	SC552993	Study	Robogut	M98	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553002	PC22190	SQ-4	NP0084-MB6	SC553002	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553003	PC22192	SQ-4	NP0084-MB6	SC553003	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-040	Qiagen	EX-4	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553025	PC22190	SQ-4	NP0084-MB6	SC553025	Ext_Control	art_col	M16	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553019	PC22192	SQ-4	NP0084-MB6	SC553019	Ext_Control	Ext_Blank	BW	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553023	PC22190	SQ-4	NP0084-MB6	SC553023	Ext_Control	Ext_Blank	BW	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553032	PC22192	SQ-4	NP0084-MB6	SC553032	Ext_Control	Ext_Blank	BW	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553026	PC22190	SQ-4	NP0084-MB6	SC553026	Study	H01	H01	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553028	PC22192	SQ-4	NP0084-MB6	SC553028	Study	H01	H01	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553021	PC22190	SQ-4	NP0084-MB6	SC553021	Study	Robogut	M98	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553030	PC22192	SQ-4	NP0084-MB6	SC553030	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC553031	PC22190	SQ-4	NP0084-MB6	SC553031	Ext_Control	ZymoBiomics	Z10	sFEMB-001-R-042	ThermoFisher	EX-6	KingFisher	Standard	TissueLyzer	Plate	Magnetic	Solution
+SC253185	PC04925	SQ-2	NP0084-MB4	SC253185	Ext_Control	art_col	M22	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253192	PC04925	SQ-2	NP0084-MB4	SC253192	Ext_Control	art_col	M22	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253191	PC04925	SQ-2	NP0084-MB4	SC253191	Ext_Control	Ext_Blank	BW	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253183-PC04925-A-06	PC04925	SQ-2	NP0084-MB4	SC253183	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253183-PC07578-D-08	PC07578	SQ-3	NP0084-MB5	SC253183	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253184-PC04925-B-06	PC04925	SQ-2	NP0084-MB4	SC253184	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253184-PC07578-G-06	PC07578	SQ-3	NP0084-MB5	SC253184	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253188	PC04925	SQ-2	NP0084-MB4	SC253188	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253190	PC07578	SQ-3	NP0084-MB5	SC253190	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253190-PC04925-G-06	PC04925	SQ-2	NP0084-MB4	SC253190	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253190-PC04925-H-06	PC04925	SQ-2	NP0084-MB4	SC253190	Study	H01	H01	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253182-PC04925-H-05	PC04925	SQ-2	NP0084-MB4	SC253182	Study	Robogut	M98	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253182-PC07578-A-01	PC07578	SQ-3	NP0084-MB5	SC253182	Study	Robogut	M98	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253186-PC04925-D-06	PC04925	SQ-2	NP0084-MB4	SC253186	Study	Robogut	M98	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253186-PC07578-D-06	PC07578	SQ-3	NP0084-MB5	SC253186	Study	Robogut	M98	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253181-PC04925-G-05	PC04925	SQ-2	NP0084-MB4	SC253181	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253181-PC07578-G-05	PC07578	SQ-3	NP0084-MB5	SC253181	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253189	PC04925	SQ-2	NP0084-MB4	SC253189	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-009	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253195-PC04925-E-07	PC04925	SQ-2	NP0084-MB4	SC253195	Ext_Control	art_col	M22	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253195-PC07578-E-07	PC07578	SQ-3	NP0084-MB5	SC253195	Ext_Control	art_col	M22	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253204	PC04925	SQ-2	NP0084-MB4	SC253204	Ext_Control	art_col	M22	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253202-PC04925-F-08	PC04925	SQ-2	NP0084-MB4	SC253202	Ext_Control	Ext_Blank	BW	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253202-PC07578-F-08	PC07578	SQ-3	NP0084-MB5	SC253202	Ext_Control	Ext_Blank	BW	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253197-PC04925-G-07	PC04925	SQ-2	NP0084-MB4	SC253197	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253197-PC04925-H-07	PC04925	SQ-2	NP0084-MB4	SC253197	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253199-PC04925-A-08	PC04925	SQ-2	NP0084-MB4	SC253199	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253199-PC04925-B-08	PC04925	SQ-2	NP0084-MB4	SC253199	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253199-PC04925-E-11	PC04925	SQ-2	NP0084-MB4	SC253199	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253201	PC07578	SQ-3	NP0084-MB5	SC253201	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253201-PC04925-D-08	PC04925	SQ-2	NP0084-MB4	SC253201	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253201-PC04925-E-08	PC04925	SQ-2	NP0084-MB4	SC253201	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253203-PC04925-G-08	PC04925	SQ-2	NP0084-MB4	SC253203	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253203-PC04925-H-08	PC04925	SQ-2	NP0084-MB4	SC253203	Study	H01	H01	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253193	PC04925	SQ-2	NP0084-MB4	SC253193	Study	Robogut	M98	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253200-PC04925-C-08	PC04925	SQ-2	NP0084-MB4	SC253200	Study	Robogut	M98	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253200-PC07578-C-08	PC07578	SQ-3	NP0084-MB5	SC253200	Study	Robogut	M98	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253194	PC04925	SQ-2	NP0084-MB4	SC253194	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253196-PC04925-F-07	PC04925	SQ-2	NP0084-MB4	SC253196	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC253196-PC07578-F-07	PC07578	SQ-3	NP0084-MB5	SC253196	Ext_Control	ZymoBiomics	Z00	sFEMB-001-R-010	Qiagen	EX-5	Manual	Standard	Vertical	Tubes	Column	None
+SC284724	PC04924	SQ-1	NP0084-MB4	SC284724	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284725	PC04924	SQ-1	NP0084-MB4	SC284725	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284726	PC04924	SQ-1	NP0084-MB4	SC284726	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284727	PC04924	SQ-1	NP0084-MB4	SC284727	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284730	PC04925	SQ-2	NP0084-MB4	SC284730	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284731	PC04925	SQ-2	NP0084-MB4	SC284731	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284732	PC04925	SQ-2	NP0084-MB4	SC284732	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284733	PC04925	SQ-2	NP0084-MB4	SC284733	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC326763	PC07578	SQ-3	NP0084-MB5	SC326763	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC326764	PC07578	SQ-3	NP0084-MB5	SC326764	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC326765	PC07578	SQ-3	NP0084-MB5	SC326765	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC326766	PC07578	SQ-3	NP0084-MB5	SC326766	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555339	PC22190	SQ-4	NP0084-MB6	SC555339	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555341	PC22190	SQ-4	NP0084-MB6	SC555341	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555342	PC22190	SQ-4	NP0084-MB6	SC555342	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555343	PC22190	SQ-4	NP0084-MB6	SC555343	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555346	PC22192	SQ-4	NP0084-MB6	SC555346	Seq_Control	MSA	A02	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555347	PC22192	SQ-4	NP0084-MB6	SC555347	Seq_Control	MSA	A00	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555349	PC22192	SQ-4	NP0084-MB6	SC555349	Seq_Control	MSA	A01	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555350	PC22192	SQ-4	NP0084-MB6	SC555350	Seq_Control	MSA	A03	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+NTC-PC04924-H-12	PC04924	SQ-1	NP0084-MB4	NTC-PC04924-H-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+NTC-PC04925-H-12	PC04925	SQ-2	NP0084-MB4	NTC-PC04925-H-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+NTC-PC07578-H-12	PC07578	SQ-3	NP0084-MB5	NTC-PC07578-H-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+NTC-PC22190-F-12	PC22190	SQ-4	NP0084-MB6	NTC-PC22190-F-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+NTC-PC22192-D-12	PC22192	SQ-4	NP0084-MB6	NTC-PC22192-D-12	Seq_Control	Seq_Blank	BN	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+Water-PC04924-G-12	PC04924	SQ-1	NP0084-MB4	Water-PC04924-G-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+Water-PC04925-G-12	PC04925	SQ-2	NP0084-MB4	Water-PC04925-G-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+Water-PC07578-G-12	PC07578	SQ-3	NP0084-MB5	Water-PC07578-G-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+Water-PC22190-E-12	PC22190	SQ-4	NP0084-MB6	Water-PC22190-E-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+Water-PC22192-C-12	PC22192	SQ-4	NP0084-MB6	Water-PC22192-C-12	Seq_Control	Seq_Blank	BP	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284728	PC04924	SQ-1	NP0084-MB4	SC284728	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284729	PC04924	SQ-1	NP0084-MB4	SC284729	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555344	PC22190	SQ-4	NP0084-MB6	SC555344	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555345	PC22192	SQ-4	NP0084-MB6	SC555345	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555348	PC22192	SQ-4	NP0084-MB6	SC555348	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555351	PC22192	SQ-4	NP0084-MB6	SC555351	Seq_Control	ZymoBiomics	Z11	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284734	PC04925	SQ-2	NP0084-MB4	SC284734	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC284735	PC04925	SQ-2	NP0084-MB4	SC284735	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC326767	PC07578	SQ-3	NP0084-MB5	SC326767	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC326768	PC07578	SQ-3	NP0084-MB5	SC326768	Seq_Control	ZymoBiomics	Z06	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555338	PC22190	SQ-4	NP0084-MB6	SC555338	Seq_Control	ZymoBiomics	Z11	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
+SC555340	PC22190	SQ-4	NP0084-MB6	SC555340	Seq_Control	ZymoBiomics	Z05	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq	Seq
