@@ -1,3 +1,5 @@
+swarm*
+.*
 .snakemake
 slurm*
 *.DS_Store
