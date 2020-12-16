@@ -13,13 +13,20 @@ ref_db = '/data/sevillas2/gmu/ref'
 manifest_dir = '/data/sevillas2/gmu/aim2/manifest.tsv'
 
 #read manifest
-mani=pd.read_csv("manifest.tsv",sep='\t',header=0)
+mani=pd.read_csv(manifest_dir,sep='\t',header=0)
 
 #id groups
 flowcell_ids=mani.RunID.unique()
-tax_ref = ['silva']
 
 #set parameters
+input_type = "'SampleData[SequencesWithQuality]'"
+input_flag = "'SingleEndFastqManifestPhred'"
+phred_score = 33
+trim_left_forward = 0
+trim_left_reverse = 0
+truncate_length_forward = 0
+truncate_length_reverse = 0
+min_fold_parent_over_abundance = 2.0
 min_num_reads_per_sample=1000
 min_num_reads_per_feature = 1
 min_num_samples_per_feature = 1
@@ -28,31 +35,28 @@ min_num_features_per_sample = 1
 
 rule all:
     input:
-        expand(join(output_dir, '01_import_and_demultiplex/{f_id}.qza'),f_id=mani.RunID.unique())
-        expand(join(output_dir, '01_import_and_demultiplex/{f_id}.qzv'),f_id=mani.RunID.unique())
+        expand(join(output_dir, '01_import_and_demultiplex/{f_id}.qza'),f_id=mani.RunID.unique()),
+        expand(join(output_dir, '01_import_and_demultiplex/{f_id}.qzv'),f_id=mani.RunID.unique()),
 
-        expand(join(output_dir,'02_clustering/{f_id}_table_dada.qza'),f_id=flowcell_ids),
-
+        expand(join(output_dir,'02_clustering/{f_id}_table.qza'),f_id=flowcell_ids),
 
         join(output_dir,'03_merged/merged_table.qza'),
         join(output_dir,'03_merged/merged_seq.qza'),
 
-        expand(join(output_dir,'04_filtered/4_tab.qzv'),gf_id=groupfinal_ids),
-        expand(join(output_dir,'04_filtered/4_seq.qza'),gf_id=groupfinal_ids),
+        join(output_dir,'04_filtered/4_tab.qzv'),
+        join(output_dir,'04_filtered/4_seq.qza'),
 
-        expand(join(output_dir,'05_class/vsearch_{tax_ref}.qza'),gf_id=groupfinal_ids,tax_ref=taxonomy_ids),
-        expand(join(output_dir,'05_class/blast_{tax_ref}.qza'),gf_id=groupfinal_ids,tax_ref=taxonomy_ids),
-        expand(join(output_dir,'05_class/scikit_{tax_ref}.qza'),gf_id=groupfinal_ids,tax_ref=taxonomy_ids),
+        join(output_dir,'05_class/scikit_silva.qza'),
 
-        expand(join(output_dir,'06_phylogenetics/rooted_tree.qza'),gf_id=groupfinal_ids)
+        join(output_dir,'06_phylogenetics/rooted_tree.qza'),
 
-def get_fastq():
+def get_fastq(wildcards):
     sub_df = mani[(mani['SampleID']==wildcards.sample)]
     f_id = sub_df.iloc[0]['RunID']
-    fastq = wildcards.sample + '_mod_PGM_' + f_id.split('M')[1] + '.fastq'
+    fastq = input_dir + '/' + wildcards.sample + '_mod_PGM_' + f_id.split('M')[1] + '.fastq'
     return(fastq)
 
-def get_fid():
+def get_fid(wildcards):
     sub_df = mani[(mani['SampleID']==wildcards.sample)]
     return(sub_df.iloc[0]['RunID'])
 
@@ -68,14 +72,14 @@ rule create_per_sample_Q2_manifest:
     check completes successfully.
     """
     input:
-        fq1 = get_fastq
+        fq1 = get_fastq,
         manifest = manifest_dir
     output:
-        f1 = temp(join(output_dir, 'manifests/{sample}_Q2_manifest_by_sample.txt'))
+        o1 = temp(join(output_dir, 'manifests/{sample}_Q2_manifest_by_sample.txt'))
     params:
         fid = get_fid
     shell:
-        'echo "{wildcards.sample},{input.fq1},forward,{params.fid}" >> {output}'
+        'echo "{wildcards.sample},{input.fq1},forward,{params.fid}" >> {output.o1}'
 
 rule combine_Q2_per_sample_manifests:
     """Combine all Q2-specific per-sample manifests
@@ -116,13 +120,15 @@ rule import_fastq_and_demultiplex:
     params:
         in_type = input_type,
         phred = phred_score,
-        cmd_flag = 'input-format'
+        cmd_flag = 'input-format',
+        in_flag = input_flag,
     shell:
-        'qiime tools import \
+        'module load qiime/2-2019.1; \
+        qiime tools import \
             --type {params.in_type} \
             --input-path {input} \
             --output-path {output} \
-            --{params.cmd_flag} PairedEndFastqManifestPhred{params.phred}'
+            --{params.cmd_flag} {params.in_flag}{params.phred}'
 
 rule import_and_demultiplex_visualization:
     """ Conversion of QZA to QZV for QC summary
@@ -136,49 +142,89 @@ rule import_and_demultiplex_visualization:
     output:
         join(output_dir, '01_import_and_demultiplex/{f_id}.qzv')
     shell:
-        'qiime demux summarize \
+        'module load qiime/2-2019.1; \
+        qiime demux summarize \
             --i-data {input} \
             --o-visualization {output}'
 
 rule dada2:
+    """
+    https://docs.qiime2.org/2019.1/plugins/available/dada2/denoise-single/
+    """
     input:
         f1 = join(output_dir, '01_import_and_demultiplex/{f_id}.qza')
     params:
         r_name = 'dada2',
+        trim_l_f = trim_left_forward,
+        trun_len_f = truncate_length_forward,
+        min_fold = min_fold_parent_over_abundance
     output:
-        table = join(output_dir,'02_clustering/{f_id}_table_dada.qza'),
-        seqs = join(output_dir,'02_clustering/{f_id}_seq_dada.qza'),
-        stats = join(output_dir,'02_clustering/{f_id}_stat_dadas.qza'),
+        table = join(output_dir,'02_clustering/{f_id}_table.qza'),
+        seqs = join(output_dir,'02_clustering/{f_id}_seq.qza'),
+        stats = join(output_dir,'02_clustering/{f_id}_stat.qza'),
     shell:
         '''
         module load qiime/2-2019.1; \
-        qiime dada2 denoise-paired \
+        qiime dada2 denoise-single \
             --verbose \
             --i-demultiplexed-seqs {input.f1} \
             --o-table {output.table} \
-            --o-seqresentative-sequences {output.seqs} \
+            --o-representative-sequences {output.seqs} \
             --o-denoising-stats {output.stats} \
+            --p-trim-left {params.trim_l_f} \
+            --p-trunc-len {params.trun_len_f} \
+            --p-min-fold-parent-over-abundance {params.min_fold}
         '''
+
+def command_merge_table(wildcards):
+    cmd = ''
+    path = join(output_dir,'02_clustering/')
+
+    for f_id in flowcell_ids:
+        cmd = cmd + '--i-tables ' + path + f_id + '_table.qza '
+
+    return(cmd)
 
 
 #merge tables and sequences
 rule merge_tables:
     input:
         f1 = expand(join(output_dir,'02_clustering/{f_id}_table.qza'),f_id=flowcell_ids),
+    params:
+        cmd = command_merge_table
     output:
         o1 = join(output_dir,'03_merged/merged_table.qza')
-    run:
-        l = '--i-tables ' + ' --i-tables '.join(input.f1)
-        shell('module load qiime/2-2019.1; \ qiime feature-table merge ' + l + ' --o-merged-table {output.o1}')
+    shell:
+        '''
+        module load qiime/2-2019.1; \
+        qiime feature-table merge \
+        {params.cmd} \
+        --o-merged-table {output.o1}
+        '''
+
+def command_merge_seq(wildcards):
+    cmd = ''
+    path = join(output_dir,'02_clustering/')
+
+    for f_id in flowcell_ids:
+        cmd = cmd + '--i-data ' + path + f_id + '_seq.qza '
+
+    return(cmd)
 
 rule merge_seq:
     input:
         f1 = expand(join(output_dir,'02_clustering/{f_id}_seq.qza'),f_id=flowcell_ids),
+    params:
+        cmd = command_merge_seq
     output:
         o1 = join(output_dir,'03_merged/merged_seq.qza')
-    run:
-        l = '--i-data ' + ' --i-data '.join(input.f1)
-        shell('module load qiime/2-2019.1; \ qiime feature-table merge-seqs ' + l + ' --o-merged-data {output.o1}')
+    shell:
+        '''
+        module load qiime/2-2019.1; \
+        qiime feature-table merge-seqs \
+        {params.cmd} \
+        --o-merged-data {output.o1}
+        '''
 
 #filtering
 rule filter_tab:
@@ -283,9 +329,9 @@ rule scikit:
         seq = join(output_dir,'04_filtered/4_seq.qza'),
     params:
         r_name = 'scikit',
-        ref_tax = join(ref_db,'refdb_tax_{tax_ref}.qza'),
+        ref_tax = join(ref_db,'refdb_classifier_silva.qza'),
     output:
-        o1 = join(output_dir,'05_class/scikit_{tax_ref}.qza')
+        o1 = join(output_dir,'05_class/scikit_silva.qza')
     shell:
         '''
         module load qiime/2-2019.1; \
@@ -310,7 +356,8 @@ rule phylogenetic_tree:
         unrooted_tree = join(output_dir,'06_phylogenetics/unrooted_tree.qza'),
         rooted_tree = join(output_dir,'06_phylogenetics/rooted_tree.qza')
     shell:
-        'qiime phylogeny align-to-tree-mafft-fasttree \
+        'module load qiime/2-2019.1; \
+        qiime phylogeny align-to-tree-mafft-fasttree \
             --i-sequences {input.f1} \
             --o-alignment {output.msa} \
             --o-masked-alignment {output.masked_msa} \
