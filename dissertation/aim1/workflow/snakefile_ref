@@ -7,44 +7,132 @@ import yaml
 ##############################
 #Reference Taxonomy
 #gg downloaded: https://mothur.org/w/images/6/68/Gg_13_8_99.taxonomy.tgz/
-##gg_13_8_otus/taxonomy/99_otu_taxonomy.txt
+
 #silva downloaded: https://www.arb-silva.de/download/archive/qiime/
-##SILVA_132_QIIME_release/taxonomy/16S_only/99/taxonomy_all_levels.txt
-ref_paths = ['/data/sevillas2/gmu/gg_taxonomy.txt', '/data/sevillas2/gmu/silva_taxonomy.txt']
+##rep_set/rep_set/16S_only/99/
+##taxonomy/16S_only/99/raw_taxonomy
+
+#Followed tutorial
+#https://docs.qiime2.org/2019.1/tutorials/feature-classifier/
+
+################################
+#define paths
+fna_path = ['/data/sevillas2/gmu/ref/gg_13_8_99.fasta', '/data/sevillas2/gmu/ref/silva_132_99.fna']
+txt_path = ['/data/sevillas2/gmu/ref/gg_13_8_99.gg.tax', '/data/sevillas2/gmu/ref/silva_taxonomy.txt']
 out_dir = '/data/sevillas2/gmu/ref/'
 
-tax_dict = {}
-for i in ref_paths:
+#create fasta/fna paths
+fna_dict = {}
+for i in fna_path:
     refName = i.split('/')[-1].split('_')[0]
-    tax_dict[refName] = i
+    fna_dict[refName] = i
 
-def get_taxref_full_path(wildcards):
+def get_fna_path(wildcards):
     """
     """
-    (refFullPath) = tax_dict[wildcards.tax_name]
+    (refFullPath) = fna_dict[wildcards.tax_name]
     return refFullPath
 
+#create taxonomy paths
+txt_dict = {}
+for i in txt_path:
+    refName = i.split('/')[-1].split('_')[0]
+    txt_dict[refName] = i
+
+def get_txt_path(wildcards):
+    """
+    """
+    (refFullPath) = txt_dict[wildcards.tax_name]
+    return refFullPath
+
+#rule all
 rule all:
     input:
-        expand(join(out_dir + 'refdb_tax_{tax_name}.qza'),tax_name=tax_dict.keys()),
+        expand(join(out_dir + 'refdb_classifier_{tax_name}.qza'),tax_name=txt_dict.keys()),
 
-#recreate taxonomy files
-rule create_ref_tax:
+#FeatureSequence
+rule ref_otus:
+    """ Create the reference database to be used for taxonomic_classification
+    used unaligned reads for this - creates ''FeatureData[Sequence]''
+    """
+    input:
+        ref_txt = get_fna_path
+    output:
+        o1 = join(out_dir + 'refdb_seq_{tax_name}.qza')
+    params:
+        rname = '{tax_name}'
+    shell:
+      '''
+      module load QIIME/2-2019.1;
+      qiime tools import \
+        --type 'FeatureData[Sequence]' \
+        --input-path {input.ref_txt} \
+        --output-path {output.o1}
+      '''
+
+
+#FeatureTaxonomy
+rule ref_taxonomy:
     """ Create the reference database to be used for taxonomic_classification
     used unaligned reads for this - creates ''FeatureData[Taxonomy]''
     """
     input:
-        ref_tax = get_taxref_full_path
+        ref_txt = get_txt_path
     output:
         o1 = join(out_dir + 'refdb_tax_{tax_name}.qza')
     params:
         rname = '{tax_name}'
     shell:
-      """
-      module load QIIME/2-2019.10;
-      qiime tools import \
-        --type '''FeatureData[Taxonomy]''' \
-        --input-path {input.ref_tax} \
+        '''
+        module load QIIME/2-2019.1;
+        qiime tools import \
         --input-format HeaderlessTSVTaxonomyFormat \
-        --output-path {output.o1}')
-      """
+        --type 'FeatureData[Taxonomy]' \
+        --input-path {input.ref_txt} \
+        --output-path {output.o1}
+        '''
+
+#train classifier
+rule ref_classifier:
+    """
+    Creates TaxonomicClassifier
+    """
+    input:
+        ref_tax = join(out_dir + 'refdb_tax_{tax_name}.qza'),
+        ref_seq = join(out_dir + 'refdb_seq_{tax_name}.qza')
+    output:
+        o1 = join(out_dir + 'refdb_classifier_{tax_name}.qza')
+    params:
+        rname = '{tax_name}'
+    shell:
+        '''
+        module load QIIME/2-2019.1; \
+        qiime feature-classifier fit-classifier-naive-bayes \
+          --i-reference-reads {input.ref_seq} \
+          --i-reference-taxonomy {input.ref_tax} \
+          --o-classifier {output.o1}
+         '''
+
+#classifier can be trained using only the specified sequences. to run this workflow
+#change the input of ref_seq = ref_classifier to refdb_seq_splice_{tax_name}.qza
+rule ref_seq:
+    """ creates FeatureData[Sequence]
+    https://docs.qiime2.org/2020.2/plugins/available/feature-classifier/extract-reads/
+    """
+    input:
+        ref_seq = join(out_dir + 'refdb_seq_{tax_name}.qza')
+    output:
+        o1 = join(out_dir + 'refdb_seq_splice_{tax_name}.qza')
+    params:
+        rname = '{tax_name}'
+    shell:
+        '''
+        module load QIIME/2-2019.1; \
+        qiime feature-classifier extract-reads \
+        --p-f-primer GAGTTTGATCMTGGCTCAG \
+        --p-r-primer CCGCGGCKGCTGGCAC \
+        --i-sequences {input.ref_seq} \
+        --p-min-length 10 \
+        --p-max-length 400 \
+        --o-reads {output.o1}
+        '''
