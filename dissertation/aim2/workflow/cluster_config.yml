@@ -2,6 +2,6 @@
 __default__:
     gres: lscratch:256
     mem: 96g
-    partition: quick
-    time: 4-00:00:00
-    threads: 32
+    partition: norm
+    time: 120-00:00:00
+    threads: 16

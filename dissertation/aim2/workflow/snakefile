@@ -77,7 +77,8 @@ rule create_per_sample_Q2_manifest:
     output:
         o1 = temp(join(output_dir, 'manifests/{sample}_Q2_manifest_by_sample.txt'))
     params:
-        fid = get_fid
+        fid = get_fid,
+        rname = "q2manifest"
     shell:
         'echo "{wildcards.sample},{input.fq1},forward,{params.fid}" >> {output.o1}'
 
@@ -89,7 +90,8 @@ rule combine_Q2_per_sample_manifests:
     output:
         temp(join(output_dir, 'manifests/all.txt'))
     params:
-        join(output_dir, 'manifests/')
+        join(output_dir, 'manifests/'),
+        rname = "combine_mani"
     shell:
         'find {params} -maxdepth 1 -name \'*Q2_manifest_by_sample.txt\' | xargs cat > {output}'
 
@@ -122,6 +124,7 @@ rule import_fastq_and_demultiplex:
         phred = phred_score,
         cmd_flag = 'input-format',
         in_flag = input_flag,
+        rname = "import"
     shell:
         'module load qiime/2-2019.1; \
         qiime tools import \
@@ -139,6 +142,8 @@ rule import_and_demultiplex_visualization:
     """
     input:
         join(output_dir, '01_import_and_demultiplex/{f_id}.qza')
+    params:
+        rname="import_qzv"
     output:
         join(output_dir, '01_import_and_demultiplex/{f_id}.qzv')
     shell:
@@ -191,7 +196,8 @@ rule merge_tables:
     input:
         f1 = expand(join(output_dir,'02_clustering/{f_id}_table.qza'),f_id=flowcell_ids),
     params:
-        cmd = command_merge_table
+        cmd = command_merge_table,
+        rname="merge_table"
     output:
         o1 = join(output_dir,'03_merged/merged_table.qza')
     shell:
@@ -215,7 +221,8 @@ rule merge_seq:
     input:
         f1 = expand(join(output_dir,'02_clustering/{f_id}_seq.qza'),f_id=flowcell_ids),
     params:
-        cmd = command_merge_seq
+        cmd = command_merge_seq,
+        rname="merge_seq"
     output:
         o1 = join(output_dir,'03_merged/merged_seq.qza')
     shell:
@@ -246,7 +253,8 @@ rule filter_tab:
         f1 = min_num_reads_per_sample,
         f2 = min_num_reads_per_feature,
         f3 = min_num_samples_per_feature,
-        f4 = min_num_features_per_sample
+        f4 = min_num_features_per_sample,
+        rname="filter_tab"
     shell:
         '''
         module load qiime/2-2019.1; \
@@ -280,6 +288,8 @@ rule filter_tab_qzv:
         f3 = join(output_dir,'04_filtered/3_tab.qza'),
         f4 = join(output_dir,'04_filtered/4_tab.qza'),
         q2_manifest = manifest_dir
+    params:
+        rname="filter_tab_qzv"
     output:
         o1 = join(output_dir,'04_filtered/1_tab.qzv'),
         o2 = join(output_dir,'04_filtered/2_tab.qzv'),
@@ -311,6 +321,8 @@ rule filter_seq:
         f3 = join(output_dir,'04_filtered/3_tab.qza'),
         f4 = join(output_dir,'04_filtered/4_tab.qza'),
         seq_table = join(output_dir,'03_merged/merged_seq.qza')
+    params:
+        rname="filter_seq"
     output:
         o1 = join(output_dir,'04_filtered/1_seq.qza'),
         o2 = join(output_dir,'04_filtered/2_seq.qza'),
@@ -328,7 +340,7 @@ rule scikit:
     input:
         seq = join(output_dir,'04_filtered/4_seq.qza'),
     params:
-        r_name = 'scikit',
+        rname = 'scikit',
         ref_tax = join(ref_db,'refdb_classifier_silva.qza'),
     output:
         o1 = join(output_dir,'05_class/scikit_silva.qza')
@@ -350,6 +362,8 @@ rule phylogenetic_tree:
     '''
     input:
         f1 = join(output_dir,'04_filtered/4_seq.qza'),
+    params:
+        rname="phylo"
     output:
         msa = join(output_dir,'06_phylogenetics/msa.qza'),
         masked_msa = join(output_dir,'06_phylogenetics/masked_msa.qza'),
