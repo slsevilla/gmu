@@ -1,0 +1,331 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+#Read in config file
+```{r}
+library(yaml)
+library(stringr)
+
+#system
+system_opt = "m"
+
+#read in config
+config_file = read_yaml('config.yaml')
+git_dir=str_replace(config_file$git_dir[[system_opt]],'home','Volumes')
+data_dir=str_replace(config_file$data_dir[[system_opt]],'data/sevillas2','Volumes/data')
+analysis_dir=str_replace(config_file$analysis_dir[[system_opt]],'data/sevillas2','Volumes/data')
+ref_dir=str_replace(config_file$ref_dir[[system_opt]],'data/sevillas2','Volumes/data')
+manifest_dir=str_replace(config_file$manifest_dir[[system_opt]],'home','Volumes')
+
+manifest_file=paste(manifest_dir, config_file$clean_manifest,sep="")
+```
+
+#Create phyloseq object
+```{r}
+library(phyloseq)
+library(biomformat)
+source("../../sources/qiime2R.R") #github https://github.com/jbisanz/qiime2R
+source("../../sources/qzq_to_phyloseq.R") #github https://github.com/jbisanz/qiime2R
+
+#Read OTUS
+otus<-read_qza(paste(data_dir,'04_filtered/4_tab.qza',sep=""))
+
+#Read taxonomy reference file
+taxonomy<-read_qza(paste(data_dir,"05_class/scikit_silva.qza",sep=""))
+
+#convert tax to matrix for phyloseq input
+gen.data <- function(x){
+    tax_list = unlist(strsplit(as.character(x),";"))
+    
+    for (i in (length(tax_list)+1):17){
+      tax_list = append(tax_list,"")
+    }
+    
+    return(tax_list)
+}
+
+taxonomy_list <- as.list(taxonomy$data$Taxon)
+taxonomy_table <- do.call("rbind", lapply(taxonomy_list, gen.data))
+taxonomy_table <- taxonomy_table[,-c(16,17)]
+colnames(taxonomy_table) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Genus","D7","D8","D9","D10","D11","D12","D13","D14")
+rownames(taxonomy_table)<-taxonomy$data$Feature.ID
+tax_convert<-as.matrix(taxonomy_table)
+head(tax_convert)
+
+#read metadata
+metadata<-read.table(manifest_file,sep='\t', header=T, row.names=1, comment="")
+
+#create phyloseq object
+phy_obj<-phyloseq(otu_table(otus$data, taxa_are_rows = T), tax_table(tax_convert), sample_data(metadata))
+phy_obj
+```
+
+#Summarize and raryfy
+```{r}
+library(microbiome)
+source("../../sources/ggrare.R") #github library: https://rdrr.io/github/gauravsk/ranacapa/
+
+summarize_phyloseq(phy_obj)
+
+#Generate rare curves
+for (meta in colnames(sample_data(phy_obj))){
+  ggrare(phy_obj,step=1000,color=meta)
+}
+
+#determine sample lost at various rare levels
+rare_points = c(1000,2000,3000,4000,5000,6000)
+rare_df = data.frame()
+for (rare_val in rare_points){
+  rare_df[nrow(rare_df)+1,"RareValue"]=rare_val
+  rare_df[nrow(rare_df),"SampleCount"]=nrow(sample_data(rarefy_even_depth(phy_obj, rngseed=1, sample.size=rare_val, replace=F) ))
+}
+
+#review sample counts
+rare_df
+
+#rarefy the data
+phy_r = rarefy_even_depth(phy_obj, rngseed=1, sample.size=3000, replace=F) 
+
+#Post rare plot
+ggrare(phy_r,step=1000,color="RunID")
+
+#Create phy tree
+#random_tree = rtree(ntaxa(phy_r), rooted=TRUE, tip.label=taxa_names(phy_r))
+#phy_r_t = merge_phyloseq(phy_r, random_tree)
+```
+
+#Figure 3A
+https://pubs.acs.org/doi/pdf/10.1021/acs.est.8b02301
+```{r}
+#merge to diet
+phy_diet = merge_samples(phy_r,"Diet")
+phy_diet
+
+#select top OTUS
+TopNOTUs <- names(sort(taxa_sums(phy_diet), TRUE)[1:15])
+phy_pr <- prune_taxa(TopNOTUs,phy_diet)
+length(unique(as.data.frame(tax_table(phy_pr))$Genus))
+
+#melt data to relative abundance
+phy_tmp <- phy_pr %>%
+    tax_glom(taxrank = "Genus") %>%                     # agglomerate at tax level
+    transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+    psmelt() 
+phy_tmp = phy_tmp[order(Abundance),]
+
+
+#plot
+phylum_colors <- c(
+  "#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD",
+   "#AD6F3B", "#673770","#D14285", "#652926", "#C84248", 
+  "#8569D5", "#5E738F","#D1A33D", "#8A7C64", "#599861",  "#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD",
+   "#AD6F3B", "#673770","#D14285", "#652926", "#C84248", 
+  "#8569D5", "#5E738F","#D1A33D", "#8A7C64", "#599861"
+)
+addSmallLegend <- function(myPlot, pointSize = 1, textSize = 6, spaceLegend = 0.1) {
+    myPlot +
+        guides(shape = guide_legend(override.aes = list(size = pointSize)),
+               color = guide_legend(override.aes = list(size = pointSize))) +
+        theme(legend.title = element_text(size = textSize), 
+              legend.text  = element_text(size = textSize),
+              legend.key.size = unit(spaceLegend, "lines"))
+}
+
+p = ggplot(phy_tmp, aes(x = Sample, y = Abundance, fill = Genus)) + 
+    theme(legend.position = "bottom", legend.key.width = unit(0.2,"cm"),
+          axis.text.x = element_text(angle = 90, hjust = 1), 
+          legend.text = element_text(size = 8))  +
+          geom_bar(stat = "identity") +
+          xlab("Diet") +
+          ylab("Relative Abundance (%)") +
+          ggtitle("Most Abundant OTU's") +
+          labs(fill = "Genus")
+p1 = addSmallLegend(p)
+p1
+
+file_name = "relabun_diet"
+ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p1)
+```
+
+#Figure 3B
+```{r}
+library(vegan)
+library(agricolae)
+#https://grunwaldlab.github.io/analysis_of_microbiome_community_data_in_r/07--diversity_stats.html
+#define alpha
+sample_df = data.frame(sample_data(phy_r))
+sample_df$alpha = diversity(otu_table(phy_r),
+                            MARGIN = 2, #samples are in cols, not rows
+                            index = "invsimpson")
+#review histogram
+hist(sample_df$alpha)
+
+#check distribution
+shapiro.test(sample_df$alpha) #samples are not normally distributed
+
+mean(subset(sample_df,Diet=="Apple Slices")$alpha)
+mean(subset(sample_df,Diet=="Rice Bran")$alpha)
+
+#run anova
+anova_result <- aov(alpha ~ Diet, sample_df)
+summary(anova_result)
+
+#run tukey HSD
+tukey_result <- HSD.test(anova_result, "Diet", group = TRUE)
+group_data <- tukey_result$groups[order(rownames(tukey_result$groups)),]
+
+#plot alpha div
+p = ggplot(sample_df, aes(x = Diet, y = alpha)) +
+  geom_text(data = data.frame(),
+            aes(x = rownames(group_data), y = max(sample_df$alpha) + 1, label = group_data$groups),
+            col = 'black',
+            size = 10) +
+  geom_boxplot() +
+  ggtitle("Alpha diversity") +
+  xlab("Diet") +
+  ylab("Alpha diversity index")
+
+file_name = "alphadiv_diet"
+ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
+```
+
+#Fig 3C
+```{r}
+#Create PCOA
+#https://microbiome.github.io/tutorials/Ordination.html
+ord = ordinate(phy_r,"MDS","bray")
+p = plot_ordination(phy_r,ord,color="Diet",shape="Timepoint") + 
+  geom_point(size=5)
+p
+file_name = "ordination_diet"
+ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
+
+p = plot_ordination(phy_r,ord,color="Timepoint") + 
+  geom_point(size=5)
+p
+file_name = "ordination_time"
+ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
+
+p = plot_ordination(phy_r,ord,color="SampleType") + 
+  geom_point(size=5)
+p
+file_name = "ordination_type"
+ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
+
+mrrp()
+```
+
+#Figure 4 - Diet
+OTUs shown significantly (BH adjusted p < 0.05) differed between diets. Direction of fold change (log2) indicates which diet each OTU is more strongly associated (labeled below x-axis). (a) PE-fed microbiome versus bran-fed microbiome
+```{r}
+#https://informatics.fas.harvard.edu/differential-expression-with-deseq2.html
+#https://joey711.github.io/phyloseq-extensions/DESeq2.html
+library(DESeq2)
+
+#OTU df
+#countData = data.frame(otu_table(transform_sample_counts(phy_r, function(x) x/sum(x)))) #rel abund
+countData = data.frame(otu_table(phy_r)) #raw values
+
+#remove otus with no info
+countData_clean = countData[apply(countData[,-1], 1, function(x) !all(x==0)),]
+
+#taxonmy converted to df
+tax_df = data.frame(tax_table(phy_r))
+
+#add Genus to each row
+subset_otu <- function(level,df_in){
+ for (rows in rownames(df_in)){
+
+    if(tax_df[rows,level]=="" | tax_df[rows,level]=="D_5__"){
+      df_in[rows,level] = "HIGHER"
+    }else {
+      df_in[rows,level] = tax_df[rows,level]
+    }
+ }
+  return(df_in)
+}
+countData_tax = subset_otu("Genus",countData_clean)
+head(countData_tax)  
+
+#aggregate at Genus level
+countData_Genus = aggregate(.~Genus, countData_tax, mean)
+rownames(countData_Genus) = countData_Genus$Genus
+countData_Genus = countData_Genus[,-1]
+
+#norm for diff analysis
+countData_norm = countData_Genus #if using rel abund values *100
+head(countData_norm)
+
+diff_analysis <- function(factor_in,contrast_in,subtitle,file_name){
+  #create metadata df
+  colData = data.frame(row.names=rownames(sample_data(phy_r)),condition=factor(sample_data(phy_r)[[factor_in]]))
+  condition = c(sample_data(phy_r)[,factor_in])
+  
+  #diff analysis
+  dataset = DESeqDataSetFromMatrix(countData = round(countData_norm),
+                      colData = colData,
+                      design = ~condition)
+  dds = DESeq(dataset,sfType="poscounts")
+  result <- results(dds, contrast=contrast_in, cooksCutoff = FALSE)
+  result <- result[complete.cases(result),]  #remove any rows with NA
+  
+  #bh adjust
+  #https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html
+  result_df = data.frame(result)
+  print(subset(result_df,pvalue<0.05))
+  result_df$BH = p.adjust(result_df$pvalue, method = "BH", n = length(result_df$pvalue))
+  sig_df = subset(result_df,BH<0.05)
+
+  #remove D_6__
+  rownames(sig_df) = gsub("D_5__", "", rownames(sig_df))
+  
+  #plot
+  if(nrow(sig_df)>0){
+    p = ggplot(data = sig_df,
+         aes(x = reorder(rownames(sig_df), log2FoldChange), y = log2FoldChange,
+             fill = rownames(sig_df))) +
+        geom_bar(stat = "identity")+
+        coord_flip()+
+        labs(x = "Genus", y = "log2 Fold Change",
+             title = paste("Differential Abundance Analysis: \n",subtitle))+
+        theme_minimal()+
+        guides(fill = FALSE)
+    
+    print(p)
+    ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
+  } else{
+    print(paste("There are no sig genes for",subtitle))
+  }
+}
+
+#analysis by diet and timepoint
+diff_analysis("Diet",c('condition','Apple Slices','Rice Bran'), "Apple Slices to Rice Bran","diffanal_diet")
+diff_analysis("Timepoint",c('condition','Baseline','Day5'), "Baseline to Day 5","diffanal_tp_b5")
+diff_analysis("Timepoint",c('condition','Baseline','Day8'), "Baseline to Day 8","diffanal_tp_b8")
+diff_analysis("Timepoint",c('condition','Baseline','Day12'), "Baseline to Day 12","diffanal_tp_b12")
+diff_analysis("Timepoint",c('condition','Day5','Day12'), "Day 5 to Day 12","diffanal_tp_512")
+diff_analysis("Timepoint",c('condition','Day5','Day8'), "Day 5 to Day 8","diffanal_tp_58")
+diff_analysis("Timepoint",c('condition','Day8','Day12'), "Day 8 to Day 12","diffanal_tp_812")
+```
+
+Calculate permutation p value
+```{r}
+#https://microbiome.github.io/tutorials/PERMANOVA.html
+adonis2(t(countData_Genus) ~ Diet, 
+        data=data.frame(sample_data(phy_r)), permutations=99,
+        method = "bray")
+
+dist <- vegdist(t(countData_Genus))
+anova(betadisper(dist, data.frame(sample_data(phy_r))$Diet))
+
+
+
+
+data.frame(tax_table(phy_r))["d845a0f8bcde7ef574de05e607db83c5",]
+
+```
+
