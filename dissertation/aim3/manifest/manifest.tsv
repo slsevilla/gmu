@@ -1,0 +1,117 @@
+SampleID	RunID	plateid	status	age_cat	bmi_cat	race	sex	country	epilepsy_or_seizure_disorder	ibd	ibd_diagnosis	ibd_diagnosis_refined	mental_illness	mental_illness_type_bipolar_disorder	mental_illness_type_depression	mental_illness_type_ptsd_posttraumatic_stress_disorder	mental_illness_type_schizophrenia	mental_illness_type_substance_abuse
+ERR4020715	Pool_S1_L001	Plate59	healthy	40s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020721	Pool_S1_L001	Plate60	healthy	60s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020426	Pool_S1_L001	Plate60	healthy	60s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020697	Pool_S1_L001	Plate63	healthy	30s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020681	Pool_S1_L001	Plate58	healthy	30s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020521	Pool_S1_L001	Plate59	healthy	30s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020716	Pool_S1_L001	Plate63	healthy	30s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020707	Pool_S1_L001	Plate60	healthy	30s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020680	Pool_S1_L001	Plate60	healthy	30s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020635	Pool_S1_L001	Plate60	healthy	30s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020678	Pool_S1_L001	Plate60	healthy	40s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020654	Pool_S1_L001	Plate59	healthy	40s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020650	Pool_S1_L001	Plate58	healthy	40s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020531	Pool_S1_L001	Plate59	healthy	40s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020719	Pool_S1_L001	Plate59	healthy	50s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020684	Pool_S1_L001	Plate58	healthy	50s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020529	Pool_S1_L001	Plate59	healthy	50s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020517	Pool_S1_L001	Plate61	healthy	50s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020494	Pool_S1_L001	Plate61	healthy	60s	Normal	Caucasian	female	United Kingdom	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020478	Pool_S1_L001	Plate61	healthy	60s	Normal	Caucasian	female	United Kingdom	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020467	Pool_S1_L001	Plate61	healthy	60s	Normal	Caucasian	female	United Kingdom	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020400	Pool_S1_L001	Plate61	healthy	60s	Normal	Caucasian	female	United Kingdom	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020495	Pool_S1_L001	Plate59	healthy	30s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020393	Pool_S1_L001	Plate60	healthy	30s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020389	Pool_S1_L001	Plate60	healthy	30s	Normal	Caucasian	male	United Kingdom	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4019747	Pool_S1_L001	Plate59	healthy	30s	Normal	Caucasian	male	USA	NA	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020515	Pool_S1_L001	Plate63	healthy	40s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020506	Pool_S1_L001	Plate58	healthy	40s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020505	Pool_S1_L001	Plate59	healthy	40s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020483	Pool_S1_L001	Plate59	healthy	40s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020712	Pool_S1_L001	Plate60	healthy	50s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020487	Pool_S1_L001	Plate60	healthy	50s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020480	Pool_S1_L001	Plate58	healthy	50s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020477	Pool_S1_L001	Plate58	healthy	50s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020663	Pool_S1_L001	Plate58	healthy	50s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020535	Pool_S1_L001	Plate58	healthy	50s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020520	Pool_S1_L001	Plate58	healthy	50s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020444	Pool_S1_L001	Plate58	healthy	50s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020473	Pool_S1_L001	Plate59	healthy	60s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020446	Pool_S1_L001	Plate59	healthy	60s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020439	Pool_S1_L001	Plate63	healthy	60s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020430	Pool_S1_L001	Plate58	healthy	60s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020670	Pool_S1_L001	Plate59	healthy	30s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020636	Pool_S1_L001	Plate58	healthy	30s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020522	Pool_S1_L001	Plate60	healthy	30s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020454	Pool_S1_L001	Plate60	healthy	30s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020662	Pool_S1_L001	Plate59	healthy	40s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020452	Pool_S1_L001	Plate58	healthy	40s	overweight/obese	Caucasian	male	USA	I do not have this condition	Diagnosed by prof	Ulcerative colitis	Ulcerative colitis	No	NA	NA	NA	NA	NA
+ERR4020402	Pool_S1_L001	Plate58	healthy	40s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020380	Pool_S1_L001	Plate58	healthy	40s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020720	Pool_S1_L001	Plate59	healthy	50s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020704	Pool_S1_L001	Plate58	healthy	50s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020676	Pool_S1_L001	Plate59	healthy	50s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020534	Pool_S1_L001	Plate58	healthy	50s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020516	Pool_S1_L001	Plate60	healthy	60s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020511	Pool_S1_L001	Plate60	healthy	60s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020491	Pool_S1_L001	Plate58	healthy	60s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4020423	Pool_S1_L001	Plate63	healthy	60s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	No	NA	NA	NA	NA	NA
+ERR4019277	Pool_S1_L001	Plate60	unhealthy	40s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697855	Pool_S1_L001	Plate61	unhealthy	60s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697854	Pool_S1_L001	Plate60	unhealthy	60s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019336	Pool_S1_L001	Plate59	unhealthy	30s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019191	Pool_S1_L001	Plate63	unhealthy	30s	overweight/obese	Caucasian	female	Australia	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	Yes	No	No
+ERR2697993	Pool_S1_L001	Plate63	unhealthy	30s	overweight/obese	Caucasian	female	USA	Diagnosed by prof	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019104	Pool_S1_L001	Plate60	unhealthy	30s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	Yes	No	No
+ERR4018996	Pool_S1_L001	Plate60	unhealthy	30s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Crohns disease	Ileal Crohns Disease	Yes	Yes	Yes	Yes	No	No
+ERR2697915	Pool_S1_L001	Plate63	unhealthy	30s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2696733	Pool_S1_L001	Plate59	unhealthy	30s	Normal	Caucasian	female	USA	I do not have this condition	Diagnosed by prof	Crohns disease	Ileal and Colonic Crohns Disease	Yes	No	Yes	No	No	No
+ERR4019227	Pool_S1_L001	Plate59	unhealthy	40s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	Yes	No	No
+ERR4019055	Pool_S1_L001	Plate59	unhealthy	40s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019002	Pool_S1_L001	Plate58	unhealthy	40s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4018943	Pool_S1_L001	Plate58	unhealthy	40s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697634	Pool_S1_L001	Plate59	unhealthy	50s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697625	Pool_S1_L001	Plate60	unhealthy	50s	Normal	Caucasian	female	USA	Diagnosed by prof	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697607	Pool_S1_L001	Plate59	unhealthy	50s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697590	Pool_S1_L001	Plate60	unhealthy	50s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019711	Pool_S1_L001	Plate58	unhealthy	60s	Normal	Caucasian	female	USA	NA	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	NA	No
+ERR4018994	Pool_S1_L001	Plate58	unhealthy	60s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4018944	Pool_S1_L001	Plate63	unhealthy	60s	Normal	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4018915	Pool_S1_L001	Plate61	unhealthy	60s	Normal	Caucasian	female	United Kingdom	I do not have this condition	Diagnosed by prof	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2698022	Pool_S1_L001	Plate61	unhealthy	30s	Normal	Caucasian	male	United Kingdom	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697907	Pool_S1_L001	Plate58	unhealthy	30s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697604	Pool_S1_L001	Plate58	unhealthy	30s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2696692	Pool_S1_L001	Plate59	unhealthy	30s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697831	Pool_S1_L001	Plate61	unhealthy	40s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697780	Pool_S1_L001	Plate59	unhealthy	40s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697708	Pool_S1_L001	Plate59	unhealthy	40s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	No	Yes	No	No
+ERR2697560	Pool_S1_L001	Plate59	unhealthy	40s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019751	Pool_S1_L001	Plate61	unhealthy	50s	Normal	Caucasian	male	USA	NA	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	NA	No
+ERR4019328	Pool_S1_L001	Plate59	unhealthy	50s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	Yes
+ERR2697967	Pool_S1_L001	Plate60	unhealthy	50s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697844	Pool_S1_L001	Plate58	unhealthy	50s	Normal	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019282	Pool_S1_L001	Plate58	unhealthy	50s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	Yes	No
+ERR4019022	Pool_S1_L001	Plate58	unhealthy	50s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	Yes	No	No
+ERR4019021	Pool_S1_L001	Plate58	unhealthy	50s	overweight/obese	Caucasian	female	Australia	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	Yes	No	No
+ERR4018978	Pool_S1_L001	Plate60	unhealthy	50s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	No	Yes	Yes	Yes
+ERR4019291	Pool_S1_L001	Plate58	unhealthy	60s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019232	Pool_S1_L001	Plate61	unhealthy	60s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	Yes	Yes	Yes	No	No
+ERR2698007	Pool_S1_L001	Plate59	unhealthy	60s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697921	Pool_S1_L001	Plate58	unhealthy	60s	overweight/obese	Caucasian	female	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019280	Pool_S1_L001	Plate58	unhealthy	30s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019279	Pool_S1_L001	Plate58	unhealthy	30s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2696668	Pool_S1_L001	Plate60	unhealthy	30s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2696581	Pool_S1_L001	Plate58	unhealthy	30s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019222	Pool_S1_L001	Plate58	unhealthy	40s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4018950	Pool_S1_L001	Plate60	unhealthy	40s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2698039	Pool_S1_L001	Plate58	unhealthy	40s	overweight/obese	Caucasian	male	USA	I do not have this condition	Diagnosed by prof	Crohns disease	Ileal Crohns Disease	Yes	No	Yes	No	No	No
+ERR2697617	Pool_S1_L001	Plate58	unhealthy	40s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019267	Pool_S1_L001	Plate58	unhealthy	50s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	Yes
+ERR4019127	Pool_S1_L001	Plate60	unhealthy	50s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2698028	Pool_S1_L001	Plate59	unhealthy	50s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2697938	Pool_S1_L001	Plate59	unhealthy	50s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR4019056	Pool_S1_L001	Plate58	unhealthy	60s	overweight/obese	Caucasian	male	USA	I do not have this condition	Diagnosed by prof	Ulcerative colitis	Ulcerative colitis	Yes	No	Yes	No	No	No
+ERR2696741	Pool_S1_L001	Plate59	unhealthy	60s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2696689	Pool_S1_L001	Plate59	unhealthy	60s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	No	No
+ERR2696537	Pool_S1_L001	Plate58	unhealthy	60s	overweight/obese	Caucasian	male	USA	I do not have this condition	I do not have this condition	Unspecified	Unspecified	Yes	No	Yes	No	Yes	No

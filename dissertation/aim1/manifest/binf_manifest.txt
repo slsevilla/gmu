@@ -1,39 +1,39 @@
 tax	group	group.ref	tax.ref	file.name	include	classifier
-blast	closed	greengenes	greengenes	blast_cl_gg_gg.qza	Y	refdb_tax_gg.qza
+blast	closed	greengenes	greengenes	blast_cl_gg_gg.qza	Y	refdb_classifier_gg.qza
 blast	closed	greengenes	silva	blast_cl_gg_silva.qza	N	
 blast	closed	silva	greengenes	blast_cl_SILVA_gg.qza	N	
-blast	dada2	greengenes	greengenes	blast_dada_gg.qza	Y	refdb_tax_gg.qza
-blast	denovo	NA	greengenes	blast_dn_gg.qza	Y	refdb_tax_gg.qza
-blast	open	greengenes	greengenes	blast_op_gg_gg.qza	Y	refdb_tax_gg.qza
+blast	dada2	greengenes	greengenes	blast_dada_gg.qza	Y	refdb_classifier_gg.qza
+blast	denovo	NA	greengenes	blast_dn_gg.qza	Y	refdb_classifier_gg.qza
+blast	open	greengenes	greengenes	blast_op_gg_gg.qza	Y	refdb_classifier_gg.qza
 scikit	closed	greengenes	greengenes	scikit_clgg_gg.qza	Y	classify-sklearn_gg-13-8-99-nb-classifier.qza
 scikit	dada2	greengenes	greengenes	scikit_dada_gg.qza	Y	classify-sklearn_gg-13-8-99-nb-classifier.qza
 scikit	denovo	NA	greengenes	scikit_dn_gg.qza	Y	classify-sklearn_gg-13-8-99-nb-classifier.qza
 blast	open	greengenes	silva	blast_op_gg_silva.qza	N	
 blast	open	silva	greengenes	blast_op_SILVA_gg.qza	N	
 scikit	open	greengenes	greengenes	scikit_opgg_gg.qza	Y	classify-sklearn_gg-13-8-99-nb-classifier.qza
-vsearch	closed	greengenes	greengenes	vsearch_cl_gg_gg.qza	Y	refdb_tax_gg.qza
+vsearch	closed	greengenes	greengenes	vsearch_cl_gg_gg.qza	Y	refdb_classifier_gg.qza
 scikit	closed	greengenes	silva	scikit_clgg_silva.qza	N	
 scikit	closed	silva	greengenes	scikit_clSILVA_gg.qza	N	
-vsearch	dada2	greengenes	greengenes	vsearch_dada_gg.qza	Y	refdb_tax_gg.qza
-vsearch	denovo	NA	greengenes	vsearch_dn_gg.qza	Y	refdb_tax_gg.qza
-vsearch	open	greengenes	greengenes	vsearch_op_gg_gg.qza	Y	refdb_tax_gg.qza
-blast	closed	silva	silva	blast_cl_SILVA_silva.qza	Y	refdb_tax_silva.qza
-blast	dada2	silva	silva	blast_dada_silva.qza	Y	refdb_tax_silva.qza
-blast	denovo	NA	silva	blast_dn_silva.qza	Y	refdb_tax_silva.qza
+vsearch	dada2	greengenes	greengenes	vsearch_dada_gg.qza	Y	refdb_classifier_gg.qza
+vsearch	denovo	NA	greengenes	vsearch_dn_gg.qza	Y	refdb_classifier_gg.qza
+vsearch	open	greengenes	greengenes	vsearch_op_gg_gg.qza	Y	refdb_classifier_gg.qza
+blast	closed	silva	silva	blast_cl_SILVA_silva.qza	Y	refdb_classifier_silva.qza
+blast	dada2	silva	silva	blast_dada_silva.qza	Y	refdb_classifier_silva.qza
+blast	denovo	NA	silva	blast_dn_silva.qza	Y	refdb_classifier_silva.qza
 scikit	open	greengenes	silva	scikit_opgg_silva.qza	N	
 scikit	open	silva	greengenes	scikit_opSILVA_gg.qza	N	
-blast	open	silva	silva	blast_op_SILVA_silva.qza	Y	refdb_tax_silva.qza
+blast	open	silva	silva	blast_op_SILVA_silva.qza	Y	refdb_classifier_silva.qza
 scikit	closed	silva	silva	scikit_clSILVA_SILVA.qza	Y	classify-sklearn_silva-132-99-nb-classifier.qza
 vsearch	closed	greengenes	silva	vsearch_cl_gg_silva.qza	N	
 vsearch	closed	silva	greengenes	vsearch_cl_SILVA_gg.qza	N	
 scikit	dada2	silva	silva	scikit_dada_SILVA.qza	Y	classify-sklearn_silva-132-99-nb-classifier.qza
 scikit	denovo	NA	silva	scikit_dn_SILVA.qza	Y	classify-sklearn_silva-132-99-nb-classifier.qza
 scikit	open	silva	silva	scikit_opSILVA_SILVA.qza	Y	classify-sklearn_silva-132-99-nb-classifier.qza
-vsearch	closed	silva	silva	vsearch_cl_SILVA_silva.qza	Y	refdb_tax_silva.qza
-vsearch	dada2	silva	silva	vsearch_dada_silva.qza	Y	refdb_tax_silva.qza
-vsearch	denovo	NA	silva	vsearch_dn_silva.qza	Y	refdb_tax_silva.qza
+vsearch	closed	silva	silva	vsearch_cl_SILVA_silva.qza	Y	refdb_classifier_silva.qza
+vsearch	dada2	silva	silva	vsearch_dada_silva.qza	Y	refdb_classifier_silva.qza
+vsearch	denovo	NA	silva	vsearch_dn_silva.qza	Y	refdb_classifier_silva.qza
 vsearch	open	greengenes	silva	vsearch_op_gg_silva.qza	N	
-vsearch	open	silva	silva	vsearch_op_SILVA_gg.qza	Y	refdb_tax_silva.qza
+vsearch	open	silva	silva	vsearch_op_SILVA_gg.qza	Y	refdb_classifier_silva.qza
 vsearch	open	silva	greengenes	vsearch_op_SILVA_silva.qza	N	
 blast	dada2	greengenes	silva		N	
 vsearch	dada2	silva	greengenes		N	
