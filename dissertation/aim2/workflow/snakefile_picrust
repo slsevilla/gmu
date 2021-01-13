@@ -1,0 +1,51 @@
+import sys
+from os.path import join
+import pandas as pd
+
+#set paths
+output_dir = '/data/sevillas2/gmu/aim2/output'
+manifest_dir = '/data/sevillas2/gmu/aim2/manifest.tsv'
+
+#read manifest
+mani=pd.read_csv(manifest_dir,sep='\t',header=0)
+
+#id groups
+flowcell_ids=mani.RunID.unique()
+
+rule all:
+    input:
+        expand(join(output_dir,'02_clustering/{f_id}_table.qza'),f_id=flowcell_ids),
+        expand(join(output_dir,'02_clustering/{f_id}_seq.qza'),f_id=flowcell_ids),
+        expand(join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza'),f_id=flowcell_ids),
+
+
+rule picrust_q2:
+    '''
+    https://github.com/picrust/picrust2/wiki/Full-pipeline-script
+    https://github.com/picrust/picrust2/wiki/q2-picrust2-Tutorial
+    Takes in DADA2 output FeatureTable[Frequency] and FeatureData[Sequence]
+
+    three QZA outputs are expected: ec_metagenome, ko_metagenome, pathway_abundance
+    '''
+    input:
+        table = join(output_dir,'02_clustering/{f_id}_table.qza'),
+        seqs = join(output_dir,'02_clustering/{f_id}_seq.qza'),
+    params:
+        dir = join(output_dir,'07_picrust/{f_id}'),
+        rname = "picrust"
+    output:
+        o1 = join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza')
+    shell:
+        """
+        module load qiime/2-2020.2; \
+        qiime picrust2 full-pipeline \
+        --i-table {input.table} \
+        --i-seq {input.seqs} \
+        --output-dir {params.dir} \
+        --p-threads 10 \
+        --p-hsp-method mp \
+        --p-max-nsti 2 \
+        --verbose
+        """
+
+#https://www.bioconductor.org/packages/release/bioc/vignettes/KEGGgraph/inst/doc/KEGGgraphApp.pdf

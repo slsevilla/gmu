@@ -1,0 +1,96 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+
+library(biomformat)
+library(ape)
+library(cowplot)
+library(cluster)
+library(data.table)
+library(plyr)
+
+library(dplyr)
+#library("expss")
+#library(ggplot2)
+#library("ggpubr")
+#library(Hmisc)
+#library(otuSummary)
+
+#library(scales)
+#library(tibble)
+#library(vegan)
+
+library(yaml)
+library(stringr)
+library(phyloseq)
+source("sources/ggrare.R") #github library: https://rdrr.io/github/gauravsk/ranacapa/
+source("sources/miseqR.R")
+source("sources/qiime2R.R") #github https://github.com/jbisanz/qiime2R
+source('sources/abundances.R') #github https://github.com/microbiome/microbiome
+```
+
+```{r}
+#system
+system_opt = "m"
+
+#read in config
+config_file = read_yaml('config.yaml')
+git_dir=str_replace(config_file$git_dir[[system_opt]],'home','Volumes')
+data_dir=str_replace(config_file$data_dir[[system_opt]],'data/sevillas2','Volumes/data')
+analysis=str_replace(config_file$analysis_dir[[system_opt]],'data/sevillas2','Volumes/data')
+ref_dir=str_replace(config_file$ref_dir[[system_opt]],'data/sevillas2','Volumes/data')
+manifest_dir=str_replace(config_file$manifest_dir[[system_opt]],'home','Volumes')
+
+manifest_file=paste(manifest_dir, config_file$clean_manifest,sep="")
+variable_file=paste(manifest_dir, config_file$variable_manifest,sep="")
+binf_file=paste(manifest_dir, config_file$binf_manifest,sep="")
+```
+
+
+```{r}
+#decide which files to include, add Y or N flag
+benchmarkdf = read.csv(binf_file,sep="\t")
+benchmarkdf = subset(benchmarkdf,include=="Y")
+rownames(benchmarkdf) = benchmarkdf$file.name
+benchmarkdf
+```
+
+```{r}
+#add test information
+benchmarkdf['scikit_silva.qza','classifier'] = 'refdb_classifier_silva.qza'
+test_list = 'scikit_silva.qza'
+data_test_dir = '/Volumes/data/gmu/aim3/output/' 
+manifest_test_file = '/Volumes/sevillas2/git/gmu/dissertation/aim3/manifest/manifest.tsv'
+ref_dir_test = '/Volumes/sevillas2/git/gmu/dissertation/ref/'
+
+#Read OTUS
+otus<-read_qza(paste(data_test_dir,'05_class/',test_list,sep=""))
+
+#Read taxonomy reference file
+taxonomy<-read_qza(paste(ref_dir_test,benchmarkdf[test_list,"classifier"],sep=""))
+
+#convert tax to matrix for phyloseq input
+gen.data <- function(x){
+    tax_list = unlist(strsplit(as.character(x),";"))
+    return(tax_list)
+}
+taxonomy_list <- as.list(taxonomy$data$Taxon)
+taxonomy_table <- do.call("rbind", lapply(taxonomy_list, gen.data))
+colnames(taxonomy_table) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+rownames(taxonomy_table)<-taxonomy$data$Feature.ID
+tax_convert<-as.matrix(taxonomy_table)
+
+#read metadata
+metadata<-read.table(manifest_test_file,sep='\t', header=T, row.names=1, comment="")
+
+#create phyloseq object
+phy_obj<-phyloseq(otu_table(otus$data, taxa_are_rows = T), tax_table(tax_convert), sample_data(metadata))
+
+```
+

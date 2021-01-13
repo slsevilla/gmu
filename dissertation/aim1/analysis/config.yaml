@@ -1,11 +1,20 @@
+git_dir: 
+  w: 'C:\Program Files\Git\Coding\gmu\dissertation\aim1\'
+  m: '/home/sevillas2/git/gmu/dissertation/aim1/'
+data_dir: 
+  w: 'C:\Users\slsevilla\Google Drive\MyDocuments_Current\Education\George Mason University\Dissertation\data\aim1\Project_NP0084_MB\'
+  m: '/data/sevillas2/gmu/aim1/output/'
+analysis_dir: 
+  w: '/Users/slsevilla/Google Drive/MyDocuments_Current/Education/George Mason University/Dissertation/analysis/aim1/'
+  m: '/data/sevillas2/gmu/aim1/analysis/'
+ref_dir: 
+  w: '/Users/slsevilla/Google Drive/MyDocuments_Current/Education/George Mason University/Dissertation/data/ref/'
+  m: '/data/sevillas2/gmu/ref/'
+manifest_dir:
+  w: 'C:\Program Files\Git\Coding\gmu\dissertation\aim1\manifest\'
+  m: '/home/sevillas2/git/gmu/dissertation/aim1/manifest/'
 
-data_dir: 'C:\Users\slsevilla\Google Drive\MyDocuments_Current\Education\George Mason University\Dissertation\data\aim1\Project_NP0084_MB\'
-git_dir: 'C:\Program Files\Git\Coding\gmu\dissertation\aim1\'
-metadata_manifest: 'C:\Program Files\Git\Coding\gmu\dissertation\aim1\manifest\raw_manifest.txt'
-variable_manifest: 'C:\Program Files\Git\Coding\gmu\dissertation\aim1\manifest\variable_manifest.txt'
-binf_manifest: 'C:\Program Files\Git\Coding\gmu\dissertation\aim1\manifest\binf_manifest.txt'
-clean_manifest: 'C:\Program Files\Git\Coding\gmu\dissertation\aim1\manifest\m_clean.txt'
-
-analysis_dir: '/Users/slsevilla/Google Drive/MyDocuments_Current/Education/George Mason University/Dissertation/analysis/aim1/'
-ref_dir: '/Users/slsevilla/Google Drive/MyDocuments_Current/Education/George Mason University/Dissertation/data/ref/'
-qza_dir: '/Users/slsevilla/Google Drive/MyDocuments_Current/Education/George Mason University/Dissertation/data/aim1/final_qza/'
+metadata_manifest: 'raw_manifest.txt'
+variable_manifest: 'variable_manifest.txt'
+binf_manifest: 'binf_manifest.txt'
+clean_manifest: 'm_clean.txt'
