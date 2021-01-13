@@ -31,12 +31,13 @@ rule picrust_q2:
         table = join(output_dir,'02_clustering/{f_id}_table.qza'),
         seqs = join(output_dir,'02_clustering/{f_id}_seq.qza'),
     params:
-        dir = join(output_dir,'07_picrust/{f_id}'),
+        dir = join(output_dir,'07_picrust/{f_id}/'),
         rname = "picrust"
     output:
         o1 = join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza')
     shell:
         """
+        rm -r {params.dir}; 
         module load qiime/2-2020.2; \
         qiime picrust2 full-pipeline \
         --i-table {input.table} \
