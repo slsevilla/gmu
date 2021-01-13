@@ -14,6 +14,7 @@ if [[ $pipeline = "cluster" ]] || [[ $pipeline = "local" ]]; then
 
     #submit job to cluster
     sbatch --job-name="aim2" --gres=lscratch:200 --time=120:00:00 --output=${sbatch_dir}/%j_%x.out \
+    --mail-type=BEGIN,END,FAIL \
     snakemake --latency-wait 120  -s ${home_dir}/$snakefile \
     --printshellcmds --cluster-config ${home_dir}/cluster_config.yml --keep-going \
     --restart-times 1 --cluster "sbatch --gres {cluster.gres} --cpus-per-task {cluster.threads} \
