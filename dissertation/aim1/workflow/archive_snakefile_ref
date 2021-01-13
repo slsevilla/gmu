@@ -1,0 +1,176 @@
+#unused code from snakefile_ref
+
+rule feature_filt:
+   """Filter features that have less than 32 reads
+   VSEARCH will automatically remove features with <32 reads, however, QIIME2 does not do this. When the results are returned to Q2 without these reads, a KEYERROR is received.
+   In order to determine which features, use the TABLE QZV and determine which features meet this requirement. Then create a TSV file with these features to pass through as a parameter of exclusion.
+   NOTE: Removing features by count (<2 for example) would eliminate too many features that do not meet this criterion and may not even eliminate all of the targeted features.
+   """
+   input:
+       tab_in = table_dir,
+       f_list = filt_file
+   output:
+       tab_filt = out_dir + "filt_tab.qza"
+   run:
+       shell('qiime feature-table filter-features \
+       --i-table {input.tab_in} \
+       --m-metadata-file {input.f_list} \
+       --p-exclude-ids \
+       --o-filtered-table {output.tab_filt}')
+
+rule seq_filt:
+   """
+   Rep-seqs must match features with the feature-table. Since features were filtered with rule above, this rule will remove those features from the rep-seq list.
+   """
+   input:
+       tab_filt = out_dir + "filt_tab.qza",
+       rep_in = repseq_dir
+   output:
+       rep_filt = out_dir + "filt_seq.qza"
+   run:
+       shell('qiime feature-table filter-seqs \
+       --i-data {input.rep_in} \
+       --i-table {input.tab_filt} \
+       --o-filtered-data {output.rep_filt}')
+
+rule create_ref_seq:
+   """ Create the reference database to be used for taxonomic_classification
+   used unaligned reads for this - creates ''FeatureData[Sequence]''
+   """
+   input:
+       ref_raw = get_rawref_full_path
+   output:
+       out_dir + 'refdb_seq_{ref_raw}.qza'
+   run:
+       shell('qiime tools import \
+       --type ''FeatureData[Sequence]'' \
+       --input-path {input.ref_raw} \
+       --output-path {output}')
+
+
+#Previously run as QIIME2 pipeline within CGR
+    rule check_manifest:
+        input:
+            meta_man_fullpath
+        output:
+            out_dir + 'manifests/manifest_qiime2.tsv'
+        params:
+            o = out_dir,
+            e = exec_dir
+        benchmark:
+            out_dir + 'run_times/check_manifest/check_manifest.tsv'
+        shell:
+            'dos2unix -n {input} {output};'
+            'perl {params.e}workflow/scripts/Q2Manifest.pl {output}'
+
+    rule create_symlinks:
+        """Symlink the original fastqs in an area that PIs can access
+        Not strictly necessary for external data.
+        """
+        input:
+            fq1 = get_orig_r1_fq if cgr_data else get_external_r1_fq,
+            fq2 = get_orig_r2_fq if cgr_data else get_external_r2_fq
+        output:
+            sym1 = out_dir + 'fastqs/{sample}_R1.fastq.gz',
+            sym2 = out_dir + 'fastqs/{sample}_R2.fastq.gz'
+        benchmark:
+            out_dir + 'run_times/create_symlinks/{sample}.tsv'
+        shell:
+            'ln -s {input.fq1} {output.sym1};'
+            'ln -s {input.fq2} {output.sym2}'
+
+    rule create_per_sample_Q2_manifest:
+        """Create a QIIME2-specific manifest file per-sample
+        Q2 needs a manifest in the following format:
+            sample-id,absolute-filepath,direction
+        Note that these per-sample files will be combined on a per-run ID
+        basis in the following step, in keeping with the DADA2 requirement
+        to group samples by flow cell (run ID).
+        This step does not require the manifest_qiime2.tsv, but it's
+        here so that this rule does not get run until the manifest
+        check completes successfully.
+        """
+        input:
+            fq1 = out_dir + 'fastqs/{sample}_R1.fastq.gz' if cgr_data else out_dir + 'fastqs/{sample}_R1_paired.fastq.gz',
+            fq2 = out_dir + 'fastqs/{sample}_R2.fastq.gz' if cgr_data else out_dir + 'fastqs/{sample}_R2_paired.fastq.gz',
+            manifest = out_dir + 'manifests/manifest_qiime2.tsv'
+        output:
+            temp(out_dir + 'manifests/{sample}_Q2_manifest_by_sample.txt')
+        params:
+            runID = get_internal_runID if cgr_data else get_external_runID
+        benchmark:
+            out_dir + 'run_times/create_per_sample_Q2_manifest/{sample}.tsv'
+        shell:
+            'echo "{wildcards.sample},{input.fq1},forward,{params.runID}" > {output};'
+            'echo "{wildcards.sample},{input.fq2},reverse,{params.runID}" >> {output}'
+
+    rule combine_Q2_per_sample_manifests:
+        """Combine all Q2-specific per-sample manifests
+        """
+        input:
+            expand(out_dir + 'manifests/{sample}_Q2_manifest_by_sample.txt', sample=sampleDict.keys())
+        output:
+            temp(out_dir + 'manifests/all.txt')
+        params:
+            out_dir + 'manifests/'
+        benchmark:
+            out_dir + 'run_times/combine_Q2_per_sample_manifests/combine_Q2_per_sample_manifests.tsv'
+        shell:
+            'find {params} -maxdepth 1 -name \'*Q2_manifest_by_sample.txt\' | xargs cat > {output}'
+
+    rule combine_Q2_manifest_by_runID:
+        """Separate out Q2-specific manifests by run ID
+        """
+        input:
+            out_dir + 'manifests/all.txt'
+        output:
+            out_dir + 'manifests/{runID}_Q2_manifest.txt'
+        benchmark:
+            out_dir + 'run_times/combine_Q2_manifest_by_runID/{runID}.tsv'
+        shell:
+            'awk \'BEGIN{{FS=OFS=","; print "sample-id,absolute-filepath,direction"}}$4=="{wildcards.runID}"{{print $1,$2,$3}}\' {input} > {output}'
+
+    rule import_fastq_and_demultiplex:
+        """Import into qiime2 format and demultiplex
+        Note that DADA2 requires samples to be grouped by run ID (flow cell).
+        If data is multiplexed, this step would demultiplex.  Internally-
+        generated CGR data is already demultiplexed, but runs through this
+        step regardless.
+        Summary files are created for each flowcell (run ID) in QZA format.
+        QZA files are QIIME2 "artifacts" that contain the QIIME2 parameters
+        used to run the current step of the pipeline, to track provenance.
+        """
+        input:
+            out_dir + 'manifests/{runID}_Q2_manifest.txt'
+        output:
+            out_dir + 'import_and_demultiplex/{runID}.qza'
+        params:
+            in_type = input_type,
+            phred = phred_score,
+            cmd_flag = 'source-format' if Q2_2017 else 'input-format'
+        benchmark:
+            out_dir + 'run_times/import_fastq_and_demultiplex/{runID}.tsv'
+        shell:
+            'qiime tools import \
+                --type {params.in_type} \
+                --input-path {input} \
+                --output-path {output} \
+                --{params.cmd_flag} PairedEndFastqManifestPhred{params.phred}'
+
+    rule import_and_demultiplex_visualization:
+        """ Conversion of QZA to QZV for QC summary
+        Summarize counts per sample for all samples, and generate interactive
+        positional quality plots based on `n` randomly selected sequences.
+        Note: QZA files are converted to QZV files for visualization
+        Viewable at www.view.qiime2.org
+        """
+        input:
+            out_dir + 'import_and_demultiplex/{runID}.qza'
+        output:
+            out_dir + 'import_and_demultiplex/{runID}.qzv'
+        benchmark:
+            out_dir + 'run_times/import_and_demultiplex_visualization/{runID}.tsv'
+        shell:
+            'qiime demux summarize \
+                --i-data {input} \
+                --o-visualization {output}'
