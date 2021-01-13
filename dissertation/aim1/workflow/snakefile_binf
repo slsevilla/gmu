@@ -1,7 +1,7 @@
 '''
 Performing grouping and taxonomic taxonomic_classification
 * Clustering reads to OTU's *
-https://docs.qiime2.org/2019.4/tutorials/otu-clustering/
+https://docs.qiime2.org/2019.1/tutorials/otu-clustering/
 Use three methods to group reads into OTU's, using an assigned level of similarity
 - de novo
 - closed-reference
@@ -34,29 +34,34 @@ import pandas as pd
 from collections import defaultdict
 
 # set paths
-input_dir = '/data/sevillas2/gmu/input/'
-output_dir = '/data/sevillas2/gmu/output/'
+input_dir = '/data/sevillas2/gmu/aim1/input/'
+output_dir = '/data/sevillas2/gmu/aim1/output/'
 exec_dir = '/data/sevillas2/dissertation/aim1/workflow/'
 ref_db = '/data/sevillas2/gmu/ref/'
-manifest_dir = '/data/sevillas2/gmu/manifest.tsv'
+manifest_dir = '/data/sevillas2/gmu/aim1/manifest.tsv'
 
 #define groups
-flowcell_ids = ['180112_M01354_0103_000000000-BFN3F','180112_M03599_0134_000000000-BFD9Y','180328_M01354_0106_000000000-BFMHC','190617_M01354_0118_000000000-CHFG3']
+flowcell_ids = ['180112_M01354_0104_000000000-BFN3F','180112_M03599_0134_000000000-BFD9Y','180328_M01354_0106_000000000-BFMHC','190617_M01354_0118_000000000-CHFG3']
 taxonomy_ids = ['gg','silva']
 group1_ids=['open','closed']
 group2_ids=['dn','dada']
-
 groupfinal_ids=['open_gg','closed_gg','open_silva','closed_silva','dn','dada']
 
+#set parameters
+trim_left_forward = 0
+trim_left_reverse = 0
+truncate_length_forward = 0
+truncate_length_reverse = 0
+min_fold_parent_over_abundance = 2.0
 min_num_reads_per_sample=1000
 min_num_reads_per_feature = 1
 min_num_samples_per_feature = 1
 min_num_features_per_sample = 1
 
-
 rule all:
     input:
         expand(join(input_dir,'{f_id}.qza'), f_id=flowcell_ids),
+        expand(join(output_dir,'00_joined/{f_id}_joined.qza'), f_id=flowcell_ids),
         expand(join(output_dir,'01_derep/{f_id}_table.qza'), f_id=flowcell_ids),
 
         expand(join(output_dir,'02_clustering/{f_id}_table_{g1_id}_{tax_ref}.qza'),f_id=flowcell_ids,tax_ref=taxonomy_ids,g1_id=group1_ids),
@@ -65,7 +70,7 @@ rule all:
         expand(join(output_dir,'03_merged/merged_table_{gf_id}.qza'),gf_id=groupfinal_ids),
         expand(join(output_dir,'03_merged/merged_seq_{gf_id}.qza'),gf_id=groupfinal_ids),
 
-        expand(join(output_dir,'04_filtered/4_tab_{gf_id}.qzv'),gf_id=groupfinal_ids),
+        expand(join(output_dir,'04_filtered/4_tab_{gf_id}.qza'),gf_id=groupfinal_ids),
         expand(join(output_dir,'04_filtered/4_seq_{gf_id}.qza'),gf_id=groupfinal_ids),
 
         expand(join(output_dir,'05_class/vsearch_{tax_ref}_{gf_id}.qza'),gf_id=groupfinal_ids,tax_ref=taxonomy_ids),
@@ -74,16 +79,40 @@ rule all:
 
         expand(join(output_dir,'06_phylogenetics/rooted_tree_{gf_id}.qza'),gf_id=groupfinal_ids)
 
-rule derep:
+#merge paired demux artifacts
+rule join_seq:
     '''
+    dereplication requires format [JoinedSequencesWithQuality]
+    current format is [PairedEndSequencesWithQuality]
+    this step will make the conversion
+    https://docs.qiime2.org/2019.1/plugins/available/vsearch/join-pairs/
     '''
     input:
         f1 = join(input_dir,'{f_id}.qza'),
     params:
+        rname = "join_seq"
+    output:
+        o1 = join(output_dir,'00_joined/{f_id}_joined.qza')
+    shell:
+        '''
+        module load qiime/2-2019.1; \
+        qiime vsearch join-pairs \
+        --i-demultiplexed-seqs {input.f1} \
+        --o-joined-sequences {output.o1}
+        '''
+
+#dereplicate artifacts
+rule derep:
+    '''
+    https://docs.qiime2.org/2019.1/plugins/available/vsearch/dereplicate-sequences/
+    '''
+    input:
+        f1 = join(output_dir,'00_joined/{f_id}_joined.qza'),
+    params:
         rname = 'derep',
     output:
-        table = temp(join(output_dir,'01_derep/{f_id}_table.qza')),
-        seq = temp(join(output_dir,'01_derep/{f_id}_seq.qza'))
+        table = join(output_dir,'01_derep/{f_id}_table.qza'),
+        seq = join(output_dir,'01_derep/{f_id}_seq.qza')
     shell:
         '''
         module load qiime/2-2019.1; \
@@ -95,11 +124,15 @@ rule derep:
 
 #perform clustering / grouping on each flowcell
 rule denovo:
+    '''
+    https://docs.qiime2.org/2020.8/plugins/available/vsearch/cluster-features-de-novo/
+    intended to be used following filterting/derep methods, not as a general-purpose clustering method
+    '''
     input:
         table = join(output_dir,'01_derep/{f_id}_table.qza'),
         seq = join(output_dir,'01_derep/{f_id}_seq.qza')
     params:
-        r_name = 'denovo'
+        rname = 'denovo'
     output:
         table = join(output_dir,'02_clustering/{f_id}_table_dn.qza'),
         seq = join(output_dir,'02_clustering/{f_id}_seq_dn.qza')
@@ -118,11 +151,14 @@ rule dada2:
     input:
         f1 = join(input_dir,'{f_id}.qza')
     params:
-        r_name = 'dada2',
+        rname = 'dada2',
+        trim_l_f = trim_left_forward,
+        trun_len_f = truncate_length_forward,
+        min_fold = min_fold_parent_over_abundance
     output:
-        table = temp(join(output_dir,'02_clustering/{f_id}_table_dada.qza')),
-        seqs = temp(join(output_dir,'02_clustering/{f_id}_seq_dada.qza')),
-        stats = temp(join(output_dir,'02_clustering/{f_id}_stat_dadas.qza')),
+        table = join(output_dir,'02_clustering/{f_id}_table_dada.qza'),
+        seqs = join(output_dir,'02_clustering/{f_id}_seq_dada.qza'),
+        stats = join(output_dir,'02_clustering/{f_id}_stat_dadas.qza'),
     shell:
         '''
         module load qiime/2-2019.1; \
@@ -130,8 +166,13 @@ rule dada2:
             --verbose \
             --i-demultiplexed-seqs {input.f1} \
             --o-table {output.table} \
-            --o-seqresentative-sequences {output.seqs} \
+            --o-representative-sequences {output.seqs} \
             --o-denoising-stats {output.stats} \
+            --p-trim-left-f {params.trim_l_f} \
+            --p-trunc-len-f {params.trun_len_f} \
+            --p-trim-left-r {params.trim_l_f} \
+            --p-trunc-len-r {params.trun_len_f} \
+            --p-min-fold-parent-over-abundance {params.min_fold}
         '''
 
 rule closed:
@@ -139,8 +180,8 @@ rule closed:
         table = join(output_dir,'01_derep/{f_id}_table.qza'),
         seq = join(output_dir,'01_derep/{f_id}_seq.qza')
     params:
-        r_name = 'closed',
-        ref_tax = join(ref_db,'refdb_tax_{tax_ref}.qza')
+        rname = 'closed',
+        ref_tax = join(ref_db,'refdb_seq_{tax_ref}.qza')
     output:
         table = join(output_dir,'02_clustering/{f_id}_table_closed_{tax_ref}.qza'),
         seq = join(output_dir,'02_clustering/{f_id}_seq_closed_{tax_ref}.qza'),
@@ -159,12 +200,17 @@ rule closed:
         '''
 
 rule open:
+    '''
+    https://docs.qiime2.org/2020.11/plugins/available/vsearch/cluster-features-open-reference/
+
+    intended to be used following filterting/derep methods, not as a general-purpose clustering method
+    '''
     input:
         table = join(output_dir,'01_derep/{f_id}_table.qza'),
         seq = join(output_dir,'01_derep/{f_id}_seq.qza')
     params:
-        r_name = 'open',
-        ref_tax = join(ref_db,'refdb_tax_{tax_ref}.qza')
+        rname = 'open',
+        ref_tax = join(ref_db,'refdb_seq_{tax_ref}.qza')
     output:
         table = join(output_dir,'02_clustering/{f_id}_table_open_{tax_ref}.qza'),
         seq = join(output_dir,'02_clustering/{f_id}_seq_open_{tax_ref}.qza'),
@@ -182,24 +228,56 @@ rule open:
           --o-new-reference-sequences {output.new}
         '''
 
+def get_merge_table(wildcards):
+    cmd = ''
+    for ids in groupfinal_ids:
+        l = ''
+
+        for cells in flowcell_ids:
+            l = '--i-tables ' + output_dir + '02_clustering/' + cells + '_table_' + ids + '.qza ' + l
+        
+        cmd = 'module load qiime/2-2019.1; qiime feature-table merge ' + l + '--o-merged-table ' + output_dir + '03_merged/merged_table_' + ids + '.qza; ' + cmd
+    
+    return cmd
+
 #merge tables and sequences
 rule merge_tables:
     input:
         f1 = expand(join(output_dir,'02_clustering/{f_id}_table_{gf_id}.qza'),f_id=flowcell_ids,gf_id=groupfinal_ids),
+    params:
+        rname = "merge_tab",
+        cmd = get_merge_table
     output:
-        o1 = join(output_dir,'03_merged/merged_table_{gf_id}.qza')
-    run:
-        l = '--i-tables ' + ' --i-tables '.join(input.f1)
-        shell('module load qiime/2-2019.1; \ qiime feature-table merge ' + l + ' --o-merged-table {output.o1}')
+        o1 = expand(join(output_dir,'03_merged/merged_table_{gf_id}.qza'),f_id=flowcell_ids,gf_id=groupfinal_ids),
+    shell:
+        '''
+        {params.cmd}
+        '''
+
+def get_merge_seq(wildcards):
+    cmd = ''
+    for ids in groupfinal_ids:
+        l = ''
+
+        for cells in flowcell_ids:
+            l = '--i-data ' + output_dir + '02_clustering/' + cells + '_seq_' + ids + '.qza ' + l
+        
+        cmd = 'module load qiime/2-2019.1; qiime feature-table merge-seqs ' + l + '--o-merged-data ' + output_dir + '03_merged/merged_seq_' + ids + '.qza; ' + cmd
+    
+    return cmd
 
 rule merge_seq:
     input:
         f1 = expand(join(output_dir,'02_clustering/{f_id}_seq_{gf_id}.qza'),f_id=flowcell_ids,gf_id=groupfinal_ids),
+    params:
+        rname = "merge_seq",
+        cmd = get_merge_seq
     output:
-        o1 = join(output_dir,'03_merged/merged_seq_{gf_id}.qza')
-    run:
-        l = '--i-data ' + ' --i-data '.join(input.f1)
-        shell('module load qiime/2-2019.1; \ qiime feature-table merge-seqs ' + l + ' --o-merged-data {output.o1}')
+        o1 = expand(join(output_dir,'03_merged/merged_seq_{gf_id}.qza'),f_id=flowcell_ids,gf_id=groupfinal_ids),
+    shell:
+        '''
+        {params.cmd}
+        '''
 
 #filtering
 rule filter_tab:
@@ -221,7 +299,8 @@ rule filter_tab:
         f1 = min_num_reads_per_sample,
         f2 = min_num_reads_per_feature,
         f3 = min_num_samples_per_feature,
-        f4 = min_num_features_per_sample
+        f4 = min_num_features_per_sample,
+        rname = "filter_tab"
     shell:
         '''
         module load qiime/2-2019.1; \
@@ -255,6 +334,8 @@ rule filter_tab_qzv:
         f3 = join(output_dir,'04_filtered/3_tab_{gf_id}.qza'),
         f4 = join(output_dir,'04_filtered/4_tab_{gf_id}.qza'),
         q2_manifest = manifest_dir
+    params:
+        rname="filter_tab_qzv"
     output:
         o1 = join(output_dir,'04_filtered/1_tab_{gf_id}.qzv'),
         o2 = join(output_dir,'04_filtered/2_tab_{gf_id}.qzv'),
@@ -286,6 +367,8 @@ rule filter_seq:
         f3 = join(output_dir,'04_filtered/3_tab_{gf_id}.qza'),
         f4 = join(output_dir,'04_filtered/4_tab_{gf_id}.qza'),
         seq_table = join(output_dir,'03_merged/merged_seq_{gf_id}.qza')
+    params:
+        rname="filter_seq"
     output:
         o1 = join(output_dir,'04_filtered/1_seq_{gf_id}.qza'),
         o2 = join(output_dir,'04_filtered/2_seq_{gf_id}.qza'),
@@ -299,60 +382,82 @@ rule filter_seq:
         qiime feature-table filter-seqs --i-data {input.seq_table} --i-table {input.f4} --o-filtered-data {output.o4}'
 
 #perform taxonomic classification
+def get_vsearch_cmd(wildcards):
+    cmd = ""
+    seq = output_dir + '04_filtered/4_seq_' + wildcards.gf_id + '.qza'
+
+    for refs in taxonomy_ids:
+        ref_tax = ref_db + 'refdb_tax_' + refs + '.qza'
+        ref_seq = ref_db + 'refdb_seq_' + refs + '.qza'
+        o1 = output_dir + '05_class/vsearch_' + refs + '_' + wildcards.gf_id + '.qza'
+        
+        cmd = 'module load qiime/2-2019.1; qiime feature-classifier classify-consensus-vsearch --i-query ' + seq + ' --i-reference-reads ' + ref_seq + ' --i-reference-taxonomy ' + ref_tax + ' --o-classification ' + o1 + '; ' + cmd
+    return(cmd)
+
 rule vsearch:
     input:
         seq = join(output_dir,'04_filtered/4_seq_{gf_id}.qza'),
     params:
-        r_name = 'vsearch',
-        ref_tax = join(ref_db,'refdb_tax_{tax_ref}.qza'),
-        ref_seq = join(ref_db,'refdb_seq_{tax_ref}.qza'),
+        rname = 'vsearch',
+        cmd = get_vsearch_cmd
     output:
-        o1 = join(output_dir,'05_class/vsearch_{tax_ref}_{gf_id}.qza')
+        o1 = join(output_dir,'05_class/vsearch_gg_{gf_id}.qza'),
+        o2 = join(output_dir,'05_class/vsearch_silva_{gf_id}.qza'),
     shell:
         '''
-        module load qiime/2-2019.1; \
-        qiime feature-classifier classify-consensus-vsearch \
-           --i-query {input.seq} \
-           --i-reference-reads {params.ref_seq} \
-           --i-reference-taxonomy {params.ref_tax} \
-           --o-classification {output.o1}
+        {params.cmd}
         '''
+
+def get_blast_cmd(wildcards):
+    cmd = ""
+    seq = output_dir + '04_filtered/4_seq_' + wildcards.gf_id + '.qza'
+
+    for refs in taxonomy_ids:
+        ref_tax = ref_db + 'refdb_tax_' + refs + '.qza'
+        ref_seq = ref_db + 'refdb_seq_' + refs + '.qza'
+        o1 = output_dir + '05_class/blast_' + refs + '_' + wildcards.gf_id + '.qza'
+        
+        cmd = 'module load qiime/2-2019.1; qiime feature-classifier classify-consensus-blast --i-query ' + seq + ' --i-reference-reads ' + ref_seq + ' --i-reference-taxonomy ' + ref_tax + ' --o-classification ' + o1 + '; ' + cmd
+    return(cmd)
 
 rule blast:
     input:
         seq = join(output_dir,'04_filtered/4_seq_{gf_id}.qza'),
     params:
-        r_name = 'blast',
-        ref_tax = join(ref_db,'refdb_tax_{tax_ref}.qza'),
-        ref_seq = join(ref_db,'refdb_seq_{tax_ref}.qza'),
+        rname = 'blast',
+        cmd = get_blast_cmd
     output:
-        o1 = join(output_dir,'05_class/blast_{tax_ref}_{gf_id}.qza')
+        o1 = join(output_dir,'05_class/blast_gg_{gf_id}.qza'),
+        o2 = join(output_dir,'05_class/blast_silva_{gf_id}.qza')
     shell:
         '''
-        module load qiime/2-2019.1; \
-        qiime feature-classifier classify-consensus-blast \
-           --i-query {input.seq} \
-           --i-reference-reads {params.ref_seq} \
-           --i-reference-taxonomy {params.ref_tax} \
-           --o-classification {output.o1}
+        {params.cmd}
          '''
+
+def get_scikit_cmd(wildcards):
+    cmd = ""
+    seq = output_dir + '04_filtered/4_seq_' + wildcards.gf_id + '.qza'
+
+    for refs in taxonomy_ids:
+        ref_tax = ref_db + 'refdb_classifier_' + refs + '.qza'
+        o1 = output_dir + '05_class/scikit_' + refs + '_' + wildcards.gf_id + '.qza'
+        
+        cmd = 'module load qiime/2-2019.1; qiime feature-classifier classify-sklearn --i-classifier ' + ref_tax + ' --i-reads ' + seq + ' --o-classification ' + o1 + '; ' + cmd
+    return(cmd)
 
 rule scikit:
     input:
         seq = join(output_dir,'04_filtered/4_seq_{gf_id}.qza'),
     params:
-        r_name = 'scikit',
-        ref_tax = join(ref_db,'refdb_tax_{tax_ref}.qza'),
+        rname = 'scikit',
+        cmd = get_scikit_cmd
     output:
-        o1 = join(output_dir,'05_class/scikit_{tax_ref}_{gf_id}.qza')
+        o1 = join(output_dir,'05_class/scikit_gg_{gf_id}.qza'),
+        o2 = join(output_dir,'05_class/scikit_silva_{gf_id}.qza'),
     shell:
         '''
-        module load qiime/2-2019.1; \
-        qiime feature-classifier classify-sklearn \
-            --i-classifier {params.ref_tax} \
-            --i-reads {input.seq} \
-            --o-classification {output.o1}
-         '''
+        {params.cmd}
+        '''
 
 #phylo tree
 rule phylogenetic_tree:
@@ -363,13 +468,15 @@ rule phylogenetic_tree:
     '''
     input:
         f1 = join(output_dir,'04_filtered/4_seq_{gf_id}.qza'),
+    params:
+        rname="phylo"
     output:
         msa = join(output_dir,'06_phylogenetics/msa_{gf_id}.qza'),
         masked_msa = join(output_dir,'06_phylogenetics/masked_msa_{gf_id}.qza'),
         unrooted_tree = join(output_dir,'06_phylogenetics/unrooted_tree_{gf_id}.qza'),
         rooted_tree = join(output_dir,'06_phylogenetics/rooted_tree_{gf_id}.qza')
     shell:
-        'qiime phylogeny align-to-tree-mafft-fasttree \
+        'module load qiime/2-2019.1; qiime phylogeny align-to-tree-mafft-fasttree \
             --i-sequences {input.f1} \
             --o-alignment {output.msa} \
             --o-masked-alignment {output.masked_msa} \
