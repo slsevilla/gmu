@@ -7,3 +7,6 @@ slurm*
 .Rhistory
 .RData
 .Ruserdata
+
+#DS Store files
+._*
