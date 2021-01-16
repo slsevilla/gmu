@@ -43,12 +43,15 @@ rule all:
         join(output_dir,'03_merged/merged_table.qza'),
         join(output_dir,'03_merged/merged_seq.qza'),
 
-        join(output_dir,'04_filtered/4_tab.qzv'),
+        #join(output_dir,'04_filtered/4_tab.qzv'),
         join(output_dir,'04_filtered/4_seq.qza'),
 
         join(output_dir,'05_class/scikit_silva.qza'),
 
         join(output_dir,'06_phylogenetics/rooted_tree.qza'),
+
+        expand(join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza'),f_id=flowcell_ids)
+
 
 def get_fastq(wildcards):
     sub_df = mani[(mani['SampleID']==wildcards.sample)]
@@ -377,3 +380,33 @@ rule phylogenetic_tree:
             --o-masked-alignment {output.masked_msa} \
             --o-tree {output.unrooted_tree} \
             --o-rooted-tree {output.rooted_tree}'
+
+rule picrust_q2:
+    '''
+    https://github.com/picrust/picrust2/wiki/Full-pipeline-script
+    https://github.com/picrust/picrust2/wiki/q2-picrust2-Tutorial
+    Takes in DADA2 output FeatureTable[Frequency] and FeatureData[Sequence]
+
+    three QZA outputs are expected: ec_metagenome, ko_metagenome, pathway_abundance
+    '''
+    input:
+        table = join(output_dir,'02_clustering/{f_id}_table.qza'),
+        seqs = join(output_dir,'02_clustering/{f_id}_seq.qza'),
+    params:
+        dir = join(output_dir,'07_picrust/{f_id}/'),
+        rname = "picrust"
+    output:
+        o1 = join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza')
+    shell:
+        """
+        rm -r {params.dir}; 
+        module load glpk qiime/2-2020.2; \
+        qiime picrust2 full-pipeline \
+        --i-table {input.table} \
+        --i-seq {input.seqs} \
+        --output-dir {params.dir} \
+        --p-threads 10 \
+        --p-hsp-method mp \
+        --p-max-nsti 2 \
+        --verbose
+        """
