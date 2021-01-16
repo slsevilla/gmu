@@ -38,7 +38,7 @@ rule picrust_q2:
     shell:
         """
         rm -r {params.dir}; 
-        module load qiime/2-2020.2; \
+        module load glpk qiime/2-2020.2; \
         qiime picrust2 full-pipeline \
         --i-table {input.table} \
         --i-seq {input.seqs} \
