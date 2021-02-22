@@ -1,30 +1,42 @@
-UniqueVariable	Identifier
-180112_M01354_0104_000000000-BFN3F	SQ-1
-180112_M03599_0134_000000000-BFD9Y	SQ-2
-180328_M01354_0106_000000000-BFMHC	SQ-3
-190617_M01354_0118_000000000-CHFG3	SQ-4
-D6300	Z00
-D6305	Z05
-D6306	Z06
-D6310	Z10
-D6311	Z11
-MSA1000	A00
-MSA1001	A01
-MSA1002	A02
-MSA1003	A03
-DZ35316	M16
-DZ35322	M22
-DZ35298	M98
-Water	BW
-human_1	H01
-Biocollective	H02
-NTC_Blank	BN
-PCR_Blank	BP
-DSP Virus	EX-1
-MagAttract PowerMicrobiome Kit	EX-2
-DNeasy PowerSoil Pro kit	EX-3
-MagAttract PowerSoil DNA Kit	EX-4
-QIAamp with Modifications	EX-5
-MagMax Microbiome Ultra Kit	EX-6
-96 MagBead DNA Extraction Kit	EX-7
-Seq	Seq
+UniqueVariable	Identifier	Type	GroupID	Variable
+180112_M01354_0104_000000000-BFN3F	SQ-1	na	na	na
+180112_M03599_0134_000000000-BFD9Y	SQ-2	na	na	na
+180328_M01354_0106_000000000-BFMHC	SQ-3	na	na	na
+190617_M01354_0118_000000000-CHFG3	SQ-4	na	na	na
+D6300	Z00	ext	na	Extraction
+D6305	Z05	seq	na	Sequencing
+D6306	Z06	seq	na	Sequencing
+D6310	Z10	ext	na	Extraction
+D6311	Z11	seq	na	Sequencing
+MSA1000	A00	seq	na	Sequencing
+MSA1001	A01	seq	na	Sequencing
+MSA1002	A02	seq	na	Sequencing
+MSA1003	A03	seq	na	Sequencing
+DZ35316	M16	ext	na	Extraction
+DZ35322	M22	ext	na	Extraction
+DZ35298	M98	robo	na	Extraction
+Water	BW	neg	na	Extraction
+human_1	H01	st	na	Extraction
+Biocollective	H02	st	na	Extraction
+NTC_Blank	BN	neg	na	Sequencing
+PCR_Blank	BP	neg	na	Sequencing
+DSP Virus	EX-1	na	1	Extraction
+MagAttract PowerMicrobiome Kit	EX-2	na	2	Extraction
+DNeasy PowerSoil Pro kit	EX-3	na	3	Extraction
+MagAttract PowerSoil DNA Kit	EX-4	na	4	Extraction
+QIAamp with Modifications	EX-5	na	1	Extraction
+MagMax Microbiome Ultra Kit	EX-6	na	2	Extraction
+96 MagBead DNA Extraction Kit	EX-7	na	4	Extraction
+Seq	Seq	na	na	Sequencing
+blast_gg_dada.qza	BINF-01	na	na	Bioinformatics
+blast_silva_dada.qza	BINF-02	na	na	Bioinformatics
+scikit_gg_dada.qza	BINF-03	na	na	Bioinformatics
+scikit_silva_dada.qza	BINF-04	na	na	Bioinformatics
+vsearch_gg_dada.qza	BINF-05	na	na	Bioinformatics
+vsearch_silva_dada.qza	BINF-06	na	na	Bioinformatics
+blast_gg_closed_gg.qza	BINF-07	na	na	Bioinformatics
+blast_silva_closed_silva.qza	BINF-08	na	na	Bioinformatics
+scikit_gg_closed_gg.qza	BINF-09	na	na	Bioinformatics
+scikit_silva_closed_silva.qza	BINF-10	na	na	Bioinformatics
+vsearch_gg_closed_gg.qza	BINF-11	na	na	Bioinformatics
+vsearch_silva_closed_silva.qza	BINF-12	na	na	Bioinformatics
