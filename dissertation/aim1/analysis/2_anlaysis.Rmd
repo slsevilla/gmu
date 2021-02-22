@@ -295,55 +295,8 @@ remove(compare_binf)
 
 #beta diversity
 ```{r}
-library(dplyr)
-compare_variables = data.frame()
 ##################################################
-#technical replicates
-##################################################
-#for each binf variable
-for (binf_variable in phy_list){
-  
-  #for each type
-  type_list = c("Human","Blank")
-  for (samptype in type_list){
-    phy_tmp = subset_samples(get(binf_variable),Sample.Des==samptype)
-    
-    #for each extraction method
-    for (extkit in unique(sample_data(phy_tmp)$Ext.Kit)){
-      phy_ext = subset_samples(phy_tmp,Ext.Kit==extkit)
-      
-      #subset 5 replicates
-      subject_list = (sample_data(phy_ext)$UniqueID)[1:5] #five is the greatest # between all kits
-      phy_sub = subset_samples(phy_ext, UniqueID %in% subject_list)
-      
-      # Calculate bray curtis distances
-      #same binf method, same sample, same ext kit
-      dist_tmp <- phyloseq::distance(phy_sub, method = "bray")
-      df_tmp <- as.data.frame(as.matrix(dist_tmp))
-      
-      #calculate val for between and within
-      for (rowid in rownames(df_tmp)){
-        for (colid in colnames(df_tmp)){
-          
-          #skip distances with self  
-          if(rowid==colid){
-            next
-          } else{
-            compare_variables[nrow(compare_variables)+1,"type"] = samptype
-            compare_variables[nrow(compare_variables),"sampleid"] = rowid
-            compare_variables[nrow(compare_variables),"value"] = df_tmp[rowid,colid]
-            compare_variables[nrow(compare_variables),"cat"] = "technical replicates"  
-          }
-        }
-      }
-    }
-  }
-}
-head(compare_variables)
-remove(phy_ext)
-
-##################################################
-#bioinformatic impact
+#merge phy objs
 ##################################################
 #filter for human and blank only, create merged phy obj of all binf variables
 i=1
@@ -362,55 +315,23 @@ for (binf_variable in phy_list){
   }
 }
 
-#for the same sample type and kit, but different binf variable, compare
-for (samptype in type_list){
-  phy_tmp = subset_samples(phy_merge,Sample.Des==samptype)
-    
-  #for each extraction method
-  for (extkit in unique(sample_data(phy_tmp)$Ext.Kit)){
-    phy_ext = subset_samples(phy_tmp,Ext.Kit==extkit)
-      
-    #subset 5 replicates
-    subject_list = (sample_data(phy_ext)$UniqueID)[1:5] #five is the greatest # between all kits
-    phy_sub = subset_samples(phy_ext, UniqueID %in% subject_list)
-      
-    #Calculate bray curtis distances
-    #diff binf method, same sample, same ext kit
-    dist_tmp <- phyloseq::distance(phy_sub, method = "bray")
-    df_tmp <- as.data.frame(as.matrix(dist_tmp))
-      
-    #calculate val for between and within
-    for (rowid in rownames(df_tmp)){
-      for (colid in colnames(df_tmp)){
-        
-        type_r = as.character(sample_data(phy_sub)[rowid,"BINFID"])
-        type_c = as.character(sample_data(phy_sub)[colid,"BINFID"])
-        
-        #skip distances with self  
-        if(rowid==colid | type_r == type_c){
-          next
-        } else{
-          compare_variables[nrow(compare_variables)+1,"type"] = samptype
-          compare_variables[nrow(compare_variables),"sampleid"] = rowid
-          compare_variables[nrow(compare_variables),"value"] = df_tmp[rowid,colid]
-          compare_variables[nrow(compare_variables),"cat"] = "bioinformatic variation"  
-        }
-      }
-    }
-  }
-}
-remove(phy_ext,phy_tmp)
-
+##################################################
+#run analysis
+##################################################
 compare_df = data.frame()
+#for each sample type
 for (sampletype in type_list){
   phy_tmp = subset_samples(phy_merge,Sample.Des==sampletype)
   
+  #run bray-curtis distances
   dist_tmp <- phyloseq::distance(phy_tmp, method = "bray")
   df_tmp <- as.data.frame(as.matrix(dist_tmp))
   
+  #for each row and col of distance df
   for (rowid in rownames(df_tmp)){
     for (colid in colnames(df_tmp)){
       
+      #pull binf and ext variables
       binf_r = as.character(sample_data(phy_tmp)[rowid,"BINFID"])
       binf_c = as.character(sample_data(phy_tmp)[colid,"BINFID"])
       
