@@ -38,20 +38,43 @@ rule all:
         expand(join(output_dir, '01_import_and_demultiplex/{f_id}.qza'),f_id=mani.RunID.unique()),
         expand(join(output_dir, '01_import_and_demultiplex/{f_id}.qzv'),f_id=mani.RunID.unique()),
 
+        #dada2
         expand(join(output_dir,'02_clustering/{f_id}_table.qza'),f_id=flowcell_ids),
 
+        #merge flowcells
         join(output_dir,'03_merged/merged_table.qza'),
         join(output_dir,'03_merged/merged_seq.qza'),
 
-        #join(output_dir,'04_filtered/4_tab.qzv'),
+        #filtering steps
+        join(output_dir,'04_filtered/4_tab.qzv'),
         join(output_dir,'04_filtered/4_seq.qza'),
 
+        #scikit
         join(output_dir,'05_class/scikit_silva.qza'),
 
+        #phylogenetics
         join(output_dir,'06_phylogenetics/rooted_tree.qza'),
 
-        expand(join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza'),f_id=flowcell_ids)
+        #Picrust
+        expand(join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza'),f_id=flowcell_ids),
+        expand(join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza'),f_id=flowcell_ids),
+        expand(join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza'),f_id=flowcell_ids),
 
+        #Core metrics
+        expand(join(output_dir,'08_core/{f_id}/bray_curtis_emperor.qzv'),f_id=flowcell_ids),
+
+        #convert
+        expand(join(output_dir,'07_picrust/{f_id}/pathway_abundance.qza'),f_id=flowcell_ids),
+
+        #biom convert
+        expand(join(output_dir,'09_convert/{f_id}_ec/feature-table.biom'),f_id=flowcell_ids),
+        expand(join(output_dir,'09_convert/{f_id}_pa/feature-table.biom'),f_id=flowcell_ids),
+        expand(join(output_dir,'09_convert/{f_id}_ko/feature-table.biom'),f_id=flowcell_ids),
+
+        #tsv convert
+        expand(join(output_dir,'10_tsv/{f_id}_ec.tsv'),f_id=flowcell_ids),
+        expand(join(output_dir,'10_tsv/{f_id}_pa.tsv'),f_id=flowcell_ids),
+        expand(join(output_dir,'10_tsv/{f_id}_ko.tsv'),f_id=flowcell_ids),
 
 def get_fastq(wildcards):
     sub_df = mani[(mani['SampleID']==wildcards.sample)]
@@ -103,6 +126,8 @@ rule combine_Q2_manifest_by_f_id:
     """
     input:
         join(output_dir, 'manifests/all.txt')
+    params: 
+        rname="combine_id"
     output:
         join(output_dir, 'manifests/{f_id}_Q2_manifest.txt')
     shell:
@@ -373,13 +398,15 @@ rule phylogenetic_tree:
         unrooted_tree = join(output_dir,'06_phylogenetics/unrooted_tree.qza'),
         rooted_tree = join(output_dir,'06_phylogenetics/rooted_tree.qza')
     shell:
-        'module load qiime/2-2019.1; \
+        '''
+        module load qiime/2-2019.1; \
         qiime phylogeny align-to-tree-mafft-fasttree \
             --i-sequences {input.f1} \
             --o-alignment {output.msa} \
             --o-masked-alignment {output.masked_msa} \
             --o-tree {output.unrooted_tree} \
             --o-rooted-tree {output.rooted_tree}'
+        '''
 
 rule picrust_q2:
     '''
@@ -396,7 +423,9 @@ rule picrust_q2:
         dir = join(output_dir,'07_picrust/{f_id}/'),
         rname = "picrust"
     output:
-        o1 = join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza')
+        o1 = join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza'),
+        o2 = join(output_dir,'07_picrust/{f_id}/pathway_abundance.qza'),
+        o3 = join(output_dir,'07_picrust/{f_id}/ko_metagenome.qza')
     shell:
         """
         rm -r {params.dir}; 
@@ -410,3 +439,83 @@ rule picrust_q2:
         --p-max-nsti 2 \
         --verbose
         """
+
+#core stats
+rule picrust_core:
+    '''
+    run core metrics on picrust file
+    '''
+    input:
+        f1 = join(output_dir,'07_picrust/{f_id}/pathway_abundance.qza')
+    params:
+        rname = "pic_core",
+        base = join(output_dir,'08_core/{f_id}/'),
+        mani = manifest_dir
+    output:
+        o1 = join(output_dir,'08_core/{f_id}/bray_curtis_emperor.qzv')
+    shell:
+        '''
+        rm -r {params.base}; \
+        module load qiime/2-2019.1; \
+        qiime diversity core-metrics \
+            --i-table {input.f1} \
+            --m-metadata-file {params.mani} \
+            --output-dir {params.base} \
+            --p-sampling-depth 5000 \
+            --p-n-jobs 1
+        '''
+
+#biom file
+rule picrust_biom:
+    '''
+    '''
+    input:
+        f1 = join(output_dir,'07_picrust/{f_id}/ec_metagenome.qza'),
+        f2 = join(output_dir,'07_picrust/{f_id}/pathway_abundance.qza'),
+        f3 = join(output_dir,'07_picrust/{f_id}/ko_metagenome.qza')
+    params:
+        rname = "pic_biom",
+        base1 = join(output_dir,'09_convert/{f_id}_ec/'),
+        base2 = join(output_dir,'09_convert/{f_id}_pa/'),
+        base3 = join(output_dir,'09_convert/{f_id}_ko/')
+    output:
+        o1 = join(output_dir,'09_convert/{f_id}_ec/feature-table.biom'),
+        o2 = join(output_dir,'09_convert/{f_id}_pa/feature-table.biom'),
+        o3 = join(output_dir,'09_convert/{f_id}_ko/feature-table.biom') 
+    shell:
+        '''
+        module load qiime/2-2019.1; \
+        qiime tools export \
+            --input-path {input.f1} \
+            --output-path {params.base1};
+        qiime tools export \
+            --input-path {input.f2} \
+            --output-path {params.base2};   
+        qiime tools export \
+            --input-path {input.f3} \
+            --output-path {params.base3};
+        '''
+
+#tsv file
+rule picrust_tsv:
+    '''
+    convert biom to tsv
+    www.github.com/picrust/picrust2/wikiw/q2-picrust2-Tutorial
+    '''
+    input:
+        f1 = join(output_dir,'09_convert/{f_id}_ec/feature-table.biom'),
+        f2 = join(output_dir,'09_convert/{f_id}_pa/feature-table.biom'),
+        f3 = join(output_dir,'09_convert/{f_id}_ko/feature-table.biom') 
+    params:
+        rname = "pic_tsv",
+    output:
+        o1 = join(output_dir,'10_tsv/{f_id}_ec.tsv'),
+        o2 = join(output_dir,'10_tsv/{f_id}_pa.tsv'),
+        o3 = join(output_dir,'10_tsv/{f_id}_ko.tsv') 
+    shell:
+        '''
+        module load qiime/2-2019.1; \
+        biom convert -i {input.f1} -o {output.o1} --to-tsv;
+        biom convert -i {input.f2} -o {output.o2} --to-tsv;
+        biom convert -i {input.f3} -o {output.o3} --to-tsv;
+        '''

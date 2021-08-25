@@ -14,11 +14,11 @@ library(stringr)
 system_opt = "m"
 
 #read in config
-config_file = read_yaml('config.yaml')
+config_file = read_yaml('/Volumes/sevillas2-2/git/gmu/dissertation/aim3/analysis/config.yaml')
 git_dir=str_replace(config_file$git_dir[[system_opt]],'home','Volumes')
-data_dir=str_replace(config_file$data_dir[[system_opt]],'data/sevillas2','Volumes/data')
-analysis_dir=str_replace(config_file$analysis_dir[[system_opt]],'data/sevillas2','Volumes/data')
-ref_dir=str_replace(config_file$ref_dir[[system_opt]],'data/sevillas2','Volumes/data')
+data_dir=str_replace(config_file$data_dir[[system_opt]],'data/sevillas2-2','Volumes/data')
+analysis_dir=str_replace(config_file$analysis_dir[[system_opt]],'data/sevillas2-2','Volumes/data')
+ref_dir=str_replace(config_file$ref_dir[[system_opt]],'data/sevillas2-2','Volumes/data')
 manifest_dir=str_replace(config_file$manifest_dir[[system_opt]],'home','Volumes')
 
 manifest_file=paste(manifest_dir, config_file$clean_manifest,sep="")
@@ -28,14 +28,19 @@ manifest_file=paste(manifest_dir, config_file$clean_manifest,sep="")
 ```{r}
 library(phyloseq)
 library(biomformat)
-source("../../sources/qiime2R.R") #github https://github.com/jbisanz/qiime2R
-source("../../sources/qzq_to_phyloseq.R") #github https://github.com/jbisanz/qiime2R
+library(tidyverse)
+source("/Volumes/sevillas2-2/git/gmu/dissertation/sources/qiime2R.R") #github https://github.com/jbisanz/qiime2R
+source("/Volumes/sevillas2-2/git/gmu/dissertation/sources/qzq_to_phyloseq.R") #github https://github.com/jbisanz/qiime2R
+library(microbiome)
+library(ape)
 
 #Read OTUS
-otus<-read_qza(paste(data_dir,'04_filtered/4_tab.qza',sep=""))
+#otus<-read_qza(paste(data_dir,'04_filtered/4_tab.qza',sep=""))
+otus<-read_qza("/Volumes/Macintosh\ HD/Users/sevillas2/Downloads/4_tab.qza")
 
 #Read taxonomy reference file
-taxonomy<-read_qza(paste(data_dir,"05_class/scikit_silva.qza",sep=""))
+#taxonomy<-read_qza(paste(data_dir,"05_class/scikit_silva.qza",sep=""))
+taxonomy<-read_qza("/Volumes/Macintosh\ HD/Users/sevillas2/Downloads/scikit_silva.qza")
 
 #convert tax to matrix for phyloseq input
 GenData <- function(x){
@@ -50,8 +55,20 @@ GenData <- function(x){
 
 taxonomy_list <- as.list(taxonomy$data$Taxon)
 taxonomy_table <- do.call("rbind", lapply(taxonomy_list, GenData))
-taxonomy_table <- taxonomy_table[,-c(16,17)]
-colnames(taxonomy_table) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species","D7","D8","D9","D10","D11","D12","D13","D14")
+taxonomy_table <- taxonomy_table[,c(1:7)]
+colnames(taxonomy_table) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+taxonomy_table <- as.data.frame(taxonomy_table)
+taxonomy_table <-taxonomy_table %>% 
+  mutate_all(funs(str_replace(., "D_.__", "")))
+taxonomy_table <-taxonomy_table %>% 
+  mutate_all(funs(str_replace(., "\[", "")))
+taxonomy_table <-taxonomy_table %>% 
+  mutate_all(funs(str_replace(., "]", "")))
+taxonomy_table <-taxonomy_table %>% 
+  mutate_all(funs(str_replace(., "-", "_")))
+taxonomy_table <-taxonomy_table %>% 
+  mutate_all(funs(str_replace(., " ", "")))
+
 rownames(taxonomy_table)<-taxonomy$data$Feature.ID
 tax_convert<-as.matrix(taxonomy_table)
 head(tax_convert)
@@ -62,19 +79,24 @@ metadata<-read.table(manifest_file,sep='\t', header=T, row.names=1, comment="")
 #create phyloseq object
 phy_obj<-phyloseq(otu_table(otus$data, taxa_are_rows = T), tax_table(tax_convert), sample_data(metadata))
 phy_obj
+
+#Create phy tree
+random_tree = rtree(ntaxa(phy_obj), rooted=TRUE, tip.label=taxa_names(phy_obj))
+phy_t = merge_phyloseq(phy_obj, random_tree)
+
 ```
 
 #Summarize and raryfy
 ```{r}
-library(microbiome)
-source("../../sources/ggrare.R") #github library: https://rdrr.io/github/gauravsk/ranacapa/
+source("/Volumes/sevillas2-2/git/gmu/dissertation/sources/ggrare.R") #github library: https://rdrr.io/github/gauravsk/ranacapa/
+library(ape)
 
-summarize_phyloseq(phy_obj)
+summarize_phyloseq(phy_t)
 
 #Generate rare curves
-for (meta in colnames(sample_data(phy_obj))[1:5]){
-  ggrare(phy_obj,step=1000,color=meta)
-}
+#for (meta in colnames(sample_data(phy_t))[1:5]){
+#  ggrare(phy_obj,step=1000,color=meta)
+#}
 
 #determine sample lost at various rare levels
 rare_points = c(1000,2000,3000,4000,5000,6000)
@@ -88,26 +110,28 @@ for (rare_val in rare_points){
 rare_df
 
 #rarefy the data
-phy_r = rarefy_even_depth(phy_obj, rngseed=1, sample.size=5000, replace=F) 
+phy_r = rarefy_even_depth(phy_t, rngseed=1, sample.size=4500, replace=F) 
 
 #Post rare plot
 ggrare(phy_r,step=1000,color="RunID")
 
-#Create phy tree
-#random_tree = rtree(ntaxa(phy_r), rooted=TRUE, tip.label=taxa_names(phy_r))
-#phy_r_t = merge_phyloseq(phy_r, random_tree)
+#prune
+(ps <- phyloseq::prune_taxa(phyloseq::taxa_sums(phy_r) > 0, phy_r)) 
+
 ```
 
 #prevelance values
 ```{r}
+library(stringr)
 # Compute prevalence of each feature, store as data.frame
-prevdf = apply(X = otu_table(phy_obj),
-               MARGIN = ifelse(taxa_are_rows(phy_obj), yes = 1, no = 2),
+prevdf = apply(X = otu_table(phy_r),
+               MARGIN = ifelse(taxa_are_rows(phy_r), yes = 1, no = 2),
                FUN = function(x){sum(x > 0)})
+
 # Add taxonomy and total read counts to this data.frame
 prevdf = data.frame(Prevalence = prevdf,
-                    TotalAbundance = taxa_sums(phy_obj),
-                    tax_table(phy_obj))
+                    TotalAbundance = taxa_sums(phy_r_t),
+                    tax_table(phy_r_t))
 
 plyr::ddply(prevdf, "Kingdom", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
 plyr::ddply(prevdf, "Phylum", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
@@ -146,28 +170,269 @@ for (val1 in stats){
       print(paste(val1,val2,count))
   }
 }
+
+#failed samples
+metadata[rownames(metadata)=="ERR4020670",]
+metadata[rownames(metadata)=="ERR4019056",]
+
+#binomial tests
+#health
+binom.test(57,55+57)$p.value
+binom.test(55,55+57)$p.value
+
+#by health and by
+#sex f/u, total u, f/h divided by total healthy
+nrow(subset(sample_df,sex=="female" & status=="unhealthy"))
+nrow(subset(sample_df,sex=="female" & status=="healthy"))
+binom.test(nrow(subset(sample_df,sex=="female" & status=="unhealthy")),nrow(subset(sample_df,status=="unhealthy")), nrow(subset(sample_df,sex=="female" & status=="healthy"))/nrow(subset(sample_df,status=="healthy")),alternative="g")$p.value
+
+#create df
+tmp = tmp = sample_df[,c("age_cat","status","bmi_cat")]
+for (id in rownames(tmp)){
+  tmp[id,"age"] = as.integer(str_remove(tmp[id,"age_cat"],"s"))
+  if(tmp[id,"bmi_cat"]=="Normal"){
+    tmp[id,"bmi"] = 18
+  } else{
+    tmp[id,"bmi"] = 35
+  }
+}
+
+#age
+mean(subset(tmp,status=="healthy" & sex=="female")$age)
+mean(subset(tmp,status=="healthy" & sex=="male")$age)
+mean(subset(tmp,status=="unhealthy" & sex=="female")$age)
+mean(subset(tmp,status=="unhealthy" & sex=="male")$age)
+t.test(formula = age ~ status,
+       data = tmp,
+       subset = sex == "female")
+
+t.test(formula = age ~ status,
+       data = tmp,
+       subset = sex == "male")
+
+#bmi
+mean(subset(tmp,status=="healthy" & sex=="female")$bmi)
+mean(subset(tmp,status=="healthy" & sex=="male")$bmi)
+mean(subset(tmp,status=="unhealthy" & sex=="female")$bmi)
+mean(subset(tmp,status=="unhealthy" & sex=="male")$bmi)
+t.test(formula = bmi ~ status,
+       data = tmp,
+       subset = sex == "female")
+
+t.test(formula = bmi ~ status,
+       data = tmp,
+       subset = sex == "male")
+
 ```
 
+Rel abundance faceted
+#https://www.nicholas-ollberding.com/post/introduction-to-the-statistical-analysis-of-microbiome-data-in-r/
+```{r}
+table(phyloseq::tax_table(phy_r)[, "Phylum"])
 
+ps_rel_abund = phyloseq::transform_sample_counts(phy_r, function(x){x / sum(x)})
+
+#Plot
+phyloseq::plot_bar(ps_rel_abund, fill = "Phylum") +
+  geom_bar(aes(color = Phylum, fill = Phylum), stat = "identity", position = "stack") +
+  labs(x = "", y = "Relative Abundance\n") +
+  facet_wrap(~ status, scales = "free") +
+  theme(panel.background = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+#Agglomerate to phylum-level and rename
+ps_phylum <- phyloseq::tax_glom(phy_r, "Phylum")
+phyloseq::taxa_names(ps_phylum) <- phyloseq::tax_table(ps_phylum)[, "Phylum"]
+
+#Melt and plot
+p = phyloseq::psmelt(ps_phylum) %>%
+ggplot(data = ., aes(x = status, y = Abundance)) +
+  geom_boxplot(outlier.shape  = NA) +
+  geom_jitter(aes(color = OTU), height = 0, width = .2) +
+  labs(x = "", y = "Abundance\n") +
+  facet_wrap(~ OTU, scales = "free") + 
+  theme(legend.position="bottom")
+p1 = addSmallLegend(p)
+p1
+file_name = "relabun_facet"
+ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p1)
+
+```
+
+#save to biom for gutbalance
+```{r}
+#phy
+#write out otu table
+ps_glom <- phyloseq::tax_glom(phy_r, "Phylum")
+phyloseq::taxa_names(ps_glom) <- phyloseq::tax_table(ps_glom)[, "Phylum"]
+phy_tmp = phyloseq::transform_sample_counts(ps_glom, function(x){x / sum(x)})
+df_tmp = data.frame(phyloseq::otu_table(phy_tmp))
+head(df_tmp)
+write.csv(df_tmp,"/Volumes/data/gmu/aim3/output/otu_phy.csv",row.names=TRUE)
+
+#use ncbi to convert id
+#https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
+
+#import mapping sheet
+ncbi_id = read.table("/Volumes/data/gmu/aim3/output/tax_report_phy.txt",sep="\t",header=TRUE)
+head(ncbi_id)
+
+#add ncbi id to otu table
+for (rows in rownames(df_tmp)){
+  ncbi_sub = subset(ncbi_id,name==rows)
+  df_tmp[rows,"NCBI"] = ncbi_sub[1,"taxid"]
+}
+head(df_tmp)
+write_csv(df_tmp,"/Volumes/data/gmu/aim3/output/output_for_gutserver_phy.csv")
+
+gutserver <- function(df_tmp, tax_level){
+  #import mapping sheet
+  ncbi_id = read.table(paste0("/Volumes/data/gmu/aim3/output/tax_report_",tax_level,".txt"),sep="\t",header=TRUE)
+  head(ncbi_id)
+  
+  #add ncbi id to otu table
+  for (rows in rownames(df_tmp)){
+    ncbi_sub = subset(ncbi_id,name==rows)
+    df_tmp[rows,"NCBI"] = ncbi_sub[1,"taxid"]
+  }
+  
+  #convert to numeric
+  df_tmp[, 1:(ncol(df_tmp)-1)] <- sapply(df_tmp[, 1:(ncol(df_tmp)-1)], as.numeric)
+  df_tmp <- df_tmp %>% #round
+    mutate_if(is.numeric, round, digits=5)
+  
+  #remove rows where no NCBI id was found
+  df_tmp = df_tmp[complete.cases(df_tmp), ]
+  
+  #reorder col so NCBI is first
+  df_tmp = df_tmp[,c(ncol(df_tmp),1:(ncol(df_tmp)-1))]
+  head(df_tmp)
+  
+  #save for input
+  write_csv(df_tmp,pastep("/Volumes/data/gmu/aim3/output/output_for_gutserver_",tax_level,".csv"))
+}
+
+## class
+tax_level = "Class"
+
+#write out otu table
+ps_glom <- phyloseq::tax_glom(phy_r, tax_level)
+phyloseq::taxa_names(ps_glom) <- phyloseq::tax_table(ps_glom)[, tax_level]
+phy_tmp = phyloseq::transform_sample_counts(ps_glom, function(x){x / sum(x)})
+df_tmp = data.frame(phyloseq::otu_table(phy_tmp))
+write.csv(df_tmp,paste0("/Volumes/data/gmu/aim3/output/otu_",tax_level,".csv"),row.names=TRUE)
+
+#use ncbi to convert id
+#https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
+gutserver(df_tmp,tax_level)
+  
+
+
+#in progress
+
+
+library(KbaseKit)
+toBIOM(data.frame(phyloseq::otu_table(ps_rel_abund)))
+
+#within source dir
+#java -Xmx6G -jar CrossClassify.jar -i /data/sevillas2-2/gmu/aim3/output/otu.biom -r ncbi -o /data/sevillas2-2/gmu/aim3/output_converted_ncbi.biom
+
+import_biom("/Volumes/data/gmu/aim3/output_converted_ncbi.biom", 
+ treefilename=NULL, refseqfilename=NULL, refseqFunction=readDNAStringSet, refseqArgs=NULL,
+ parseFunction=parse_taxonomy_default, parallel=FALSE, version=1.0, ...)
+
+#https://github.com/joey711/phyloseq/issues/652
+#find duplicated names
+tmp_df = data.frame(phyloseq::tax_table(ps_glom)[, "Genus"])
+badTaxa = unique(tmp_df[duplicated(tmp_df$Genus),])
+
+#remove duplicated names
+pop_taxa = function(physeq, badTaxa){
+  allTaxa = taxa_names(physeq)
+  print(head(allTaxa))
+  print(length(allTaxa))
+  allTaxa <- allTaxa[!(allTaxa %in% badTaxa)]
+  print(length(allTaxa))
+  return(prune_taxa(allTaxa, physeq))
+}
+ps_clean = pop_taxa(ps_glom, badTaxa)
+
+ps_clean
+
+tmp_df = data.frame(phyloseq::tax_table(ps_clean)[, "Genus"])
+nrow(tmp_df)
+length(unique(tmp_df$Genus))
+
+```
+
+Is there a difference between phyla?
+```{r}
+#Subset groups
+controls <- phyloseq::subset_samples(ps_phylum, status == "healthy")
+cf <- phyloseq::subset_samples(ps_phylum, status == "unhealthy")
+
+#Output OTU tables
+control_otu <- data.frame(phyloseq::otu_table(controls))
+cf_otu <- data.frame(phyloseq::otu_table(cf))
+
+#generated lists for Other
+GroupingTax <- function(ps_in,level,cutoff){
+  i=1
+  tmp=""
+  tmp2=""
+  print(cutoff)
+  tax_tab = table(phyloseq::tax_table(ps_in)[, level])
+  for (id in names(tax_tab)){
+    if(tax_tab[[i]]<as.integer(cutoff)){
+      tmp = paste("`", id,"` + ",tmp,sep="")
+      tmp2 = paste("`", id,"`, -",tmp2,sep="")
+    }
+    i=i+1
+  }
+  print(tmp)
+  print(tmp2)
+}
+
+#Review data
+table(phyloseq::tax_table(phy_r)[, "Phylum"])
+GroupingTax(phy_r,"Phylum",3)
+
+#Group rare phyla
+control_otu <- control_otu %>%
+   t(.) %>%
+   as.data.frame(.) %>%
+  mutate(Other =  `Patescibacteria` + `Opisthokonta` + `Kiritimatiellaeota` + `Elusimicrobia` + `Chloroflexi` + `Acidobacteria`) %>%
+   dplyr::select(-`Patescibacteria`, -`Opisthokonta`, -`Kiritimatiellaeota`, -`Elusimicrobia`, -`Chloroflexi`, -`Acidobacteria`)
+
+cf_otu <- cf_otu %>%
+   t(.) %>%
+   as.data.frame(.) %>%
+  mutate(Other =  `Patescibacteria` + `Opisthokonta` + `Kiritimatiellaeota` + `Elusimicrobia` + `Chloroflexi` + `Acidobacteria`) %>%
+   dplyr::select(-`Patescibacteria`, -`Opisthokonta`, -`Kiritimatiellaeota`, -`Elusimicrobia`, -`Chloroflexi`, -`Acidobacteria`)
+
+#HMP test
+table(phyloseq::tax_table(phy_r)[, "Phylum"])
+colnames(control_otu)
+group_data <- list(control_otu, cf_otu)
+(xdc <- HMP::Xdc.sevsample(group_data))
+
+```
+
+Rel abundance with heat map
 ```{r}
 library(ggplot2)
 library(dplyr)
 #merge to diet
-phy_health = merge_samples(phy_r,"status")
+phy_health = merge_samples(ps_phylum,"status")
 phy_health
 
-#select top OTUS
-TopNOTUs <- names(sort(taxa_sums(phy_health), TRUE)[1:18])
-phy_pr <- prune_taxa(TopNOTUs,phy_health)
-length(unique(as.data.frame(tax_table(phy_pr))$Genus))
-
 #melt data to relative abundance
-phy_tmp <- phy_pr %>%
-    tax_glom(taxrank = "Genus") %>%                     # agglomerate at tax level
+phy_tmp <- phy_health %>%
+    tax_glom(taxrank = "Phylum") %>%                     # agglomerate at tax level
     transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
     psmelt() 
 phy_tmp = phy_tmp[order(phy_tmp$Abundance),]
-(phy_tmp)$Genus[1:10]
 
 #plot
 phylum_colors <- c(
@@ -186,23 +451,117 @@ addSmallLegend <- function(myPlot, pointSize = 1, textSize = 8, spaceLegend = 0.
               legend.key.size = unit(spaceLegend, "lines"))
 }
 
-p = ggplot(phy_tmp, aes(x = Sample, y = Abundance, fill = Genus)) + 
+p = ggplot(phy_tmp, aes(x = Sample, y = Abundance*100, fill = Phylum)) + 
     theme(legend.position = "bottom", legend.key.width = unit(0.2,"cm"),
           axis.text.x = element_text(angle = 90, hjust = 1), 
           legend.text = element_text(size = 10))  +
           geom_bar(stat = "identity") +
           xlab("Health Status") +
           ylab("Relative Abundance (%)") +
-          ggtitle("Most Abundant OTU's") +
-          labs(fill = "Genus")
+          ggtitle("Relative Abundance by Phyla") +
+          labs(fill = "Phylum")
 p1 = addSmallLegend(p)
 p1
-
-file_name = "relabun_health"
+file_name = "relabun_phy"
 ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p1)
+
+library(tidyverse)
+if (!requireNamespace("devtools", quietly = TRUE)){install.packages("devtools")}
+devtools::install_github("jbisanz/qiime2R")
+library(qiime2R)
+
+SVs<-otus$data
+taxonomy2<-taxonomy$data
+metadata2 = metadata
+metadata2$SampleID = rownames(metadata)
+rownames(metadata2) <- NULL
+
+SVs<-apply(SVs, 2, function(x) x/sum(x)*100) #convert to percent
+
+SVsToPlot<-  
+  data.frame(MeanAbundance=rowMeans(SVs)) %>% #find the average abundance of a SV
+  rownames_to_column("Feature.ID") %>%
+  arrange(desc(MeanAbundance)) %>%
+  top_n(30, MeanAbundance) %>%
+  pull(Feature.ID) #extract only the names from the table
+
+tib <- SVs %>%
+  as.data.frame() %>%
+  rownames_to_column("Feature.ID") %>%
+  gather(-Feature.ID, key="SampleID", value="Abundance") %>%
+  mutate(Feature.ID=if_else(Feature.ID %in% SVsToPlot,  Feature.ID, "Remainder")) %>% #flag features to be collapsed
+  group_by(SampleID, Feature.ID) %>%
+  summarize(Abundance=sum(Abundance)) %>%
+  left_join(metadata2) %>%
+  mutate(NormAbundance=log10(Abundance+0.01)) %>% # do a log10 transformation after adding a 0.01% pseudocount. Could also add 1 read before transformation to percent
+  left_join(taxonomy2) %>%
+  mutate(Feature=paste(Feature.ID, Taxon)) %>%
+  mutate(Feature=gsub(";[D]_[0-9]*_", "", Feature)) %>% # trim out D_#__ from taxonomy string
+  mutate(Feature=gsub("([[:punct:]])\\1+", "\\1", Feature)) %>% # trim out the duplicated ;_
+  mutate(Feature=gsub(".* D_0_", "", Feature)) %>% # trim out leading characters from taxonomy string
+  mutate(Feature=gsub(";","", Feature))# trim out trailing characters from taxonomy string
+  
+p2 = ggplot(tib, aes(x=SampleID, y=Feature, fill=NormAbundance)) +
+  geom_tile() +
+  facet_grid(~`status`, scales="free_x") +
+  theme_q2r() +
+  theme(axis.text.x=element_blank()) + #theme(axis.text.x=element_text(angle=45, hjust=1)) +
+  scale_fill_viridis_c(name="log10(% Abundance)")
+p2
+file_name = "heatplot"
+ggsave(paste(analysis_dir,file_name,".jpg",sep=""), height=4, width=11) # save a jpeg 3 inches by 4 inches
+
+#combo plot
+#library(ggpubr)
+#ggarrange(p2,p, ncol = 2, widths =(c(3,1)))
+
 ```
 
-#Figure 3B
+alpha diversity
+```{r}
+adiv <- data.frame(
+  "Observed" = phyloseq::estimate_richness(phy_r, measures = "Observed"),
+  "Shannon" = phyloseq::estimate_richness(phy_r, measures = "Shannon"),
+  "InvSimpson" = phyloseq::estimate_richness(phy_r, measures = "InvSimpson"),
+  "PD" = picante::pd(samp = data.frame(t(data.frame(phyloseq::otu_table(phy_r)))), tree = phyloseq::phy_tree(phy_r))[, 1],
+  "Status" = phyloseq::sample_data(phy_r)$status)
+head(adiv)
+
+p = adiv %>%
+  gather(key = metric, value = value, c("Observed", "Shannon", "InvSimpson","PD")) %>%
+  mutate(metric = factor(metric, levels = c("Observed", "Shannon", "InvSimpson", "PD"))) %>%
+  ggplot(aes(x = Status, y = value)) +
+  geom_boxplot(outlier.color = NA) +
+  geom_jitter(aes(color = Status), height = 0, width = .2) +
+  labs(x = "", y = "") +
+  facet_wrap(~ metric, scales = "free") +
+  theme(legend.position="none")
+p
+file_name = "alphadiv_health_sum"
+ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
+
+#anova with tukey correction
+AnovaCorrection <- function(stat_in){
+  print(stat_in)
+  #wilcox tests
+  print(wilcox.test(get(stat_in) ~ Status, data = adiv, exact = FALSE, conf.int = TRUE)$p.value)
+  
+  anova_result <- aov(get(stat_in) ~ Status, adiv)
+  summary(anova_result)
+  tukey_result <- HSD.test(anova_result, "Status", group = TRUE)
+  group_data <- tukey_result$groups[order(rownames(tukey_result$groups)),]
+  print("After correction:")
+  print(group_data)
+}
+
+#run tests
+stat_list = c("Observed","Shannon","InvSimpson","PD")
+for (stats in stat_list){
+  AnovaCorrection(stats)
+}
+```
+
+#alpha diversity alternative
 ```{r}
 library(vegan)
 library(agricolae)
@@ -227,7 +586,9 @@ summary(anova_result)
 
 #run tukey HSD
 tukey_result <- HSD.test(anova_result, "status", group = TRUE)
+tukey_result
 group_data <- tukey_result$groups[order(rownames(tukey_result$groups)),]
+group_data
 
 #plot alpha div
 p = ggplot(sample_df, aes(x = status, y = alpha)) +
@@ -245,32 +606,133 @@ file_name = "alphadiv_health"
 ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
 ```
 
-#Fig 3C
+#PC diffferences between clusters
 ```{r}
-#Create PCOA
-#https://microbiome.github.io/tutorials/Ordination.html
-ord = ordinate(phy_r,"MDS","bray")
-p = plot_ordination(phy_r,ord,color="status",shape="ibd") + 
-  geom_point(size=5)
+library(gridExtra)
+library(vegan)
+#prune taxa with 0 OTUs
+(ps <- phyloseq::prune_taxa(phyloseq::taxa_sums(phy_r) > 0, phy_r)) 
+(ps_clr <- microbiome::transform(ps, "clr"))
+
+#PCA via phyloseq
+ord_clr <- phyloseq::ordinate(ps_clr, "RDA")
+
+#Plot variance with a  scree plot
+phyloseq::plot_scree(ord_clr) + 
+  geom_bar(stat="identity", fill = "blue") +
+  labs(x = "\nAxis", y = "Proportion of Variance\n")
+
+#Scale axes and plot ordination
+clr1 <- ord_clr$CA$eig[1] / sum(ord_clr$CA$eig)
+clr2 <- ord_clr$CA$eig[2] / sum(ord_clr$CA$eig)
+p = phyloseq::plot_ordination(ps, ord_clr, type="samples", color="status") + 
+  geom_point(size = 2) +
+  coord_fixed(clr2 / clr1) +
+  ggtitle("PCA plot by Health Status") +
+  stat_ellipse(aes(group = status), linetype = 2)
 p
-file_name = "ordination_ibd"
+file_name = "beta_pca"
 ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
 
-p = plot_ordination(phy_r,ord,color="status",shape="mental_illness_type_bipolar_disorder") + 
-  geom_point(size=5)
-p
-file_name = "ordination_bip"
-ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
+#Generate distance matrix
+clr_dist_matrix <- phyloseq::distance(ps_clr, method = "euclidean") 
 
-p = plot_ordination(phy_r,ord,color="SampleType",shape="mental_illness_type_depression") + 
-  geom_point(size=5)
-p
-file_name = "ordination_type"
-ggsave(paste(analysis_dir,file_name,".jpg",sep=""),plot=p)
+#ADONIS test
+vegan::adonis(clr_dist_matrix ~ phyloseq::sample_data(ps_clr)$status)
+
+#Dispersion test and plot
+dispr <- vegan::betadisper(clr_dist_matrix, phyloseq::sample_data(ps_clr)$status)
+dispr
+permutest(dispr)
+
+#plot ordination
+file_name = "beta_ord"
+png(paste(analysis_dir,file_name,".jpg",sep=""))
+par(mfrow=c(1,2),oma = c(0, 0, 3, 0))
+plot(dispr,main = "")
+boxplot(dispr, main = "", xlab = "")
+mtext("Ordination Centroids and Dispersion Labeled: Aitchison Distance", outer = TRUE, cex = 1.5)
+dev.off()
+
 ```
 
-#Figure 4 - Diet
-OTUs shown significantly (BH adjusted p < 0.05) differed between diets. Direction of fold change (log2) indicates which diet each OTU is more strongly associated (labeled below x-axis). (a) PE-fed microbiome versus bran-fed microbiome
+Diff analysis
+```{r}
+library(tidyr)
+library(tidyverse)
+#Generate data.frame with OTUs and metadata
+ps_wilcox <- data.frame(t(data.frame(phyloseq::otu_table(ps_clr))))
+ps_wilcox$status <- phyloseq::sample_data(ps_clr)$status
+
+#Define functions to pass to map
+wilcox_model <- function(df){
+  wilcox.test(abund ~ status, data = df)
+}
+wilcox_pval <- function(df){
+  wilcox.test(abund ~ status, data = df)$p.value
+}
+#Create nested data frames by OTU and loop over each using map 
+wilcox_results <- ps_wilcox %>%
+  gather(key = OTU, value = abund, -status) %>%
+  group_by(OTU) %>%
+  nest() %>%
+  mutate(wilcox_test = map(data, wilcox_model),
+         p_value = map(data, wilcox_pval))                       
+#Show results
+head(wilcox_results$data[[1]])
+wilcox_results$p_value[[1]]
+
+#Unnesting
+wilcox_results <- wilcox_results %>%
+  dplyr::select(OTU, p_value) %>%
+  unnest(cols=c(p_value))
+head(wilcox_results)
+
+#Adding taxonomic labels
+taxa_info <- data.frame(tax_table(ps_clr))
+taxa_info <- taxa_info %>% rownames_to_column(var = "OTU")
+
+#Computing FDR corrected p-values
+wilcox_results <- wilcox_results %>%
+  full_join(taxa_info) %>%
+  arrange(p_value) %>%
+  mutate(BH_FDR = p.adjust(p_value, "BH")) %>%
+  filter(BH_FDR < 0.05) %>%
+  dplyr::select(OTU, p_value, BH_FDR, everything())
+print.data.frame(wilcox_results)  
+
+#summary
+wilcox_df = as.data.frame(wilcox_results)
+nrow(wilcox_df)
+sum(is.na(wilcox_df$Kingdom)) + nrow(subset(wilcox_df, Phylum=="" | Kingdom=="Unassigned"))
+nrow(wilcox_df) - sum(is.na(wilcox_df$Kingdom)) - nrow(subset(wilcox_df, Phylum=="" | Kingdom=="Unassigned"))
+
+
+#run aldex2
+library(ALDEx2)
+aldex2_da <- ALDEx2::aldex(data.frame(phyloseq::otu_table(phy_obj)), phyloseq::sample_data(phy_obj)$status, test="t", effect = TRUE, denom="iqlr")
+
+#plot effect sizes
+file_name = "diffanal_dispersion"
+png(paste(analysis_dir,file_name,".jpg",sep=""))
+ALDEx2::aldex.plot(aldex2_da, type="MW", test="wilcox", called.cex = 1, cutoff = 0.05)
+title("Effect Size Plot", cex = 1.5)
+dev.off()
+
+#Clean up presentation
+sig_aldex2 <- aldex2_da %>%
+  rownames_to_column(var = "OTU") %>%
+  filter(wi.eBH < 0.05) %>%
+  arrange(effect, wi.eBH) %>%
+  dplyr::select(OTU, diff.btw, diff.win, effect, wi.ep, wi.eBH)
+sig_aldex2 <- left_join(sig_aldex2, taxa_info)
+sig_aldex2
+
+sisig_aldex2[1,"OTU"]
+
+```
+
+Diff analysis alternative
 ```{r}
 #https://informatics.fas.harvard.edu/differential-expression-with-deseq2.html
 #https://joey711.github.io/phyloseq-extensions/DESeq2.html
@@ -285,25 +747,25 @@ DiffAnalysis<-function(phy_in,de_in,subtitle,file_name){
 
   #run stats
   res = results(diagdds, cooksCutoff = FALSE)
-  alpha = 0.05
+  alpha = 0.1
   sigtab = res[which(res$padj < alpha), ]
   result_df = data.frame(res)
-
+  
   #run correction
   result_df$BH = p.adjust(result_df$pvalue, method = "BH", n = length(result_df$pvalue))
-  sig_df = subset(result_df,BH<0.05)
-
+  sig_df = subset(result_df,BH<0.1)
+  
   #add tax info
   sigtab = cbind(as(sig_df, "data.frame"), as(tax_table(phy_in)[rownames(sig_df), ], "matrix"))
   sigtab = sigtab[with(sigtab, order(log2FoldChange)),]
 
   #remove D_6__, add "higher level"
-  sigtab$Genus = gsub("D_5__", "", sigtab[,"Genus"])
-  sigtab$Genus[sigtab$Genus==""] = "HigherTaxonomicLevel"
+  sigtab$Phylum = gsub("D_2__", "", sigtab[,"Phylum"])
+  sigtab$Phylum[sigtab$Phylum==""] = "HigherTaxonomicLevel"
   
   #rownames
   sigtab$OTU = rownames(sigtab)
-  rownames(sigtab)=make.names(sigtab$Genus,unique=TRUE)
+  rownames(sigtab)=make.names(sigtab$Phylum,unique=TRUE)
   
   #plot
     if(nrow(sigtab)>0){
@@ -312,7 +774,7 @@ DiffAnalysis<-function(phy_in,de_in,subtitle,file_name){
                fill = rownames(sigtab))) +
           geom_bar(stat = "identity")+
           coord_flip()+
-          labs(x = "Genus", y = "log2 Fold Change",
+          labs(x = "Phylum", y = "log2 Fold Change",
                title = paste("Differential Abundance Analysis: \n",subtitle))+
           theme_minimal()+
           guides(fill = FALSE)
@@ -335,54 +797,81 @@ SigTables<-function(sig_in,val_in){
 #health
 sigtab = DiffAnalysis(phy_obj,phyloseq_to_deseq2(phy_obj, ~ status), "Healthy to Afflicted Individuals","diffanal_health")
 sig_complete = rbind(sig_complete,SigTables(sigtab,"status"))
-
-#Timepoints
-time_compare = c("Baseline","Day5")
-phy_tmp = subset_samples(phy_obj,Timepoint %in% time_compare)
-sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Baseline to Day 5","diffanal_tp_b5")
-sig_complete = rbind(sig_complete,SigTables(sigtab,"Bto5"))
-
-time_compare = c("Baseline","Day8")
-phy_tmp = subset_samples(phy_obj,Timepoint %in% time_compare)
-sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Baseline to Day 8","diffanal_tp_b8")
-sig_complete = rbind(sig_complete,SigTables(sigtab,"Bto8"))
-
-time_compare = c("Baseline","Day12")
-phy_tmp = subset_samples(phy_obj,Timepoint %in% time_compare)
-sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Baseline to Day 12","diffanal_tp_b12")
-sig_complete = rbind(sig_complete,SigTables(sigtab,"Bto12"))
-
-time_compare = c("Day5","Day8")
-phy_tmp = subset_samples(phy_obj,Timepoint %in% time_compare)
-sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Day 5 to Day 8","diffanal_tp_58")
-sig_complete = rbind(sig_complete,SigTables(sigtab,"5to8"))
-
-time_compare = c("Day8","Day12")
-phy_tmp = subset_samples(phy_obj,Timepoint %in% time_compare)
-sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Day 8 to Day 12","diffanal_tp_812")
-sig_complete = rbind(sig_complete,SigTables(sigtab,"8to12"))
 sig_complete
 ```
 
-Calculate permutation p value
+#sebal
 ```{r}
-library(vegan)
-#https://microbiome.github.io/tutorials/PERMANOVA.html
-#For Diet
-adonis2(t(otu_table(phy_obj)) ~ status, 
-        data=data.frame(sample_data(phy_obj)), permutations=99,
-        method = "bray")
+#devtools::install_github(repo = "UVic-omics/selbal")
+library(rms)
+library(selbal)
 
-dist <- vegdist(t(otu_table(phy_obj)))
-anova(betadisper(dist, data.frame(sample_data(phy_obj))$status))
+#Generate data.frame - centered-log ratio transformed abundance for pc1-3
+clr_pcs <- data.frame(
+  "pc1" = ord_clr$CA$u[,1],
+  "pc2" = ord_clr$CA$u[,2],
+  "pc3" = ord_clr$CA$u[,3],
+  "Status" = phyloseq::sample_data(ps_clr)$status
+)
+clr_pcs$Status_num <- ifelse(clr_pcs$Status == "healthy", 0, 1)
+head(clr_pcs)
 
-#For Timepoints
-adonis2(t(otu_table(phy_obj)) ~ Timepoint, 
-        data=data.frame(sample_data(phy_obj)), permutations=99,
-        method = "bray")
+#Specify a datadist object (for rms)
+dd <- datadist(clr_pcs)
+options(datadist = "dd")
 
-dist <- vegdist(t(otu_table(phy_obj)))
-anova(betadisper(dist, data.frame(sample_data(phy_obj))$Timepoint))
+#Fit full model with splines (3 knots each)
+m1 <- rms::lrm(Status_num ~ rcs(pc1, 3) + rcs(pc2, 3) + rcs(pc3, 3), data = clr_pcs, x = TRUE, y = TRUE)
+#Grid search for penalties
+pentrace(m1, list(simple = c(0, 1, 2), nonlinear = c(0, 100, 200)))
+pen_m1 <- update(m1, penalty = list(simple = 1, nonlinear = 200))
+pen_m1
+ggplot(Predict(pen_m1))
+
+#Plot the unconditional associations
+a <- ggplot(clr_pcs, aes(x = pc1, y = Status_num)) +
+  Hmisc::histSpikeg(Status_num ~ pc1, lowess = TRUE, data = clr_pcs) +
+  labs(x = "\nPC1", y = "Pr(Chronic Fatigue)\n")
+b <- ggplot(clr_pcs, aes(x = pc2, y = Status_num)) +
+  Hmisc::histSpikeg(Status_num ~ pc2, lowess = TRUE, data = clr_pcs) +
+  labs(x = "\nPC2", y = "Pr(Chronic Fatigue)\n")
+c <- ggplot(clr_pcs, aes(x = pc3, y = Status_num)) +
+  Hmisc::histSpikeg(Status_num ~ pc3, lowess = TRUE, data = clr_pcs) +
+  labs(x = "\nPC3", y = "Pr(Chronic Fatigue)\n")
+cowplot::plot_grid(a, b, c, nrow = 2, ncol = 2, scale = .9, labels = "AUTO")
+
+#Obtain optimism corrected estimates
+(val <- rms::validate(pen_m1))
+#Compute corrected c-statistic
+(c_opt_corr <- 0.5 * (val[1, 5] + 1))
+
+#Plot calibration
+cal <- rms::calibrate(pen_m1, B = 200)
+plot(cal)
+
+#Output pred. probs
+head(predict(pen_m1, type ="fitted"))
+
+#select taxa present in at least 5% of samples
+(ps <- phyloseq::subset_samples(phy_obj, phyloseq::sample_sums(phy_obj) > 4500)) 
+(ps <- phyloseq::prune_taxa(phyloseq::taxa_sums(ps) > 0, ps)) 
+ps <- filter_taxa(ps, function(x) sum(x > 0) > (0.05*length(x)), TRUE)   
+
+(ps_tmp <- phyloseq::tax_glom(ps, "Phylum"))
+phyloseq::taxa_names(ps_tmp) <- phyloseq::tax_table(ps_tmp)[, "Phylum"]
+
+#Run selbal
+sel_x = data.frame(t(data.frame(phyloseq::otu_table(ps_tmp))))
+sel_y = data.frame(row.names = rownames(phyloseq::sample_data(ps_tmp)),status=phyloseq::sample_data(ps_tmp)$status)
+sel_y$status <- as.factor(sel_y$status)
+cv_sebal <- selbal::selbal.cv(x = sel_x[1:114,], y = sel_y[1:114,],
+                              n.fold = 10, n.iter = 20,zero.rep = "one") 
+cv_sebal$accuracy.nvar
+
+png(paste(analysis_dir,file_name,".jpg",sep=""))
+grid.draw(cv_sebal$global.plot)
+dev.off()
+
 ```
 
 #Tax4Fun installation
@@ -412,87 +901,37 @@ library(wordcloud)
 library(tm)
 library(stringr)
 #https://rdrr.io/cran/themetagenomics/f/vignettes/functional_prediction.Rmd
+#https://cran.r-project.org/web/packages/themetagenomics/vignettes/thematic_structure.html
 
 #download ref
 tmp <- tempdir()
 download_ref(tmp,reference='silva_ko',overwrite=FALSE)
 
-TaxAnalysis<- function(abun_in,file.save){
-  #reformat taxonomy table
-  mb_tax = data.frame(tax_table(phy_obj))
-  for (cols in colnames(mb_tax)){
-    mb_tax[,cols] = gsub("D_[0-9]__", "", mb_tax[,cols])
-  }
-  mb_tax=mb_tax[,1:7]
-  
-  #run tax4fun
-  t4f_output = t4f(abun_in,rows_are_taxa=TRUE,tax_table=mb_tax,
-                               reference_path=tmp,type='uproc',short=TRUE,
-                               drop=TRUE)
-  t4f_output$fxn_table[1:2,1:2]
-  head(t4f_output$fxn_meta$KEGG_Description)
-  
-  #top ko
-  top_ko = names(sort(colMeans(t4f_output$fxn_table),decreasing = TRUE)[1:10])
+#tax4fun wrapper
+(ps <- phyloseq::prune_taxa(phyloseq::taxa_sums(phy_obj) > 0, phy_obj)) 
+otu = as.data.frame(otu_table(ps))
+metadata$status = as.factor(metadata$status)
+mt = metadata
+CLEAN <- prepare_data(otu_table=t(otu),
+                      rows_are_taxa=FALSE,
+                      tax_table=tax_table(ps),
+                      metadata=mt,
+                      formula= ~status,
+                      refs="healthy",
+                      cn_normalize=FALSE,
+                      drop=TRUE)
+TOPICS <- find_topics(CLEAN,K=15)
+TOPIC_EFFECTS <- est(TOPICS)
 
-  #create list of top ko's
-  list_ko_des  = vector()
-  list_ko_path = vector()
-  i = 1
-  for (ko in top_ko){
-    list_ko_des[i] = (t4f_output$fxn_meta$KEGG_Description[ko])[[1]]
-    list_ko_path[i] =  (t4f_output$fxn_meta$KEGG_Pathways[ko])[[1]][[1]][3]
-    i = i + 1
-  }
-  #output
-  print(list_ko_des)
-  print(list_ko_path)
-  
-  #generate wordcloud
-  CreateWordCloud(list_ko_path,file.save)
-}
+FUNCTIONS <- predict(TOPICS,reference='silva_ko',reference_path=tmp,cn_normalize=TRUE,sample_normalize=FALSE,scalar=25)
 
-CreateWordCloud<-function(df.in,file.save){
-  str.list = df.in
-  
-  remove.list = c("SUBCELLULAR LOCATION","[[:punct:]]",
-                                      "ECO[0-9]*[|][A-Za-z]*[0-9]",
-                                      "Note=","ECO[0-9]*","[0-9]*",
-                                      " and "," [tT]he "," in ","PubMed", " with ")
-  for (items in remove.list){
-    str.list=str_remove_all(str.list,items)
-  }
-  list.final = stripWhitespace(str.list)
-  dtm <- TermDocumentMatrix(Corpus(VectorSource(list.final)))
-  v <- sort(rowSums(as.matrix(dtm)),decreasing=TRUE)
-  d <- data.frame(word = names(v),freq=v)
+FUNCTION_EFFECTS <- est(FUNCTIONS,level=3,iters=300,
+                        chains=2,cores=2,
+                        return_summary=TRUE,
+                        prior=c('normal','normal','normal'))
+FUNCTION_EFFECTS2 <- resume(FUNCTION_EFFECTS,init_type='last',iters=600,chains=2,cores=2)
 
-  #save wordcloud and histogram counts
-  #png(file=paste(analysis_dir,"word_",file.save,".jpg",sep=""))
-  par(mfrow=c(1,2),oma=c(0,0,4,0))
-  par(cex=.7)
-  wordcloud(list.final,colors=brewer.pal(8,"Dark2"),max.words = 25)
-  par(fig=c(.5,1,.2,.7), new=TRUE)
-  barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
-          col = "light blue", ylab = "Word frequencies")
-  mtext("Sub-Cellular distribution",outer=TRUE, cex=2)
-  #dev.off()
-}
-
-#Taxonomic Analysis for significant OTU's
-mb_abund = data.frame(otu_table(phy_obj))
-
-#diet
-mb_sub = mb_abund[rownames(mb_abund) %in% subset(sig_complete,val=="health")$OTU,]
-TaxAnalysis(mb_sub,"status")
-
-#baseline to 12
-mb_sub = mb_abund[rownames(mb_abund) %in% subset(sig_complete,val=="Bto12")$OTU,]
-TaxAnalysis(mb_sub,"bto12")
-
-#baseline to 5
-mb_sub = mb_abund[rownames(mb_abund) %in% subset(sig_complete,val=="Bto5")$OTU,]
-TaxAnalysis(mb_sub,"bto5")
+vis(FUNCTION_EFFECTS2,TOPIC_EFFECTS,ui_level=.95)
 
 ```
 

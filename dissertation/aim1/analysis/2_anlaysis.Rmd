@@ -4,6 +4,10 @@ output: html_notebook
 editor_options: 
   chunk_output_type: console
 ---
+
+##################################################
+# 
+##################################################
 Prepare Environment
 # set dir
 ```{r}
@@ -20,6 +24,7 @@ source(paste0(git_base,"sources/qiime2R.R")) #github https://github.com/jbisanz/
 
 library(ape)
 library(biomformat)
+library(corrplot)
 library(cowplot)
 library(cluster)
 library(data.table)
@@ -28,7 +33,9 @@ library(ggplot2)
 library(matrixStats)
 library(microbiome)
 library(phyloseq)
+library(ggpubr)
 library(plyr)
+library(RColorBrewer)
 library(Rmisc)
 library(stringr)
 library(tidyr)
@@ -122,7 +129,7 @@ for (binf_variable in benchmark_files){
   #update metadata for analysis
   metadata$Sample.Des[metadata$Sample.Des=="art_col"] = "Chemostat"
   metadata$Sample.Des[metadata$Sample.Des=="Ext_Blank"] = "Blank"
-  metadata$Sample.Des[metadata$Sample.Des=="ZymoBiomics" & metadata$Sample.Type=="Ext_Control"] = "Artificial"
+  metadata$Sample.Des[metadata$Sample.Des=="ZymoBiomics" & metadata$Sample.Type=="Ext_Control"] = "Artificial-U"
   metadata$Sample.Des[metadata$Sample.Des=="H01"] = "Human"
   metadata$BINFID = variable_df[binf_variable,"Identifier"]
   metadata$UniqueID = paste0(rownames(metadata),"-",metadata$BINFID)
@@ -153,34 +160,187 @@ for (binf_variable in benchmark_files){
 binfdf
 ```
 
-## Ensure extraction group consistency
-only need to use one phylo object
+## merge phyloseq obj
 ```{r}
-variable_counting <- function(){
-  #assign groups to extraction kits
-  ext_group_df=data.frame(c("EX-1","EX-2","EX-3","EX-4","EX-5","EX-6","EX-7"),c("G-1","G-2","G-3","G-4","G-1","G-3","G-4"))
-  colnames(ext_group_df)=c("Ext.Kit","Ext.Group")
-  rownames(ext_group_df)=ext_group_df$Ext.Kit
-  
-  #add extraction groups
-  tmp_df = data.frame(sample_data(phy_t1))
-  tmp_df = subset(tmp_df,Sample.Type != "Seq_Control")
-  for (each_row in rownames(tmp_df)){
-    tmp_df[each_row,"Ext.Group"] = ext_group_df[tmp_df[each_row,"Ext.Kit"],"Ext.Group"]
+i = 1
+remove(phy_merge)
+for (phyid in phy_list){
+  if (i==1){
+    phy_merge = get(phyid)
+  } else{
+    phy_merge = merge_phyloseq(get(phyid),phy_merge)
   }
-  head(tmp_df)
+  i=i+1
+}
+phy_merge
+remove(phy_t2,phy_t3,phy_t4,phy_t5,phy_t6,phy_t7,phy_t8,phy_t9,phy_t10,phy_t11,phy_t12)
+```
+
+## Define groups for extraction and binf, subset phy object
+```{r}
+#determine counts for grouping
+determine_groups <- function(){
+  control_list = c("EX-1","EX-2","EX-3","EX-4","EX-5","EX-6","EX-7","Seq")
+  
+  count_df = data.frame(control_list)
+  rownames(count_df) = count_df$control_list
+  
+  #subset ext
+  for (extid in unique(subset(sample_data(phy_merge),Sample.Type!="Seq_Control")$Ext.Kit)){
+    tmp_df = subset(sample_data(phy_merge),Ext.Kit==extid & BINFID=="BINF-01")
+    
+    #subset by subjectid (H01)
+    for (sampleid in unique(tmp_df$Subject.ID)){
+      count_df[extid,sampleid] = nrow(subset(tmp_df,Subject.ID==sampleid))
+    }
+  }
+  
+  #subset seq
+  for (seqid in unique(subset(sample_data(phy_merge),Sample.Type=="Seq_Control")$Subject.ID)){
+    tmp_df = subset(sample_data(phy_merge),Subject.ID==seqid & BINFID=="BINF-01")
+    count_df["Seq",seqid] = nrow(subset(tmp_df,Subject.ID==seqid))
+  }
+  return(count_df)
+}
+count_df = determine_groups()
+count_df
+
+#assign extraction groups
+assign_ext_groups <-function(){
+  group_df=data.frame(c("EX-1","EX-2","EX-3","EX-4","EX-5","EX-6","EX-7"),c("EX-G1","EX-G2","EX-G1","EX-G2","EX-G2","EX-G1","EX-G2"))
+  colnames(group_df)=c("Ext.Kit","Ext.Group")
+  rownames(group_df)=group_df$Ext.Kit
+  
+  #create list of extraction ids
+  group_list = sample_data(phy_merge)$Ext.Kit
+  
+  #for each kit assign group
+  for (gid in rownames(group_df)){
+    group_list = gsub(gid,group_df[gid,"Ext.Group"],group_list)
+  }
+    
+  #add col to sample data with group
+  sample_data(phy_merge)$Ext.Group <- group_list
+  return(phy_merge)
+}
+phy_merge = assign_ext_groups()
+unique(sample_data(phy_merge)$Ext.Group)
+
+#assign binf groups
+assign_binf_groups <-function(){
+  group_df=data.frame(c("BINF-01","BINF-02","BINF-03","BINF-04","BINF-05","BINF-06",
+                        "BINF-07","BINF-08","BINF-09","BINF-10","BINF-11","BINF-12"),
+                      c("BINF-G1","BINF-G2","BINF-G1","BINF-G2","BINF-G1","BINF-G2",
+                        "BINF-G3","BINF-G4","BINF-G3","BINF-G4","BINF-G3","BINF-G4"))
+  colnames(group_df)=c("BINFID","BINF.Group")
+  rownames(group_df)=group_df$BINFID
+  
+  #create list of extraction ids
+  group_list = sample_data(phy_merge)$BINFID
+  
+  #for each kit assign group
+  for (gid in rownames(group_df)){
+    group_list = gsub(gid,group_df[gid,"BINF.Group"],group_list)
+  }
+  
+  #add col to sample data with group
+  sample_data(phy_merge)$BINF.Group <- group_list
+  return(phy_merge)
+}
+phy_merge = assign_binf_groups()
+unique(sample_data(phy_merge)$BINF.Group)
+
+#remove Z10 from phy_merge
+phy_merge = subset_samples(phy_merge,Subject.ID!="Z10")
+
+#create subset sample lists
+create_sample_lists<-function(){
+  #sub phylo object for only one binf variable
+  phy_sub = subset_samples(phy_merge,BINFID == "BINF-01")
+  
+  #list groups
+  ext_group1 = c("EX-2","EX-4","EX-5","EX-7")
+  ext_group2 = c("EX-1","EX-3","EX-6")
+  
+  sample_list=""
+  
+  #extraction group 1
+  for (extid in ext_group1){
+    #robo = 7
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Sample.Des=="Robogut" & Ext.Kit == extid)$UniqueID)[1:3])
+      
+    #chemo = 5
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Sample.Des=="Chemostat" & Ext.Kit == extid)$UniqueID)[1:3])
+    
+    #Artifical-U = 6
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Sample.Des=="Artificial-U" & Ext.Kit == extid)$UniqueID)[1:3])
+    #blank = 3
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Sample.Des=="Blank" & Ext.Kit == extid)$UniqueID)[1:3])
+    #human = 5
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Sample.Des=="Human" & Ext.Kit == extid)$UniqueID)[1:3])  
+  }
+  
+  #extraction group 2
+  for (extid in ext_group2){
+    #robo = 1
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Sample.Des=="Robogut" & Ext.Kit == extid)$UniqueID)[1])
+      
+    #chemo = 1
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Sample.Des=="Chemostat" & Ext.Kit == extid)$UniqueID)[1])
+    
+    #Artifical-U = 1
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Sample.Des=="Artificial-U" & Ext.Kit == extid)$UniqueID)[1])
+  }
+
+  #seq controls
+  for (seqid in unique(subset(sample_data(phy_sub),Sample.Type=="Seq_Control")$Subject.ID)){
+    sample_list = append(sample_list,
+                          (subset(sample_data(phy_sub),Subject.ID==seqid)$UniqueID)[1:2])
+  }
+
+  #clean first element
+  sample_list = sample_list[2:length(sample_list)]
+  
+  #add all binf ids
+  sample_list_complete = ""
+  
+  for (binfid in unique(sample_data(phy_merge)$BINFID)){
+    sub_list = gsub("BINF-01",binfid,sample_list)
+    sample_list_complete = append(sample_list_complete,sub_list)
+  }
+  return(sample_list_complete)
+}
+sample_list = create_sample_lists()
+
+#remove first blank in sample_list
+sample_list = sample_list[2:length(sample_list)]
+length(sample_list)
+
+#subset phy_merge
+phy_merge_sub = subset_samples(phy_merge,UniqueID %in% sample_list)
+remove(phy_merge)
+
+#check subset merge
+variable_counting <- function(){
   
   #for each group list the kits and sample types
-  for (group_id in unique(tmp_df$Ext.Group)){
+  for (group_id in unique(sample_data(phy_merge_sub)$Ext.Group)){
     #count n times extraction kit is used
     print(paste0("Groupid:", group_id))
     
-    sub_df = subset(tmp_df,Ext.Group==group_id)
+    sub_df = subset(sample_data(phy_merge_sub),Ext.Group==group_id)
     
     #for each kit
     for (kit_id in unique(sub_df$Ext.Kit)){
       print(paste0("--Ext Kit:", kit_id))
-      
       sub_df2 = subset(sub_df,Ext.Kit==kit_id)
       
       for (sample_id in unique(sub_df$Sample.Des)){
@@ -190,341 +350,47 @@ variable_counting <- function(){
   }
   
   print("*********************************************")
-  #for each subject id, list the groups
-  for (sample_id in unique(tmp_df$Subject.ID)){
-    print(paste0("Subjectid:", sample_id))
-    
-    sub_df = subset(tmp_df,Subject.ID==sample_id)
-    
-    #for each group
-    for (group_id in unique(sub_df$Ext.Group)){
-      print(paste0("--Group ID ", group_id, ": ", nrow(subset(sub_df,Ext.Group==group_id))))
-    }
-  }
-  
-  print("*********************************************")
   #for each seq control
-  tmp_df = data.frame(sample_data(phy_t1))
-  tmp_df = subset(tmp_df,Sample.Type == "Seq_Control")
+  tmp_df = subset(sample_data(phy_merge_sub),Sample.Type == "Seq_Control")
   for (sample_id in unique(tmp_df$Subject.ID)){
     print(paste0("Seq ID ", sample_id, ": ", nrow(subset(tmp_df,Subject.ID==sample_id))))
   }
 }
-  
-#run function
 variable_counting()
+
+#prune taxa
+phy_merge_sub_p = prune_taxa(taxa_sums(phy_merge_sub) > 0, phy_merge_sub)
 ```
 
-# Data Integration
-## bray-curtis within, beteween & invsimpson within
-### collpase to sample desc, expand individual binf params
+# In Text
+## General Extraction
 ```{r}
-diverstiy_binf_variables<-function(){
-  #calculate alpha at binf level by sample type
-  compare_binf = data.frame()
+calc_quant_means<-function(phy.in, type.in){
+  #create dataframe
+  quant_means = data.frame()
+  
+  #Read in quant report
+  quant_df = read.csv(paste0(git_dir,"manifest/quant.txt"),sep="\t")
+  rownames(quant_df)=quant_df$Sample.ID
 
-  for (binf_variable in phy_list){
-    #filter for only human, chemo and artificial
-    type_list = c("Human","Chemostat","Blank","Artificial", "Robogut")
-    phy_tmp = subset_samples(get(binf_variable),Sample.Des %in% type_list) 
+  #for each extraction kit
+  for (ext_kit in sort(unique(subset(sample_data(phy.in),Ext.Kit !="Seq")$Ext.Kit))){
+  
+    #create list of ids for ext.kit
+    sample_list = gsub("-BINF-01","",rownames(subset(sample_data(phy.in),Ext.Kit==ext_kit)))
     
-    # Calculate bray curtis distances
-    dist_tmp <- phyloseq::distance(phy_tmp, method = "bray")
-    df_tmp <- as.data.frame(as.matrix(dist_tmp))
-    
-    #calculate val for between and within
-    for (rowid in rownames(df_tmp)){
-      for (colid in colnames(df_tmp)){
-        
-        #skip distances with self  
-        if(rowid==colid){
-          next
-        } else{
-          type_r = sample_data(phy_tmp)[rowid,"Sample.Des"]
-          type_c = sample_data(phy_tmp)[colid,"Sample.Des"]
-            
-          compare_binf[nrow(compare_binf)+1,"type"] = type_r
-          compare_binf[nrow(compare_binf),"sampleid"] = rowid
-          compare_binf[nrow(compare_binf),"binf"] = variable_df[binfdf[binf_variable,"tax_name"],"Identifier"]
-          compare_binf[nrow(compare_binf),"value"] = df_tmp[rowid,colid]  
-          
-          #within or between
-          if (type_c == type_r){
-            compare_binf[nrow(compare_binf),"cat"] = "Bray-Curtis, \n within"
-          } else{
-            compare_binf[nrow(compare_binf),"cat"] = "Bray-Curtis, \n between"
-          }
-        }
-      }
-    }
-      
-    #inv within sample type
-    df_tmp = phyloseq::estimate_richness(phy_tmp, measures = "InvSimpson")
-    for (rowid in rownames(df_tmp)){
-      compare_binf[nrow(compare_binf)+1,"type"] = sample_data(phy_tmp)[rowid,"Sample.Des"]
-      compare_binf[nrow(compare_binf),"binf"] = variable_df[binfdf[binf_variable,"tax_name"],"Identifier"]
-      compare_binf[nrow(compare_binf),"sampleid"] = rowid
-      compare_binf[nrow(compare_binf),"value"] = df_tmp[rowid,"InvSimpson"]  
-      compare_binf[nrow(compare_binf),"cat"] = "Inv. Simpson, \nwithin"
+    for (sampleid in sample_list){
+      quant_means[nrow(quant_means)+1,"Ext.Kit"] = ext_kit
+      quant_means[nrow(quant_means),"qdna"] = quant_df[sampleid,"QDNA"]
+      quant_means[nrow(quant_means),"sample"] = sampleid
     }
   }
   
-  return(compare_binf)
-}
-
-compare_binf=diverstiy_binf_variables()
-
-#fix for metadata problem
-#for (rowid in rownames(compare_binf[is.na(compare_binf$type),])){
-#  binf_id = compare_binf[rowid,"binf"]
-#  sample_id = compare_binf[rowid,"sampleid"]
-#  lookupid = gsub(binf_id,"BINF-12",sample_id)
-#  compare_binf[rowid,"type"]=metadata[lookupid,"Sample.Des"]
-#}
-#unique(compare_binf$type)
-
-file_save = paste0(analysis_dir,'compare_binf.csv')
-write.csv(compare_binf,file_save)
-
-#create boxplot
-p <- compare_binf %>% 
-  ggplot(aes(x=binf, y=value, fill=factor(type))) +
-  facet_grid(cat ~., scales = "free_y") +
-  ggtitle ("Bioinformatics Comparison") + 
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank()) +
-  labs(fill = "") +
-  geom_boxplot() 
-
-p
-file_save = paste0(analysis_dir,'bray_simp_boxplots.png')
-ggsave(file_save,p)
-```
-
-## bray-curtis within
-### collpase to sample desc, collapse to one binf param
-```{r}
-##################################################
-#merge phy objs
-##################################################
-#create subject list
-subject_list<- data.frame()
-type_list = c("Human","Blank","Artificial", "Chemostat","Robogut")
-ext_list = c("EX-2","EX-4", "EX-7")
-for (sampletype in type_list){
-  for (extkit in ext_list){
-    
-    #choose random samples for blanks
-    if(sampletype=="Blank"){
-      check_list = rownames(sample_data(subset_samples(phy_t1,
-                                                      Ext.Kit==extkit & 
-                                                      Sample.Des == sampletype)))[1:3]
-    #choose random samples for human, artifiical 
-    #cant choose sample #3 - it is dropped in some binf subsets
-    } else{
-      check_list = rownames(sample_data(subset_samples(phy_t1,
-                                                      Ext.Kit==extkit & 
-                                                      Sample.Des == sampletype)))[c(1,2,4)]
-    }
-    for (rowid in check_list){
-      subject_list[nrow(subject_list)+1,"SubjectID"] = rowid
-      subject_list[nrow(subject_list),"Sample.Des"] = sampletype
-      subject_list[nrow(subject_list),"Kit"] = extkit
-    }
-  }
-}
-subject_list = subject_list$SubjectID
-subject_list = gsub("BINF-07","BINF-",subject_list)
-
-#create merged phy obj of all binf variables
-i = 1
-remove(phy_merge)
-for (binf_variable in phy_list){
-  binfid = variable_df[binfdf[binf_variable,"tax_name"],"Identifier"]
-  if(i==1){
-    obj1 = binf_variable
-    subject_list1 =  gsub("BINF-",binfid,subject_list)
-  } else if (i==2){
-    subject_list2 =  gsub("BINF-",binfid,subject_list)
-    phy_merge = merge_phyloseq(subset_samples(get(obj1), UniqueID %in% subject_list1),
-                               subset_samples(get(binf_variable), UniqueID %in% subject_list2))
-    print(phy_merge)
-  } else{
-    subject_list2 =  gsub("BINF-",binfid,subject_list)
-    phy_merge = merge_phyloseq(phy_merge,
-                               subset_samples(get(binf_variable), UniqueID %in% subject_list2))
-    print(phy_merge)
-  }
-  i = i +1
-}
-
-##################################################
-#run analysis
-##################################################
-run_comparison <-function(){
-  #run bray-curtis distances
-  print("running distances")
-  dist_tmp <- phyloseq::distance(phy_merge, method = "bray")
-  df_tmp <- as.data.frame(as.matrix(dist_tmp))
-  
-  #for each row and col of distance df
-  print("running comparisons - this will take a while")
-  print(paste0("ncols:", ncol(df_tmp), "| nrows:", nrow(df_tmp)))
-  compare_df = data.frame()
-  
-  for (rowid in rownames(df_tmp)){
-    for (colid in colnames(df_tmp)){
-        
-      #pull variables
-      binf_r = as.character(sample_data(phy_merge)[rowid,"BINFID"])
-      binf_c = as.character(sample_data(phy_merge)[colid,"BINFID"])
-        
-      ext_r = as.character(sample_data(phy_merge)[rowid,"Ext.Kit"])
-      ext_c = as.character(sample_data(phy_merge)[colid,"Ext.Kit"])
-      
-      type_r = as.character(sample_data(phy_merge)[rowid,"Sample.Des"])
-      type_c = as.character(sample_data(phy_merge)[colid,"Sample.Des"])
-        
-      #if the row is the same as col, the samples are the same, dist = 0
-      if (rowid != colid & binf_c == binf_r & ext_r == ext_c & type_r == type_c){
-          compare_df[nrow(compare_df)+1,"type"] = type_r
-          compare_df[nrow(compare_df),"sampleid"] = rowid
-          compare_df[nrow(compare_df),"value"] = df_tmp[rowid,colid]
-          compare_df[nrow(compare_df),"cat"] = "technical replicates"
-      } else if (rowid != colid & binf_c == binf_r & ext_r != ext_c & type_r == type_c){
-          compare_df[nrow(compare_df)+1,"type"] = type_r
-          compare_df[nrow(compare_df),"sampleid"] = rowid
-          compare_df[nrow(compare_df),"value"] = df_tmp[rowid,colid]
-          compare_df[nrow(compare_df),"cat"] = "extraction variability"
-      } else if (rowid != colid & binf_c != binf_r & ext_r == ext_c & type_r == type_c){
-          compare_df[nrow(compare_df)+1,"type"] = type_r
-          compare_df[nrow(compare_df),"sampleid"] = rowid
-          compare_df[nrow(compare_df),"value"] = df_tmp[rowid,colid]
-          compare_df[nrow(compare_df),"cat"] = "bioinformatic variability"
-      } else if (rowid != colid & binf_c == binf_r & ext_r == ext_c & type_r != type_c){
-          compare_df[nrow(compare_df)+1,"type"] = type_r
-          compare_df[nrow(compare_df),"sampleid"] = rowid
-          compare_df[nrow(compare_df),"value"] = df_tmp[rowid,colid]
-          compare_df[nrow(compare_df),"cat"] = "sample type variability"
-      } else{
-        next
-      }
-    }
-  }
-  return(compare_df)
-}
-
-compare_df = run_comparison()
-file_save = paste0(analysis_dir,'compare_variables.csv')
-write.csv(compare_df,file_save)
-
-##################################################
-#create boxplot
-##################################################
-p <- compare_df %>% 
-  ggplot(aes(x=cat, y=value, fill=factor(type))) +
-  ggtitle ("Bray-Curtis Distance") + 
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank()) +
-  labs(fill = "") +
-  geom_boxplot() 
-
-p
-file_save = paste0(analysis_dir,'compare_variables.png')
-ggsave(file_save,p)
-#remove(compare_df)
-```
-
-Quality Control
-#Reads by Sample.Desc
-- note: number of reads wont vary by variable, only need to do this once
-```{r}
-#determine num of reads by Sample.Desc
-sampledf = data.frame()
-for(sample_variable in unique(sample_data(phy_t1)$Sample.Des)){
-  sampledf[nrow(sampledf)+1,"Sample.Des"] = sample_variable
-  sampledf[nrow(sampledf),"reads"] = gsub("3] Total number of reads = ", "",
-                                          summarize_phyloseq(subset_samples(phy_t1,Sample.Des==sample_variable))[[3]][1])
-  sampledf[nrow(sampledf),"Sample.Type"] = unique(subset(sample_data(phy_t1),Sample.Des==sample_variable)$Sample.Type)
-}
-sampledf$reads = as.numeric(sampledf$reads)
-
-#summarize
-sum_and_plot <- function(type_in){
-  sumdf = summarySE(sampledf, measurevar="reads", groupvars=c(type_in))
+  sumdf = summarySE(quant_means, measurevar="qdna", groupvars=c(type.in))
   print(sumdf)
   
   #plot
-  p = ggplot(sumdf, aes(x=get(type_in), y=reads, fill=get(type_in))) + 
-      geom_bar(position=position_dodge(), stat="identity",
-               colour="black", # Use black outlines,
-               size=.3) +      # Thinner lines
-      geom_errorbar(aes(ymin=reads-se, ymax=reads+se),
-                    size=.3,    # Thinner lines
-                    width=.2,
-                    position=position_dodge(.9)) +
-      xlab(type_in) +
-      ylab("Average Read Length") +
-      scale_fill_hue(name=type_in) + # Legend label, use darker colors
-      ggtitle(paste0("Average Numer of Reads \n By ",type_in)) +
-      theme_bw()
-  print(p)
-  file_save = paste0(analysis_dir,"readlength_",type_in,".png")
-  ggsave(file_save,p)
-}
-sum_and_plot("Sample.Type")
-sum_and_plot("Sample.Des")
-
-```
-
-#Post Seq counts
-```{r}
-#total samples 
-nrow(sample_data(phy_t1)) #all samples
-nrow(subset(sample_data(phy_t1),Sample.Type != "Seq_Control"))
-nrow(subset(sample_data(phy_t1),Sample.Type == "Seq_Control"))
-
-unique(subset(sample_data(phy_t1),Sample.Type != "Seq_Control")$Sample.Des)
-unique(subset(sample_data(phy_t1),Sample.Type == "Seq_Control")$Subject.ID)
-
-```
-
-#Quant results
-#select phy_t1 to run analysis - dont care about individual binf variables here
-```{r}
-#Read in quant report
-quant_df = read.csv(paste0(git_dir,"manifest/quant.txt"),sep="\t")
-rownames(quant_df)=quant_df$Sample.ID
-
-#create dataframe
-quant_means = data.frame()
-
-#for each extraction kit
-for (ext_kit in sort(unique(sample_data(phy_t1)$Ext.Kit))){
-
-  #create list of ids for ext.kit
-  sample_list = gsub("-BINF-07","",rownames(subset(sample_data(phy_t1),Ext.Kit==ext_kit)))
-  for (sampleid in sample_list){
-    quant_means[nrow(quant_means)+1,"Ext.Kit"] = ext_kit
-    quant_means[nrow(quant_means),"qdna"] = quant_df[sampleid,"QDNA"]
-    quant_means[nrow(quant_means),"sample"] = sampleid
-  }
-
-}
-
-#Remove seq
-quant_means = subset(quant_means,Ext.Kit != "Seq")
-quant_means
-
-#plot
-sum_and_plot <- function(type_in){
-  sumdf = summarySE(quant_means, measurevar="qdna", groupvars=c(type_in))
-  print(sumdf)
-  
-  #plot
-  p = ggplot(sumdf, aes(x=get(type_in), y=qdna, fill=get(type_in))) + 
+  p = ggplot(sumdf, aes(x=get(type.in), y=qdna, fill=get(type.in))) + 
       geom_bar(position=position_dodge(), stat="identity",
                colour="black", # Use black outlines,
                size=.3) +      # Thinner lines
@@ -534,7 +400,7 @@ sum_and_plot <- function(type_in){
                     position=position_dodge(.9)) +
       xlab("Extraction method") +
       ylab("Quant values ng/uL") +
-      scale_fill_hue(name=type_in) + # Legend label, use darker colors
+      scale_fill_hue(name=type.in) + # Legend label, use darker colors
       ggtitle("Concentration by extraction method") +
       theme_bw()
   print(p)
@@ -542,144 +408,830 @@ sum_and_plot <- function(type_in){
   ggsave(file_save,p)
 }
 
-sum_and_plot("Ext.Kit")
+#only need one binf variable
+phy_tmp = subset_samples(phy_merge_sub_p,BINFID=="BINF-01")
+
+#run function
+calc_quant_means(phy_tmp,"Ext.Kit")
 ```
+
+## General sequencing
+```{r}
+#### BEFORE SEQ
+#total samples sequenced
+nrow(subset(metadata,Subject.ID!="Z10"))
+
+# negative controls
+nrow(subset(metadata,Subject.ID %in% c("BP","BN")))
+nrow(subset(metadata,Subject.ID=="BW"))
+
+#non negative controls
+nrow(subset(metadata,(Subject.ID %in% c("A00","A01","A02","A03","Z05","Z06","Z11"))))
+nrow(subset(metadata,(Subject.ID %in% c("Z00"))))
+nrow(subset(metadata,(Subject.ID %in% c("H01"))))
+nrow(subset(metadata,(Subject.ID %in% c("M98","M16","M22"))))
+nrow(subset(metadata,(Subject.ID %in% c("A00","A01","A02","A03","Z05","Z06","Z11")))) + nrow(subset(metadata,(Subject.ID %in% c("Z00")))) + nrow(subset(metadata,(Subject.ID %in% c("H01"))))+nrow(subset(metadata,(Subject.ID %in% c("M98","M16","M22"))))
+
+#verify
+nrow(subset(metadata,Subject.ID!="Z10")) - nrow(subset(metadata,Subject.ID %in% c("BP","BN"))) - nrow(subset(metadata,Subject.ID=="BW")) - nrow(subset(metadata,(Subject.ID %in% c("A00","A01","A02","A03","Z05","Z06","Z11")))) - nrow(subset(metadata,(Subject.ID %in% c("Z00")))) - nrow(subset(metadata,(Subject.ID %in% c("H01")))) -nrow(subset(metadata,(Subject.ID %in% c("M98","M16","M22"))))
+
+#### AFTER SEQ
+#total samples sequenced
+nrow(subset(sample_data(phy_t1),Subject.ID!="Z10"))
+
+# negative controls
+nrow(subset(sample_data(phy_t1),Subject.ID %in% c("BP","BN")))
+nrow(subset(metadata,Subject.ID=="BW"))-nrow(subset(sample_data(phy_t1),Subject.ID=="BW"))
+
+#non negative controls
+nrow(subset(metadata,(Subject.ID %in% c("A00","A01","A02","A03","Z05","Z06","Z11"))))-nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("A00","A01","A02","A03","Z05","Z06","Z11"))))
+nrow(subset(metadata,(Subject.ID %in% c("Z00"))))-nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("Z00"))))
+nrow(subset(metadata,(Subject.ID %in% c("H01"))))-nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("H01"))))
+nrow(subset(metadata,(Subject.ID %in% c("M98","M16","M22"))))-nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("M98","M16","M22"))))
+nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("A00","A01","A02","A03","Z05","Z06","Z11")))) + nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("Z00")))) + nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("H01"))))+nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("M98","M16","M22"))))
+
+#verify
+nrow(subset(sample_data(phy_t1),Subject.ID!="Z10")) - (nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("A00","A01","A02","A03","Z05","Z06","Z11")))) + nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("Z00")))) + nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("H01"))))+nrow(subset(sample_data(phy_t1),(Subject.ID %in% c("M98","M16","M22")))))-nrow(subset(sample_data(phy_t1),Subject.ID=="BW"))
+
+### After subsampling
+nrow(subset(sample_data(phy_merge_sub_p),BINFID=="BINF-01"))
+
+#determine num of reads by Sample.Desc
+plot_read_depth<-function(phy.in){
+  sampledf = data.frame()
+  
+  #for each extraction kit
+  for(typeid in unique(sample_data(phy.in)$Sample.Des)){
+  
+    #create list of ids for ext.kit
+    sample_list = gsub("-BINF-01","",rownames(subset(sample_data(phy.in),Sample.Des==typeid)))
+    
+    for (sampleid in sample_list){
+      sampledf[nrow(sampledf)+1,"Sample.Des"] = typeid
+      sampledf[nrow(sampledf),"reads"] = sample_sums(phy.in)[sampleid][[1]]
+      sampledf[nrow(sampledf),"sample"] = sampleid
+    }
+  }
+  sampledf$reads = as.numeric(sampledf$reads)
+  
+  #combine MSA and zymo
+  sampledf$Sample.Des=gsub("MSA","Artificial-E",sampledf$Sample.Des)
+  sampledf$Sample.Des=gsub("ZymoBiomics","Artificial-E",sampledf$Sample.Des)
+
+  sumdf = summarySE(sampledf, measurevar="reads", groupvars=c("Sample.Des"))
+  print(sumdf)
+  
+  #plot
+  p = ggplot(sumdf, aes(x=Sample.Des, y=reads, fill=Sample.Des)) + 
+        geom_bar(position=position_dodge(), stat="identity",
+                 colour="black", # Use black outlines,
+                 size=.3) +      # Thinner lines
+        geom_errorbar(aes(ymin=reads-se, ymax=reads+se),
+                      size=.3,    # Thinner lines
+                      width=.2,
+                      position=position_dodge(.9)) +
+        xlab("Sample Description") +
+        ylab("Average Read Length") +
+        scale_fill_hue(name="Sample.Des") + # Legend label, use darker colors
+        ggtitle(paste0("Average Numer of Reads \n By Sample Description")) +
+        theme_bw()
+    print(p)
+    file_save = paste0(analysis_dir,"readlength_sampledescription.png")
+    ggsave(file_save,p)
+}
+plot_read_depth(phy_t1)
+```
+
+## Overview of OTU analysis
+counts
+```{r}
+##################################################
+# counts
+##################################################
+nrow(subset(sample_data(phy_merge_sub_p),BINFID=="BINF-01"))
+phy_merge_sub_p
+
+nrow(subset(sample_data(phy_merge_sub_p),Subject.ID %in% c("H01","M98","M22","M16")))
+nrow(subset(sample_data(phy_merge_sub_p),Subject.ID %in% c("Z00","BW")))
+nrow(subset(sample_data(phy_merge_sub_p),Sample.Type=="Seq_Control"))
+
+nrow(subset(sample_data(phy_merge_sub_p),Subject.ID %in% c("H01","M98","M22","M16"))) + nrow(subset(sample_data(phy_merge_sub_p),Subject.ID %in% c("Z00","BW"))) + nrow(subset(sample_data(phy_merge_sub_p),Sample.Type=="Seq_Control"))
+
+##################################################
+# otu summary
+##################################################
+calc_binf_counts<-function(phy.in){
+  #average reads / non-blank sample
+  sampledf = data.frame()
+  
+  #for each extraction kit
+  for(binfid in sort(unique(sample_data(phy.in)$BINFID))){
+  
+    #create list of ids for ext.kit
+    sample_list = rownames(subset(sample_data(phy.in),BINFID==binfid))
+    
+    sampledf[nrow(sampledf)+1,"BINF ID"] = binfid
+    sampledf[nrow(sampledf),"mean OTU/ASV"] = mean(colSums(otu_table(phy.in)[,sample_list]))
+    sampledf[nrow(sampledf),"median OTU/ASV"] = median(colSums(otu_table(phy.in)[,sample_list]))
+    sampledf[nrow(sampledf),"std dev"] = sd(colSums(otu_table(phy.in)[,sample_list]))
+  }
+
+  print(sampledf)
+  
+  file_save = paste0(analysis_dir,'binf_otu.csv')
+  write.csv(sampledf,file_save)
+}
+calc_binf_counts(phy_merge_sub_p)
+calc_binf_counts(phy_merge_sub)
+
+```
+
+alpha table
+```{r}
+##################################################
+# richness summary
+##################################################
+richness_binf_variables<-function(phy.in){
+  #calculate alpha at binf level by sample type
+  compare_binf = data.frame()
+  sampledf = data.frame()
+    
+  # Calculate richness
+  df_ob = phyloseq::estimate_richness(phy.in, measures = "Observed")
+  df_ch = phyloseq::estimate_richness(phy.in, measures = "Chao1")
+  df_inv = phyloseq::estimate_richness(phy.in, measures = "InvSimpson")
+  
+  # Store inv distances within type - all binfs are already present in df
+  for (rowid in rownames(df_ob)){
+    lookupval = gsub("[.]","-",rowid)
+    compare_binf[nrow(compare_binf)+1,"type"] = as.character(sample_data(phy.in)[lookupval,"Sample.Des"])
+    compare_binf[nrow(compare_binf),"binf"] = paste0("BINF-", strsplit(lookupval,"-")[[1]][length(strsplit(lookupval,"-")[[1]])])
+    compare_binf[nrow(compare_binf),"BINF.Group"] = as.character(subset(sample_data(phy.in),
+                                                                                  BINFID==compare_binf[nrow(compare_binf),
+                                                                                                       "binf"])$BINF.Group)[1]
+    compare_binf[nrow(compare_binf),"INV"] = df_inv[lookupval,"InvSimpson"]  
+    compare_binf[nrow(compare_binf),"CH"] = df_ch[rowid,"Chao1"]  
+    compare_binf[nrow(compare_binf),"OBS"] = df_ob[rowid,"Observed"]  
+  }
+  #combine MSA and zymo
+  compare_binf$type=gsub("MSA","Artificial-E",compare_binf$type)
+  compare_binf$type=gsub("ZymoBiomics","Artificial-E",compare_binf$type)
+  
+  #merge at grouup level
+  for(binfid in sort(unique(compare_binf$BINF.Group))){
+    for (typeid in sort(unique(compare_binf$type))){
+      sub_df = subset(compare_binf, BINF.Group==binfid & type==typeid)
+      sampledf[nrow(sampledf)+1,"Specimen Type"] = typeid
+      sampledf[nrow(sampledf),"Bioinformatics Group"] = binfid
+      sampledf[nrow(sampledf),"Inverse Simpson"] = paste0(round(mean(sub_df$INV),2)," (", round(sd(sub_df$INV),2),")")
+      sampledf[nrow(sampledf),"Chao1"] = paste0(round(mean(sub_df$CH),2)," (", round(sd(sub_df$CH),2),")")
+      sampledf[nrow(sampledf),"Observed Species"] = paste0(round(mean(sub_df$OBS),2)," (", round(sd(sub_df$OBS),2),")")
+    }
+  }
+  
+  print(sampledf)
+  
+  file_save = paste0(analysis_dir,'binf_richness.csv')
+  write.csv(sampledf,file_save)
+}
+richness_binf_variables(phy_merge_sub_p)
+```
+
+wetvdry individual
+```{r}
+##################################################
+# alpha plots
+##################################################
+#calculate alpha at binf level by sample type
+create_alpha_plots<-function(phy.in){
+  
+  #calculate richness
+  df_obs = phyloseq::estimate_richness(phy.in, measures = "Observed")
+  df_ch = phyloseq::estimate_richness(phy.in, measures = "Chao1")
+  df_inv = phyloseq::estimate_richness(phy.in, measures = "InvSimpson")
+  df_sh = phyloseq::estimate_richness(phy.in, measures = "Shannon")
+  
+  #create df
+  sampledf=data.frame()
+  
+  for (rowid in rownames(df_obs)){
+    lookupval = gsub("[.]","-",rowid)
+    sampledf[nrow(sampledf)+1,"Extraction Method"] = as.character(sample_data(phy.in)[lookupval,"Ext.Kit"])
+    sampledf[nrow(sampledf),"Bioinformatic Group"] = as.character(sample_data(phy.in)[lookupval,"BINF.Group"])
+    sampledf[nrow(sampledf),"Observed"] = log10(df_obs[rowid,"Observed"])
+    sampledf[nrow(sampledf),"Chao1"] = log10(df_ch[rowid,"Chao1"])
+    sampledf[nrow(sampledf),"Inverse Simpson"] = log10(df_inv[lookupval,])
+    sampledf[nrow(sampledf),"Shannon"] = log10(df_sh[lookupval,"Shannon"])
+  }
+  
+  plot_values<-function(x.in,y.in,ylab.in){
+    p <- sampledf %>% 
+      ggplot(aes(x=get(x.in), y=get(y.in))) +
+      theme(axis.title=element_text(size=8),
+        axis.title.x = element_blank()) +
+      labs(fill = "") +
+      ylab(ylab.in) + 
+      geom_boxplot()
+    return(p)
+  }
+  
+  p1 = plot_values("Extraction Method","Observed","log10(Observed)")
+  p2 = plot_values("Extraction Method","Chao1","log10(Chao1)")
+  p3 = plot_values("Extraction Method","Inverse Simpson","log10(Inverse Simpson)")
+  p4 = plot_values("Extraction Method","Shannon","log10(Shannon)")
+  p5 = plot_values("Bioinformatic Group","Observed","log10(Observed)")
+  p6 = plot_values("Bioinformatic Group","Chao1","log10(Chao1)")
+  p7 = plot_values("Bioinformatic Group","Inverse Simpson","log10(Inverse Simpson)")
+  p8 = plot_values("Bioinformatic Group","Shannon","log10(Shannon)")
+  
+  file_name = paste0(analysis_dir,"alpha_diversity_wetvdry.png")
+  pf = ggarrange(p1, p2, p3, p4 , p5, p6, p7, p8,
+            labels = c("A", "", "", "", "B", "", "", ""),
+            ncol = 2, nrow = 4)
+  
+  pf = annotate_figure(pf, top = text_grob("Alpha-Diversity Analysis", 
+                face = "bold", size = 14))
+  print(pf)
+  ggsave(file_name,pf)
+}
+create_alpha_plots(subset_samples(phy_merge_sub_p,Ext.Group=="EX-G2"))
+
+##################################################
+# beta plots
+##################################################
+create_ordin_plots<-function(phy.in,color.in,title.in,file.in,shape.in=""){
+  #set colors
+  allGroupsColors<- c("grey0")
+  allGroupsColors<-append(allGroupsColors,brewer.pal(n = 8, name = "Dark2"))
+  allGroupsColors<-append(allGroupsColors,brewer.pal(n = 8, name = "Set2"))
+  
+  #perform ordination
+  ordu = phyloseq::ordinate(phy.in, method="PCoA", distance="bray")
+  
+  #create plot to pull axis infor
+  p_data = plot_ordination(phy.in,ordu)
+  
+  if(shape.in==""){
+    p <- plot_ordination(phy.in, ordu, color=color.in)+ 
+      theme(legend.position = "bottom") + 
+      ylab(gsub("Axis.2   ","PCo2 ",p_data$labels$y)) +
+      xlab(gsub("Axis.1   ","PCo1 ",p_data$labels$x)) +
+      geom_point(size = 3) +
+      scale_color_manual(values = allGroupsColors) +
+      guides(fill=guide_legend(title=color.in))
+  } else{
+    p <- plot_ordination(phy.in, ordu, color=color.in,shape=shape.in)+ 
+      theme(legend.position = "bottom") + 
+      ylab(gsub("Axis.2   ","PCo2 ",p_data$labels$y)) +
+      xlab(gsub("Axis.1   ","PCo1 ",p_data$labels$x)) +
+      geom_point(size = 3) +
+      scale_shape_manual(values = c(15,16,17,18,3,7,8,5)) +
+      scale_color_manual(values = allGroupsColors)
+  }
+  
+  addSmallLegend <- function(myPlot, pointSize = 1, textSize = 6, spaceLegend = 0.1) {
+    myPlot +
+        guides(shape = guide_legend(override.aes = list(size = pointSize)),
+               color = guide_legend(override.aes = list(size = pointSize))) +
+        theme(legend.title = element_text(size = textSize), 
+              legend.text  = element_text(size = textSize),
+              legend.key.size = unit(spaceLegend, "lines"))
+  }
+  
+  pf = addSmallLegend(p)
+  pf = pf+labs(title=title.in) + geom_jitter(position=position_jitter(0.01))
+  print(pf)
+  file_name = paste0(analysis_dir,file.in)
+  ggsave(file_name,pf)
+  return(pf)
+
+}
+create_ordin_plots(subset_samples(phy_merge_sub_p,Ext.Group=="EX-G2"),"BINF.Group","Beta-Diversity Analysis","beta_diversity_wetvdry.png","Ext.Kit")
+
+subset_samples(phy_merge_sub_p,Ext.Group=="EX-G2") #total 
+subset_samples(phy_merge_sub_p,Ext.Group=="EX-G2" & BINFID=="BINF-01") #replicates
+unique(sample_data(subset_samples(phy_merge_sub_p,Ext.Group=="EX-G2" & BINFID=="BINF-01"))$Subject.ID) #number of sub
+```
+
+filtering
+```{r}
+##################################################
+# otu summary filtered
+##################################################
+calc_binf_filtered<-function(phy.in){
+  #create tree
+  random_tree = rtree(ntaxa(phy.in), rooted=TRUE, tip.label=taxa_names(phy.in))
+  phy.in.t = merge_phyloseq(phy.in, random_tree)
+  
+  #List OTUs that do not show appear more than x times in more than x% the samples
+  otu_filt_list = genefilter_sample(phy.in.t, filterfun_sample(function(x) x > 1), A=0.10*nsamples(phy.in.t))
+  print(count(otu_filt_list==TRUE))
+  
+  #remove OTUs
+  phy_c = prune_taxa(otu_filt_list, phy.in.t)
+  
+  #Transform to even sampling depth.
+  phy_c2 = transform_sample_counts(phy_c, function(x) 1E6 * x/sum(x))
+  
+  #average reads / non-blank sample
+  sampledf = data.frame()
+
+  #for each extraction kit
+  for (typeid in sort(unique(sample_data(phy_c2)$Sample.Des))){
+    sampledf[nrow(sampledf)+1,"Sample Type"] = typeid
+    
+    for(binfid in sort(unique(sample_data(phy_c2)$BINF.Group))){
+    #create list of ids for ext.kit
+      sample_list = rownames(subset(sample_data(phy_c),BINF.Group==binfid & Sample.Des == typeid))
+      sampledf[nrow(sampledf),binfid] = paste0(round(mean(colSums(otu_table(phy_c)[,sample_list]>0)),2),
+                                               " (",
+                                               round(sd(colSums(otu_table(phy_c)[,sample_list]>0)),2),")")
+    }
+  }
+
+  rownames(sampledf)=sampledf$`Sample Type`
+  sampledf=sampledf[-1]
+  print(sampledf)
+  
+  file_save = paste0(analysis_dir,'binf_otu_filt.csv')
+  write.csv(sampledf,file_save)
+  
+  return(phy_c)
+}
+phy_clean = calc_binf_filtered(phy_merge_sub_p)
+
+#otus before filtering
+phy_merge_sub
+
+#no values
+phy_merge_sub_p
+
+#after 10%
+phy_clean
+
+```
+
+wetvsdry comparison
+```{r}
+##################################################
+# diversity within and between
+##################################################
+binf_ext_diversity<-function(phy.in){
+  #subset for group 2
+  phy_tmp = subset_samples(phy.in,Ext.Group=="EX-G2")
+  compare_binf=data.frame()
+  
+  # Calculate bray curtis distances
+  df_bray <-  as.data.frame(as.matrix(phyloseq::distance(phy_tmp, method = "bray")))
+  
+  # Calculate inv simpson
+  df_inv = phyloseq::estimate_richness(phy_tmp, measures = "InvSimpson")
+  
+  #for each binf variable
+  for (binfid in unique(sample_data(phy_tmp)$BINFID)){
+    print(paste0("Working on ",binfid))
+    
+    for (extid in unique(sample_data(phy_tmp)$Ext.Kit)){
+      #must match binf method, type, extraction method
+      sample_list = subset(sample_data(phy_tmp), BINFID == binfid & Ext.Kit == extid)$UniqueID
+        
+      #for each sample determine within (type, binf, ext) variation
+      for (sampleid in sample_list){
+        df_sub = df_bray[sampleid,sample_list]
+          
+        for(colid in colnames(df_sub)){
+            if(sampleid==colid){ next
+              } else{
+              compare_binf[nrow(compare_binf)+1,"binf"] = binfid
+              compare_binf[nrow(compare_binf),"ext.kit"] = subset(sample_data(phy_tmp), UniqueID == sampleid)$Ext.Kit
+              compare_binf[nrow(compare_binf),"value"] = df_sub[sampleid,colid]
+              compare_binf[nrow(compare_binf),"cat"] = "Bray-Curtis, \n within"
+            }
+          }
+      }
+    }
+  }
+  
+  # Store inv distances within type - all binfs are already present in df
+  for (rowid in rownames(df_inv)){
+    compare_binf[nrow(compare_binf)+1,"binf"] = paste0("BINF-",
+                                                       strsplit(rowid,"-")[[1]][length(strsplit(rowid,"-")[[1]])])
+    compare_binf[nrow(compare_binf),"ext.kit"] = subset(sample_data(phy_tmp), UniqueID == rowid)$Ext.Kit
+    compare_binf[nrow(compare_binf),"value"] = df_inv[rowid,"InvSimpson"]  
+    compare_binf[nrow(compare_binf),"cat"] = "Inv. Simpson, \nwithin"
+  }
+  
+  plot_values<-function(df.in, x.in,y.in,ylab.in){
+    p <- df.in %>% 
+      ggplot(aes(x=get(x.in), y=get(y.in))) +
+      facet_grid(ext.kit ~ ., scales = "free_y") +
+      theme(axis.title=element_text(size=8),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      labs(fill = "") +
+      ylab(ylab.in) + 
+      geom_boxplot()
+    print(p)
+    return(p)
+  }
+  
+  p1 = plot_values(subset(compare_binf,cat=="Bray-Curtis, \n within"),"binf","value","Bray-Curtis")
+  
+  p2 = plot_values(subset(compare_binf,cat=="Inv. Simpson, \nwithin"),"binf","value","Inverse Simpson")
+  
+  file_name = paste0(analysis_dir,"diversity_wetvsdry.png")
+  pf = ggarrange(p1, p2,
+            labels = c("A", "B"),
+            ncol = 2, nrow = 1)
+  
+  pf = annotate_figure(pf, top = text_grob("Bioinformatic and Extraction Protocols", 
+                face = "bold", size = 14))
+  print(pf)
+  ggsave(file_name,pf)
+}
+binf_ext_diversity(phy_clean)
+ 
+##################################################
+# calculate sig tests
+##################################################
+beta_sig_type<-function(phy.in){
+  #Calculate distance and save as a matrix
+  print("Calculating distance")
+  BC.dist=as.data.frame(as.matrix(phyloseq::distance(phy.in, method = "bray")))
+
+  #Run PERMANOVA on distances.
+  print("Sample.Type")
+  print(adonis(BC.dist ~ Sample.Type, data = data.frame(sample_data(phy.in)), permutations = 1000))
+  
+  print("Ext.Kit")
+  print(adonis(BC.dist ~ Ext.Kit, data = data.frame(sample_data(phy.in)), permutations = 1000))
+  
+  print("Ext.Group")
+  print(adonis(BC.dist ~ Ext.Group, data = data.frame(sample_data(phy.in)), permutations = 1000))
+  
+  print("BINF ID")
+  print(adonis(BC.dist ~ BINFID, data = data.frame(sample_data(phy.in)), permutations = 1000))
+  
+  print("BINF GROUP")
+  print(adonis(BC.dist ~ BINF.Group, data = data.frame(sample_data(phy.in)), permutations = 1000))
+}
+beta_sig_type(phy_clean)
+
+##################################################
+# correlation matrix
+##################################################
+create_alpha_matrix<-function(){
+  
+  #melt and format correlation plots
+  create_melted_corr<-function(df.in){
+    # Get lower triangle of the correlation matrix
+    get_lower_tri<-function(cormat){
+      cormat[upper.tri(cormat)] <- NA
+      return(cormat)
+    }
+    # Get upper triangle of the correlation matrix
+    get_upper_tri <- function(cormat){
+      cormat[lower.tri(cormat)]<- NA
+      return(cormat)
+    }
+    
+    M = cor(df.in)
+    upper_tri <- get_upper_tri(M)
+    melted_M <- melt(upper_tri, na.rm = TRUE)
+    melted_M$value <- round(melted_M$value,2)
+    return(melted_M)
+  }
+  
+  #plot correlation
+  create_corr_plots <- function(M.in,title.in){
+    p <- ggplot(M.in, aes(Var2, Var1, fill = value))+
+      geom_tile(color = "white")+
+      scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                           midpoint = 0, limit = c(-1,1), space = "Lab", 
+                           name="Pearson\nCorrelation") +
+      theme_minimal()+ # minimal theme
+      theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                       size = 12, hjust = 1))+
+      coord_fixed() + 
+      geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
+      theme(
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.justification = c(1, 0),
+        legend.position = c(0.4, 0.8),
+        legend.direction = "horizontal")+
+      guides(fill = guide_colorbar(barwidth = 7, barheight = 1, title.position = "top", title.hjust = 0.5)) + 
+      ggtitle (title.in)
+    return(p)
+  }
+  
+  #estimate inv simp
+  df_inv = phyloseq::estimate_richness(phy_clean, measures = "InvSimpson")
+  
+  #for binf variables
+  sample_df=data.frame()
+  for (binfid in sort(unique(sample_data(phy_clean)$BINFID))){
+    sample_list = subset(sample_data(phy_clean),BINFID==binfid)$UniqueID
+    
+    i=1
+    for (sampleid in sample_list){
+      sample_df[i,binfid] = log10(df_inv[sampleid,"InvSimpson"])
+      i=i+1
+    }
+  }
+  M = create_melted_corr(sample_df)
+  p1 = create_corr_plots(M, "Bioinformatics Protocol")
+  
+  #run for ext kit
+  sample_df=data.frame()
+  for (extid in sort(unique(subset(sample_data(phy_clean),Ext.Group=="EX-G2")$Ext.Kit))){
+    sample_list = subset(sample_data(phy_clean),Ext.Kit==extid)$UniqueID
+    
+    i=1
+    for (sampleid in sample_list){
+      sample_df[i,extid] = log10(df_inv[sampleid,"InvSimpson"])
+      i=i+1
+    }
+  }
+  M = create_melted_corr(sample_df)
+  p2 = create_corr_plots(M,"Extraction Protocol")
+  
+  file_name = paste0(analysis_dir,"alpha_spearman.png")
+  pf = ggarrange(p1, p2,
+            labels = c("A", "B"),
+            ncol = 2, nrow = 1)
+  
+  pf = annotate_figure(pf, top = text_grob("Bioinformatic and Extraction Protocols", 
+                face = "bold", size = 14))
+  print(pf)
+  ggsave(file_name,pf)
+}
+create_alpha_matrix()
+```
+
+between, within, inv + replicates
+```{r}
+##################################################
+# bray-curtis within, beteween & invsimpson within
+##################################################
+alpha_beta_diversity_boxplots<-function(phy.in){
+  #calculate alpha at binf level by sample type
+  compare_binf = data.frame()
+    
+  # Calculate bray curtis distances
+  df_bray <-  as.data.frame(as.matrix(phyloseq::distance(phy.in, method = "bray")))
+  
+  # Calculate inv simpson
+  df_inv = phyloseq::estimate_richness(phy.in, measures = "InvSimpson")
+  
+  ###### BINF
+  #beta diversity
+  for (binfid in unique(sample_data(phy.in)$BINFID)){
+    print(paste0("Working on ",binfid))
+    
+    # Store distances within type
+    for (typeid in unique(sample_data(phy.in)$Sample.Des)){
+      for (extid in unique(sample_data(phy.in)$Ext.Kit)){
+        #must match binf method, type, extraction method
+        sample_list = subset(sample_data(phy.in),Sample.Des==typeid & BINFID == binfid & Ext.Kit == extid)$UniqueID
+        
+        #for each sample determine within (type, binf, ext) variation
+        for (sampleid in sample_list){
+          df_sub = df_bray[sampleid,sample_list]
+          
+          for(colid in colnames(df_sub)){
+            if(sampleid==colid){ next
+              } else{
+              compare_binf[nrow(compare_binf)+1,"type"] = typeid
+              compare_binf[nrow(compare_binf),"sampleid"] = sampleid
+              compare_binf[nrow(compare_binf),"binf"] = binfid
+              compare_binf[nrow(compare_binf),"ext"] = extid
+              compare_binf[nrow(compare_binf),"value"] = df_sub[sampleid,colid]
+              compare_binf[nrow(compare_binf),"cat"] = "Bray-Curtis, \n within"
+            }
+          }
+        }
+      }
+    }
+  
+    # Store distances between type
+    for (typeid in unique(sample_data(phy.in)$Sample.Des)){
+      for (extid in unique(sample_data(phy.in)$Ext.Kit)){
+        #create list of samples within group, and outside of group
+        sample_list = subset(sample_data(phy.in),Sample.Des==typeid & BINFID == binfid & Ext.Kit == extid)$UniqueID
+        sample_list_compare = subset(sample_data(phy.in),Sample.Des!=typeid & BINFID == binfid & Ext.Kit == extid)$UniqueID
+        
+        #for each sample (row) compare to all other samples outside of group (col)
+        for (sampleid in sample_list){
+          df_sub = df_bray[sampleid,sample_list_compare]
+          
+          for(colid in colnames(df_sub)){
+            if(sampleid==colid){ next
+              } else{
+              compare_binf[nrow(compare_binf)+1,"type"] = typeid
+              compare_binf[nrow(compare_binf),"sampleid"] = sampleid
+              compare_binf[nrow(compare_binf),"binf"] = binfid 
+              compare_binf[nrow(compare_binf),"ext"] = extid
+              compare_binf[nrow(compare_binf),"value"] = df_sub[sampleid,colid]
+              compare_binf[nrow(compare_binf),"cat"] = "Bray-Curtis, \n between"
+            }
+          }
+      }
+    }
+  }
+      
+  }    
+    
+  #alpha diversity
+  print("Working on Inv")
+  for (rowid in rownames(df_inv)){
+    compare_binf[nrow(compare_binf)+1,"type"] = as.character(sample_data(phy.in)[rowid,"Sample.Des"])
+    compare_binf[nrow(compare_binf),"ext"] = as.character(sample_data(phy.in)[rowid,"Ext.Kit"])
+    compare_binf[nrow(compare_binf),"binf"] = paste0("BINF-", strsplit(rowid,"-")[[1]][length(strsplit(rowid,"-")[[1]])])
+    compare_binf[nrow(compare_binf),"sampleid"] = rowid
+    compare_binf[nrow(compare_binf),"value"] = df_inv[rowid,"InvSimpson"]  
+    compare_binf[nrow(compare_binf),"cat"] = "Inv. Simpson, \nwithin"
+  }
+
+  #save df
+  file_save = paste0(analysis_dir,'compare_binf.csv')
+  write.csv(compare_binf,file_save)
+  
+  #create boxplot
+  p1 <- compare_binf %>% 
+    ggplot(aes(x=binf, y=value, fill=factor(type))) +
+    facet_grid(cat ~., scales = "free_y") +
+    ggtitle ("Bioinformatics Protocols") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(fill = "") +
+    geom_boxplot() 
+
+  p2 <- compare_binf %>% 
+    ggplot(aes(x=ext, y=value, fill=factor(type))) +
+    facet_grid(cat ~., scales = "free_y") +
+    ggtitle ("Extraction Protocols") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(fill = "") +
+    geom_boxplot() 
+  
+  file_save = paste0(analysis_dir,'bray_simp_boxplots.png')
+  pf = ggarrange(p1, p2,
+                 labels = c("A", "B"),
+                 ncol = 2, nrow = 1,
+                 common.legend=TRUE,
+                 legend="bottom")
+    
+  pf = annotate_figure(pf, top = text_grob("Bioinformatic and Extraction Protocols", 
+                                           face = "bold", size = 14))
+  print(pf)
+  ggsave(file_name,pf)
+}
+alpha_beta_diversity_boxplots(subset_samples(phy_merge_sub_p,Sample.Type!="Seq_Control" & Ext.Group=="EX-G2"))
+
+##################################################
+# bray-curtis variations
+##################################################
+impact_of_variables <-function(){
+  
+  #run bray-curtis distances
+  df_tmp <- as.data.frame(as.matrix(phyloseq::distance(phy_merge_sub_p, method = "bray")))
+
+  #for each row and col of distance df
+  compare_df = data.frame()
+  for (rowid in rownames(df_tmp)){
+    #pull variables
+    binfid = as.character(sample_data(phy_merge_sub_p)[rowid,"BINFID"])
+    extid = as.character(sample_data(phy_merge_sub_p)[rowid,"Ext.Kit"])
+    subid = as.character(sample_data(phy_merge_sub_p)[rowid,"Subject.ID"])
+    uniqid = as.character(sample_data(phy_merge_sub_p)[rowid,"UniqueID"])
+    typeid = as.character(sample_data(phy_merge_sub_p)[rowid,"Sample.Des"])
+    
+    # "bioinformatic variability"
+    sample_list = subset(sample_data(phy_merge_sub_p),
+                         BINFID!=binfid, Ext.Kit==extid, Subject.ID == subid)
+    df_sub = df_tmp[rowid,sample_list]
+    for(colid in colnames(df_sub)){
+      compare_df[nrow(compare_df)+1,"type"] = typeid
+      compare_df[nrow(compare_df),"sampleid"] = rowid
+      compare_df[nrow(compare_df),"value"] = df_sub[rowid,colid]
+      compare_df[nrow(compare_df),"cat"] = "bioinformatic variability"
+    }
+      
+    # technical
+    sample_list = sample_list = subset(sample_data(phy_merge_sub_p),
+                         BINFID==binfid, Ext.Kit==extid, Subject.ID == subid,
+                         UniqueID != uniqid)
+    df_sub = df_tmp[rowid,sample_list]
+    for(colid in colnames(df_sub)){
+      compare_df[nrow(compare_df)+1,"type"] = typeid
+      compare_df[nrow(compare_df),"sampleid"] = rowid
+      compare_df[nrow(compare_df),"value"] = df_sub[rowid,colid]
+      compare_df[nrow(compare_df),"cat"] = "technical replicates"
+    }
+    
+    #"extraction variability"
+    sample_list = subset(sample_data(phy_merge_sub_p),
+                         BINFID==binfid, Ext.Kit!=extid, Subject.ID == subid)
+    df_sub = df_tmp[rowid,sample_list]
+    for(colid in colnames(df_sub)){
+      compare_df[nrow(compare_df)+1,"type"] = typeid
+      compare_df[nrow(compare_df),"sampleid"] = rowid
+      compare_df[nrow(compare_df),"value"] = df_sub[rowid,colid]
+      compare_df[nrow(compare_df),"cat"] = "extraction variability"
+    }
+    
+    #sample type
+    sample_list = subset(sample_data(phy_merge_sub_p),
+                         BINFID==binfid, Ext.Kit==extid, Subject.ID != subid,
+                         Sample.Des==typeid)
+    df_sub = df_tmp[rowid,sample_list]
+    for(colid in colnames(df_sub)){
+      compare_df[nrow(compare_df)+1,"type"] = typeid
+      compare_df[nrow(compare_df),"sampleid"] = rowid
+      compare_df[nrow(compare_df),"value"] = df_sub[rowid,colid]
+      compare_df[nrow(compare_df),"cat"] =  "sample type variability"
+    }
+  }
+  
+  file_save = paste0(analysis_dir,'compare_variables.csv')
+  write.csv(compare_df,file_save)
+  
+  p <- compare_df %>% 
+    ggplot(aes(x=cat, y=value, fill=factor(type))) +
+    ggtitle ("Impact of Variables on Microbiome Analysis") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(fill = "") +
+    geom_boxplot() 
+  
+  p
+  file_save = paste0(analysis_dir,'compare_variables.png')
+  ggsave(file_save,p)
+}
+impact_of_variables
+```
+
+beta plots sub by 4 variables
+```{r}
+##################################################
+# beta plots
+##################################################
+create_beta_subplots<-function(phy.in){
+  print("Creating plots p1,2")
+  p1 = create_ordin_plots(phy.in,"BINFID","Bioinformatic Protocol",
+                     "beta_diversity_binfid.png")
+  p2 = create_ordin_plots(phy.in,"Sample.Des","Sample Type",
+                     "beta_diversity_sampletype.png")
+  print("Creating plots p3,4")
+  p3 = create_ordin_plots(phy.in,"Ext.Kit","Extraction Method",
+                     "beta_diversity_extkit.png")
+  p4 = create_ordin_plots(phy.in,"Subject.ID","Subject",
+                     "beta_diversity_subjectid.png")
+  
+  file_name = paste0(analysis_dir,"beta_diversity_combo.png")
+  pf = ggarrange(p1, p2, p3, p4,
+                 labels = c("A", "B","C","D"),
+                 ncol = 2, nrow = 2)
+    
+  pf = annotate_figure(pf, top = text_grob("Beta Diversity", 
+                                           face = "bold", size = 14))
+  print(pf)
+  ggsave(file_name,pf)
+}
+create_beta_subplots(subset_samples(phy_merge_sub_p,Ext.Group=="EX-G2"))
+```
+
+
+Diversity measurements
+```{r}
+
+
+
+```
+
+
+
+
+
 
 # Results
-## Overview of OTU
-paragraph 1 - counts
-```{r}
-#average reads / non-blank sample
-average_reads = data.frame()
-for(sample_variable in unique(sample_data(phy_t1)$Sample.Des)){
-  average_reads[nrow(average_reads)+1,"Sample.Des"] = sample_variable
-  average_reads[nrow(average_reads),"reads"] = gsub("4] Average number of reads = ", "",
-                                          summarize_phyloseq(subset_samples(phy_t1,Sample.Des==sample_variable))[[4]][1])
-  average_reads[nrow(average_reads),"Sample.Type"] = unique(subset(sample_data(phy_t1),Sample.Des==sample_variable)$Sample.Type)
-}
-average_reads$reads = as.numeric(average_reads$reads)
-mean(average_reads[2:7,"reads"])
 
-#print total processed
-count=0
-ext_count=0
-seq_count=0
-study_count=0
-for (binf_variable in phy_list){
-  count = nrow(sample_data(get(binf_variable))) + count
-  print(nrow(sample_data(get(binf_variable))))
-  
-  ext_count=nrow(subset(sample_data(get(binf_variable)),Sample.Type=="Ext_Control"))+ext_count
-  seq_count=nrow(subset(sample_data(get(binf_variable)),Sample.Type=="Seq_Control"))+seq_count
-  study_count=nrow(subset(sample_data(get(binf_variable)),Sample.Type=="Study"))+study_count
-}
-print(paste0("total: ",count))
-print(paste0("ext_count: ",ext_count))
-print(paste0("seq_count: ",seq_count))
-print(paste0("study_count: ",study_count))
-
-#binf otu table
-binf_otu = data.frame()
-for (binf_variable in phy_list){
-  phy_tmp = merge_samples(get(binf_variable),"Sample.Type")
-  binf_otu[nrow(binf_otu)+1,"bioinformatic variable"] = gsub(".qza","",binfdf[binf_variable,"tax_name"])
-  binf_otu[nrow(binf_otu),"mean_otu"] = mean(rowSums(otu_table(phy_tmp)))
-  binf_otu[nrow(binf_otu),"median_otu"] = median(rowSums(otu_table(phy_tmp)))
-  binf_otu[nrow(binf_otu),"sd"] = sd(rowSums(otu_table(phy_tmp)))
-}
-binf_otu
-file_save = paste0(analysis_dir,'binf_otu.csv')
-write.csv(binf_otu,file_save)
-```
 
 paragraph 2 - counts and alpha diversity
 ```{r}
-#calculate alpha at binf level by sample type
-binf_alpha = data.frame()
-for (binf_variable in phy_list){
-  #prune species not present in any samples
-  phy_clean <- prune_species(speciesSums(get(binf_variable)) > 0, get(binf_variable))
-  
-  adiv <- data.frame(
-    "Observed" = phyloseq::estimate_richness(phy_clean, measures = "Observed"),
-    "Chao1" = phyloseq::estimate_richness(phy_clean, measures = "Chao1"),
-    "InvSimpson" = phyloseq::estimate_richness(phy_clean, measures = "InvSimpson"),
-    "Binf Variable" = binfdf[binf_variable,"tax_name"],
-    "Subject.ID" = phyloseq::sample_data(phy_clean)$Subject.ID)
-  
-  for (sample_variable in unique(adiv$Subject.ID)){
-    dfl1 = subset(adiv,Subject.ID==sample_variable)
 
-    binf_alpha[nrow(binf_alpha)+1,"Specimen Type"] = sample_variable
-    binf_alpha[nrow(binf_alpha),"Binf Variable"] = binfdf[binf_variable,"tax_name"]
-    binf_alpha[nrow(binf_alpha),"Inverse Simpson"] = paste(round(mean(dfl1$InvSimpson),2)," (", round(sd(dfl1$InvSimpson),2),")", sep="")
-    binf_alpha[nrow(binf_alpha), "Chao1"] = paste(round(mean(dfl1$Chao1.Chao1),2)," (", round(sd(dfl1$Chao1.Chao1),2),")", sep="")
-    binf_alpha[nrow(binf_alpha), "Observed Species"] = paste(round(mean(dfl1$Observed),2)," (", round(sd(dfl1$Observed),2),")", sep="")
-  }
-}
-
-#save full df
-binf_alpha
-file_save = paste0(analysis_dir,'binf_alpha.csv')
-write.csv(binf_alpha,file_save)
-
-#save subset for paper
-variable_list=c("blast_gg_closed_gg.qza","blast_gg_dada.qza","blast_silva_dada.qza","blast_silva_closed_silva.qza")
-df_tmp = subset(binf_alpha, `Binf Variable` %in% variable_list)
-file_save = paste0(analysis_dir,'binf_alpha_sub.csv')
-write.csv(df_tmp,file_save)
-remove(df_tmp)
-
-create_alpha_plots<-function(df.in, catid){
-  
-  #set binf variables to test
-  variable_list=c("blast_gg_closed_gg.qza","blast_gg_dada.qza","blast_silva_dada.qza","blast_silva_closed_silva.qza")
-
-  #create df
-  binf_alpha_collapsed = data.frame()
-  
-  #run test for category
-  for(rowid in rownames(subset(df.in,`Binf Variable` %in% variable_list))){
-    binf_alpha_collapsed[nrow(binf_alpha_collapsed)+1,"type"]= df.in[rowid,"Specimen Type"]
-    binf_alpha_collapsed[nrow(binf_alpha_collapsed),"Bioinformatic Variable"] = df.in[rowid,"Binf Variable"]
-    
-    value  = strsplit(df.in[rowid,catid]," ")[[1]][1]
-    binf_alpha_collapsed[nrow(binf_alpha_collapsed),catid]= round(as.numeric(value),1)
-    binf_alpha_collapsed[nrow(binf_alpha_collapsed),"cat"] = catid
-  }
-  
-  #update ids
-  binf_alpha_collapsed$`Bioinformatic Variable`<-replace(binf_alpha_collapsed$`Bioinformatic Variable`,
-                                                         binf_alpha_collapsed$`Bioinformatic Variable`=="blast_gg_closed_gg.qza",
-                                                         "BINF-C")
-  binf_alpha_collapsed$`Bioinformatic Variable`<-replace(binf_alpha_collapsed$`Bioinformatic Variable`,
-                                                         binf_alpha_collapsed$`Bioinformatic Variable`=="blast_gg_dada.qza",
-                                                         "BINF-A")
-  binf_alpha_collapsed$`Bioinformatic Variable`<-replace(binf_alpha_collapsed$`Bioinformatic Variable`,
-                                                         binf_alpha_collapsed$`Bioinformatic Variable`=="blast_silva_dada.qza",
-                                                         "BINF-B")
-  binf_alpha_collapsed$`Bioinformatic Variable`<-replace(binf_alpha_collapsed$`Bioinformatic Variable`,
-                                                         binf_alpha_collapsed$`Bioinformatic Variable`=="blast_silva_closed_silva.qza",
-                                                         "BINF-D")
-  #plot figure
-  bp <- ggplot(binf_alpha_collapsed, aes(x=`Bioinformatic Variable`, y=get(catid))) + 
-    geom_bar(stat="identity", aes(fill=`Bioinformatic Variable`)) + 
-    facet_wrap(. ~ type) + 
-    labs(title=paste0("Alpha Diversity Metrics: ",catid)) + 
-    theme(plot.title = element_text(size=15, face="bold", vjust=2))+
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))+
-    theme(axis.title.y = element_blank()) +
-    theme(legend.position = "none")
-
-  print(bp)
-  file_save = paste0(analysis_dir,'binf_alpha_',catid,".png")
-  ggsave(file_save,bp)
-}
-
-#create plot of data
-create_alpha_plots(binf_alpha,"Inverse Simpson")
-create_alpha_plots(binf_alpha,"Observed Species")
-create_alpha_plots(binf_alpha,"Chao1")
 
 #determine number of OTU's per sample
 get_otu_counts <- function(phy_in,df.in,binfid){
@@ -723,24 +1275,7 @@ write.csv(binf_alpha,file_save)
 
 paragraph 3 - beta diversity
 ```{r}
-phy_cleanup<-function(phy.in){
-  #create tree
-  random_tree = rtree(ntaxa(phy.in), rooted=TRUE, tip.label=taxa_names(phy_binf_groups))
-  phy.in.t = merge_phyloseq(phy.in, random_tree)
-  
-  #List OTUs that do not show appear more than x times in more than x% the samples
-  otu_filt_list = genefilter_sample(phy.in.t, filterfun_sample(function(x) x > 1), A=0.10*nsamples(phy.in.t))
-  print(count(otu_filt_list==TRUE))
-  
-  #remove OTUs
-  phy_c = prune_taxa(otu_filt_list, phy.in.t)
-  
-  #Transform to even sampling depth.
-  phy_c = rarefy_even_depth(phy_c, rngseed=1, sample.size=10000, replace=F) 
-  phy_c = transform_sample_counts(phy_c, function(x) 1E6 * x/sum(x))
-  
-  return(phy_c)
-}
+
 
 #merge phylo objects
 phy_binf_groups = merge_phyloseq(phy_t6,phy_t9,phy_t1,phy_t10)
@@ -753,42 +1288,9 @@ phy_clean
 #run ordination
 ordu = phyloseq::ordinate(phy_clean, method="PCoA", distance="bray")
 
-#set colors
-allGroupsColors<- c("grey0")
-allGroupsColors<-append(allGroupsColors,brewer.pal(n = 8, name = "Dark2"))
-allGroupsColors<-append(allGroupsColors,brewer.pal(n = 8, name = "Set2"))
+
     
-#plot by binf variable
-create_plots_ordin<-function(phy.in,color.in,shape.in=""){
-  p <- plot_ordination(phy.in, ordu)
-  if(shape.in==""){
-    p <- plot_ordination(phy.in, ordu, color=color.in)+ 
-      theme(legend.position = "bottom") + 
-      ylab(gsub("Axis.2   ","PCo2 ",p$labels$y)) +
-      xlab(gsub("Axis.1   ","PCo1 ",p$labels$x)) +
-      geom_point(size = 3) +
-      scale_color_manual(values = allGroupsColors) +
-      guides(fill=guide_legend(title=color.in))
-  } else{
-    p <- plot_ordination(phy.in, ordu, color=color.in,shape=shape.in)+ 
-      theme(legend.position = "bottom") + 
-      ylab(gsub("Axis.2   ","PCo2 ",p$labels$y)) +
-      xlab(gsub("Axis.1   ","PCo1 ",p$labels$x)) +
-      geom_point(size = 3) +
-      scale_shape_manual(values = c(15,16,17,18,3,7,8,5)) +
-      scale_color_manual(values = allGroupsColors)
-  }
-  addSmallLegend <- function(myPlot, pointSize = 1, textSize = 6, spaceLegend = 0.1) {
-    myPlot +
-        guides(shape = guide_legend(override.aes = list(size = pointSize)),
-               color = guide_legend(override.aes = list(size = pointSize))) +
-        theme(legend.title = element_text(size = textSize), 
-              legend.text  = element_text(size = textSize),
-              legend.key.size = unit(spaceLegend, "lines"))
-  }
-  pf = addSmallLegend(p)
-  return(pf)
-}
+
 
 #add group info
 group_list = sample_data(phy_clean)$BINFID
@@ -827,13 +1329,7 @@ print(pf)
 ggsave(file_name,pf)
 
 
-#create master plot - wet vs dry
-ordu = phyloseq::ordinate(subset_samples(phy_clean,Sample.Type!="Seq_Control"), method="PCoA", distance="bray")
-p1 = create_plots_ordin(subset_samples(phy_clean,Sample.Type!="Seq_Control"),"Binf.Variable","Ext.Kit")
-pf = p1+labs(title="Beta-Diversity Analysis")
-print(pf)
-file_name = paste0(analysis_dir,"beta_diversity_wetvdry.png")
-ggsave(file_name,pf)
+
 
 #total number of samples
 phy_clean
