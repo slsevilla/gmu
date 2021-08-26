@@ -6,13 +6,13 @@ editor_options:
 ---
 
 ##################################################
-# 
+# AIM1 analysis
 ##################################################
 Prepare Environment
 # set dir
 ```{r}
 git_base="~/../../Volumes/sevillas2/git/gmu/dissertation/"
-data_base="~/../../Volumes/data/gmu/"
+data_base="~/../../Volumes/data-1/gmu/"
 ```
 
 #load libraries
@@ -22,6 +22,7 @@ source(paste0(git_base,"sources/miseqR.R"))
 source(paste0(git_base,'sources/abundances.R')) #github https://github.com/microbiome/microbiome
 source(paste0(git_base,"sources/qiime2R.R")) #github https://github.com/jbisanz/qiime2R
 
+library(agricolae)
 library(ape)
 library(biomformat)
 library(corrplot)
@@ -502,7 +503,7 @@ plot_read_depth<-function(phy.in){
 plot_read_depth(phy_t1)
 ```
 
-## Overview of OTU analysis
+## Taxonomic Analysis
 counts
 ```{r}
 ##################################################
@@ -975,9 +976,6 @@ create_alpha_matrix()
 
 between, within, inv + replicates
 ```{r}
-##################################################
-# bray-curtis within, beteween & invsimpson within
-##################################################
 alpha_beta_diversity_boxplots<-function(phy.in){
   #calculate alpha at binf level by sample type
   compare_binf = data.frame()
@@ -1098,27 +1096,30 @@ alpha_beta_diversity_boxplots<-function(phy.in){
 }
 alpha_beta_diversity_boxplots(subset_samples(phy_merge_sub_p,Sample.Type!="Seq_Control" & Ext.Group=="EX-G2"))
 
+```
+
+variation of variables
+```{r}
 ##################################################
 # bray-curtis variations
 ##################################################
-impact_of_variables <-function(){
+impact_of_variables <-function(phy.in){
   
   #run bray-curtis distances
-  df_tmp <- as.data.frame(as.matrix(phyloseq::distance(phy_merge_sub_p, method = "bray")))
+  df_tmp <- as.data.frame(as.matrix(phyloseq::distance(phy.in, method = "bray")))
 
   #for each row and col of distance df
   compare_df = data.frame()
   for (rowid in rownames(df_tmp)){
     #pull variables
-    binfid = as.character(sample_data(phy_merge_sub_p)[rowid,"BINFID"])
-    extid = as.character(sample_data(phy_merge_sub_p)[rowid,"Ext.Kit"])
-    subid = as.character(sample_data(phy_merge_sub_p)[rowid,"Subject.ID"])
-    uniqid = as.character(sample_data(phy_merge_sub_p)[rowid,"UniqueID"])
-    typeid = as.character(sample_data(phy_merge_sub_p)[rowid,"Sample.Des"])
+    binfid = as.character(sample_data(phy.in)[rowid,"BINFID"])
+    extid = as.character(sample_data(phy.in)[rowid,"Ext.Kit"])
+    uniqid = as.character(sample_data(phy.in)[rowid,"UniqueID"])
+    typeid = as.character(sample_data(phy.in)[rowid,"Sample.Des"])
     
     # "bioinformatic variability"
-    sample_list = subset(sample_data(phy_merge_sub_p),
-                         BINFID!=binfid, Ext.Kit==extid, Subject.ID == subid)
+    sample_list = subset(sample_data(phy.in),
+                         BINFID!=binfid & Ext.Kit==extid & Sample.Des == typeid)$UniqueID
     df_sub = df_tmp[rowid,sample_list]
     for(colid in colnames(df_sub)){
       compare_df[nrow(compare_df)+1,"type"] = typeid
@@ -1128,9 +1129,8 @@ impact_of_variables <-function(){
     }
       
     # technical
-    sample_list = sample_list = subset(sample_data(phy_merge_sub_p),
-                         BINFID==binfid, Ext.Kit==extid, Subject.ID == subid,
-                         UniqueID != uniqid)
+    sample_list = sample_list = subset(sample_data(phy.in),
+                         BINFID==binfid & Ext.Kit==extid & Sample.Des == typeid & UniqueID != uniqid)$UniqueID
     df_sub = df_tmp[rowid,sample_list]
     for(colid in colnames(df_sub)){
       compare_df[nrow(compare_df)+1,"type"] = typeid
@@ -1140,8 +1140,8 @@ impact_of_variables <-function(){
     }
     
     #"extraction variability"
-    sample_list = subset(sample_data(phy_merge_sub_p),
-                         BINFID==binfid, Ext.Kit!=extid, Subject.ID == subid)
+    sample_list = subset(sample_data(phy.in),
+                         BINFID==binfid & Ext.Kit!=extid & Sample.Des == typeid)$UniqueID
     df_sub = df_tmp[rowid,sample_list]
     for(colid in colnames(df_sub)){
       compare_df[nrow(compare_df)+1,"type"] = typeid
@@ -1151,9 +1151,8 @@ impact_of_variables <-function(){
     }
     
     #sample type
-    sample_list = subset(sample_data(phy_merge_sub_p),
-                         BINFID==binfid, Ext.Kit==extid, Subject.ID != subid,
-                         Sample.Des==typeid)
+    sample_list = subset(sample_data(phy.in),
+                         BINFID==binfid & Ext.Kit==extid & UniqueID != uniqid & Sample.Des==typeid)$UniqueID
     df_sub = df_tmp[rowid,sample_list]
     for(colid in colnames(df_sub)){
       compare_df[nrow(compare_df)+1,"type"] = typeid
@@ -1176,11 +1175,11 @@ impact_of_variables <-function(){
     labs(fill = "") +
     geom_boxplot() 
   
-  p
+  print(p)
   file_save = paste0(analysis_dir,'compare_variables.png')
   ggsave(file_save,p)
 }
-impact_of_variables
+impact_of_variables(subset_samples(phy_merge_sub_p,Ext.Group=="EX-G2"))
 ```
 
 beta plots sub by 4 variables
@@ -1213,138 +1212,796 @@ create_beta_subplots<-function(phy.in){
 create_beta_subplots(subset_samples(phy_merge_sub_p,Ext.Group=="EX-G2"))
 ```
 
-
 Diversity measurements
 ```{r}
-
-
-
-```
-
-
-
-
-
-
-# Results
-
-
-paragraph 2 - counts and alpha diversity
-```{r}
-
-
-#determine number of OTU's per sample
-get_otu_counts <- function(phy_in,df.in,binfid){
-  #List OTUs that do not show appear more than x times in more than x% the samples
-  otu_filt_list = genefilter_sample(phy_in, filterfun_sample(function(x) x > 2), A=0.15*nsamples(phy_in))
+#create plots by type
+create_inv_subplots_type<-function(phy.in){
+  # Calculate inv simpson
+  df_inv = phyloseq::estimate_richness(phy.in, measures = "InvSimpson")
   
-  #remove OTUs
-  phy_clean = prune_taxa(otu_filt_list, phy_in)
-  
-  #Transform to even sampling depth.
-  phy_clean = rarefy_even_depth(phy_clean, rngseed=1, sample.size=10000, replace=F) 
-  phy_clean = transform_sample_counts(phy_clean, function(x) 1E6 * x/sum(x))
-  
-  print(binfid)
-  print(phy_clean)
-  
-  p <-plot_richness(phy_clean, x = "Sample.Des", measures = "Observed" )
-  OTU_counts <- data.frame("OTUs" = p$data)
-  for(typeid in unique(OTU_counts$OTUs.Sample.Des)){
-    df.in[typeid,binfid] = paste(round(mean(subset(OTU_counts,OTUs.Sample.Des==typeid)$OTUs.value),2)," (", round(sd(subset(OTU_counts,OTUs.Sample.Des==typeid)$OTUs.value),2),")", sep="")
+  #grab meta for binf-01
+  meta_df = subset(data.frame(sample_data(phy.in)),BINFID=="BINF-01" & Sample.Type != "Seq_Control")
+
+  compare_df=data.frame()
+  for (sampleid in meta_df$UniqueID){
+    compare_df[nrow(compare_df)+1,"sample"] = sampleid
+    compare_df[nrow(compare_df),"type"] = subset(meta_df,UniqueID==sampleid)$Subject.ID
+    compare_df[nrow(compare_df),"extkit"] = subset(meta_df,UniqueID==sampleid)$Ext.Kit
+    compare_df[nrow(compare_df),"value"] = round(df_inv[sampleid,"InvSimpson"],2)
   }
-  return(df.in)
+
+  pval_df = data.frame()
+  for (typeid in unique(compare_df$type)){
+    anova_result <- aov(value ~ extkit, subset(compare_df,type==typeid))
+    p_val = round(summary(anova_result)[[1]][5]["extkit","Pr(>F)"],2)
+    pval_df[nrow(pval_df)+1,"type"] = typeid
+    pval_df[nrow(pval_df),"pval"] = p_val
+      
+    if(p_val<0.05){
+      print(paste0("******",typeid))
+      tukey_result <- HSD.test(anova_result, "extkit", group = TRUE)
+      print(tukey_result)
+    }
+  }
+  
+  print(pval_df)
+  
+  p = ggplot(compare_df, aes(x=extkit, y=value)) +
+    facet_grid(.~type, scales = "free_y") +
+    ggtitle ("Inverse Simpson plots\nSample Type by Extraction Method") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(fill = "") +
+    geom_boxplot() 
+
+  file_name = paste0(analysis_dir,"alpha_diversity_typekit.png")
+  print(p)
+  ggsave(file_name,p)
 }
-#Create df
-otu_df=data.frame(1:7)
-otu_df$type=unique(sample_data(phy_t1)$Sample.Des)
-rownames(otu_df)=otu_df$type
-otu_df=otu_df[-1]
+create_inv_subplots_type(phy_merge_sub_p) 
 
-#Run counts
-otu_df = get_otu_counts(phy_t6,otu_df,"BINF-A") # BINFA
-otu_df = get_otu_counts(phy_t9,otu_df,"BINF-B") # BINFB
-otu_df = get_otu_counts(phy_t1,otu_df,"BINF-C") # BINFC
-otu_df = get_otu_counts(phy_t10,otu_df,"BINF-D") # BINFD
+#create plots by binf
+create_inv_subplots_binf<-function(phy.in,type.in){
+  # Calculate inv simpson
+  df_inv = phyloseq::estimate_richness(phy.in, measures = "InvSimpson")
+  
+  #grab meta for binf-01
+  meta_df = subset(data.frame(sample_data(phy.in)),Subject.ID ==type.in)
 
-otu_df=otu_df[-1]
-print(otu_df)
-file_save = paste0(analysis_dir,'otu_counts_binfgroups.csv')
-write.csv(binf_alpha,file_save)
+  compare_df=data.frame()
+  for (sampleid in meta_df$UniqueID){
+    compare_df[nrow(compare_df)+1,"sample"] = sampleid
+    compare_df[nrow(compare_df),"binf"] = subset(meta_df,UniqueID==sampleid)$BINFID
+    compare_df[nrow(compare_df),"extkit"] = subset(meta_df,UniqueID==sampleid)$Ext.Kit
+    compare_df[nrow(compare_df),"value"] = round(df_inv[sampleid,"InvSimpson"],2)
+  }
+  
+  pval_df = data.frame()
+  for (binfid in unique(compare_df$binf)){
+    anova_result <- aov(value ~ extkit, subset(compare_df,binf==binfid))
+    p_val = round(summary(anova_result)[[1]][5]["extkit","Pr(>F)"],2)
+    pval_df[nrow(pval_df)+1,"binf"] = binfid
+    pval_df[nrow(pval_df),"pval"] = p_val
+      
+    if(p_val<0.05){
+      tukey_result <- HSD.test(anova_result, "extkit", group = TRUE)
+      print(paste0("******",type.in))
+      print(paste0("***",binfid))
+      print(tukey_result$groups)
+    }
+  }
+  
+  print(pval_df)
+  
+  p = ggplot(compare_df, aes(x=extkit, y=value)) +
+    facet_grid(.~binf, scales = "free_y") +
+    ggtitle (paste0("Inverse Simpson plots\n",type.in," by Extraction Method")) + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(fill = "") +
+    geom_boxplot() 
+
+  file_name = paste0(analysis_dir,"alpha_diversity_binfekit.png")
+  print(p)
+  ggsave(file_name,p)
+}
+create_inv_subplots_binf(phy_merge_sub_p,"H01")
+create_inv_subplots_binf(phy_merge_sub_p,"BW")
+create_inv_subplots_binf(phy_merge_sub_p,"Z00")
+create_inv_subplots_binf(phy_merge_sub_p,"M22")
+create_inv_subplots_binf(phy_merge_sub_p,"M98")
+
+#create sig plots
+create_pvals_plot<-function(phy.in){
+  # Calculate inv simpson
+  df_inv = phyloseq::estimate_richness(phy.in, measures = "InvSimpson")
+  
+  #grab meta for binf-01
+  meta_df = subset(data.frame(sample_data(phy.in)),Sample.Type != "Seq_Control")
+
+  compare_df=data.frame()
+  for (sampleid in meta_df$UniqueID){
+    compare_df[nrow(compare_df)+1,"sample"] = sampleid
+    compare_df[nrow(compare_df),"type"] = subset(meta_df,UniqueID==sampleid)$Subject.ID
+    compare_df[nrow(compare_df),"extkit"] = subset(meta_df,UniqueID==sampleid)$Ext.Kit
+    compare_df[nrow(compare_df),"binf"] = subset(meta_df,UniqueID==sampleid)$BINFID
+    compare_df[nrow(compare_df),"value"] = round(df_inv[sampleid,"InvSimpson"],2)
+  }
+  
+  pval_df = data.frame()
+  for (typeid in unique(compare_df$type)){
+    for (binfid in unique(compare_df$binf)){
+      anova_result <- aov(value ~ extkit, subset(compare_df,type==typeid&binf==binfid))
+      p_val = round(summary(anova_result)[[1]][5]["extkit","Pr(>F)"],2)
+      pval_df[nrow(pval_df)+1,"type"] = typeid
+      pval_df[nrow(pval_df),"pval"] = p_val
+      pval_df[nrow(pval_df),"binf"] = binfid
+    }  
+  }
+  
+  p = ggplot(pval_df, aes(x=type, y=pval)) +
+    ggtitle ("ANOVA significance plots\nSample Type by Bioinformatic Method") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    geom_boxplot() +
+    geom_point(position=position_jitterdodge(jitter.width=0, dodge.width = 0.3), 
+             aes(color=factor(binf)))
+
+  file_name = paste0(analysis_dir,"pvals_samplebinf.png")
+  print(p)
+  ggsave(file_name,p)
+}
+create_pvals_plot(phy_merge_sub_p)
 ```
 
-paragraph 3 - beta diversity
+rel abundance phyla pvalues
 ```{r}
+create_pvals_plot<-function(phy.in,file.in){
+  #calculate relative abundance at phylum
+  phy_tax = subset_samples(phy.in, Sample.Type!="Seq_Control")
+  phylum_rel <- phy_tax %>%
+    tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
+    transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+    psmelt() %>%                                         # Melt to long format
+    filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+    arrange(Phylum)                                      # Sort data frame alphabetically by phylum
+  
+  #clean df
+  clean_df = phylum_rel[complete.cases(phylum_rel), ]
+  
+  #remove non-phyla levels
+  final_df=subset(clean_df, !(Phylum %like% "p__"))
+  
+  #for each binfid determine pvals between extraction methods
+  pval_df = data.frame()
+  for (binfid in unique(final_df$BINFID)){
+    for (phylaid in unique(subset(final_df,BINFID==binfid)$Phylum)){
+      #if the phyla is not represented in more than one type
+      if(nrow(subset(final_df,BINFID==binfid & Phylum==phylaid))>2){
+        anova_result <- aov(Abundance ~ Ext.Kit, subset(final_df,BINFID==binfid & Phylum==phylaid))
+        
+        #check if there were residuals, and a calculated pvalue
+        if(nrow(summary(anova_result)[[1]])>1){
+          p_val = round(summary(anova_result)[[1]][5]["Ext.Kit","Pr(>F)"],10)
+          pval_df[nrow(pval_df)+1,"binf"] = binfid
+          pval_df[nrow(pval_df),"pval"] = p_val
+          pval_df[nrow(pval_df),"phyla"] = phylaid
+        }
+      }
+    }  
+  }
+  p1 = ggplot(pval_df, aes(x=binf, y=pval)) +
+    ggtitle ("Extraction Method") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    geom_boxplot() +
+    geom_point(position=position_jitterdodge(jitter.width=0, dodge.width = 0.3), 
+             aes(color=factor(phyla))) +
+    labs(colour="Phylum")
+  
+  #for each binfid, determine pvals between company 
+  pval_df = data.frame()
+  for (binfid in unique(final_df$BINFID)){
+    for (phylaid in unique(subset(final_df,BINFID==binfid)$Phylum)){
+      #if the phyla is not represented in more than one type
+      if(nrow(subset(final_df,BINFID==binfid & Phylum==phylaid))>2){
+        anova_result <- aov(Abundance ~ Ext.Company, subset(final_df,BINFID==binfid & Phylum==phylaid))
+        
+        #check if there were residuals, and a calculated pvalue
+        if(nrow(summary(anova_result)[[1]])>1){
+          p_val = round(summary(anova_result)[[1]][5]["Ext.Company","Pr(>F)"],10)
+          pval_df[nrow(pval_df)+1,"binf"] = binfid
+          pval_df[nrow(pval_df),"pval"] = p_val
+          pval_df[nrow(pval_df),"phyla"] = phylaid
+        }
+      }
+    }  
+  }
 
+  p2 = ggplot(pval_df, aes(x=binf, y=pval)) +
+    ggtitle ("Extraction Company") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    geom_boxplot() +
+    geom_point(position=position_jitterdodge(jitter.width=0, dodge.width = 0.3), 
+             aes(color=factor(phyla))) +
+    labs(colour="Phylum")
+  
+  pf = ggarrange(p1, p2,
+          labels = c("A", "B"),
+          ncol = 2, nrow = 1,
+          common.legend=TRUE)
 
-#merge phylo objects
-phy_binf_groups = merge_phyloseq(phy_t6,phy_t9,phy_t1,phy_t10)
-phy_binf_groups
+  pf = annotate_figure(pf, top = text_grob("ANOVA significance plots", 
+                face = "bold", size = 14, ))
 
-#clean 
-phy_clean = phy_cleanup(phy_merge)
-phy_clean
+  print(pf)
+  ggsave(file.in,pf)
+}
+create_pvals_plot(phy_merge_sub_p,
+                   paste0(analysis_dir,"pvals_binfphyla.png"))
+```
 
-#run ordination
-ordu = phyloseq::ordinate(phy_clean, method="PCoA", distance="bray")
-
-
+controls - abund, bray, rare
+```{r}
+#abundance plots
+abund_plots_controls<-function(phy.in,file.in){
+  # Set colors for plotting
+  phylum_colors <- c(
+    "#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD",
+     "#AD6F3B", "#673770","#D14285", "#652926", "#C84248", 
+    "#8569D5", "#5E738F","#D1A33D", "#8A7C64", "#599861",
+    "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3")
+  
+  #get phyla rel abundances
+  phylum_rel <- phy.in %>%
+    tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
+    transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+    psmelt() %>%                                         # Melt to long format
+    filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+    arrange(Phylum)                                      # Sort data frame alphabetically by phylum
+  
+  #subset for controls
+  sub_df=subset(phylum_rel,Subject.ID %in% c("A00","A01","A02","A03","Z00","Z11","BW"))
+  
+  #replace higher tax variable
+  sub_df$Phylum=replace(sub_df$Phylum, sub_df$Phylum %like% "p__","Higher Taxonomy") 
     
+  #review blank controls
+  p1 = aggregate(Abundance~Phylum+CGR.Sample.ID+Ext.Kit,
+                 subset(sub_df,Subject.ID=="BW"&BINFID=="BINF-01"),
+                 mean) %>%
+    ggplot(aes(x = CGR.Sample.ID, y = Abundance, fill = factor(Phylum))) + 
+    facet_grid(.~Ext.Kit,scales = "free", space = "free") +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = phylum_colors) +
+    theme(axis.text.x=element_blank(),axis.ticks.x=element_blank()) + 
+    guides(fill = guide_legend(keywidth = 1, keyheight = 1)) +
+    labs(fill = "Phylum", y = "Relative Abundance (Phyla > 1%)",
+         x = "")+
+    ggtitle("Negative Controls")
+  
+  #review positive control averages
+  final_df=data.frame()
+  for(subid in unique(subset(sub_df,Subject.ID!="BW")$Subject.ID)){
+    final_df=rbind(final_df,aggregate(Abundance~Phylum+Subject.ID+BINFID,
+                 subset(sub_df,Subject.ID==subid),
+                 mean))
+  }
+  p2 =  final_df%>%
+    ggplot(aes(x = Subject.ID, y = Abundance, fill = factor(Phylum))) + 
+    facet_wrap(~ BINFID,ncol=4)+ 
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = phylum_colors) +
+    guides(fill = guide_legend(keywidth = 1, keyheight = 1)) +
+   labs(fill = "Phylum", y = "",
+         x = "")+
+    theme(axis.text.x = element_text(angle = 90, vjust = 1, 
+                                       size = 9, hjust = 1))+
+    ggtitle("Positive Controls")
+
+  pf = ggarrange(p1, p2,
+          labels = c("A", "B"),
+          ncol = 2, nrow = 1,
+          common.legend=TRUE,
+          legend="bottom")
+
+  pf = annotate_figure(pf, top = text_grob("Relative Abundance of Extraction & Sequencing Controls", 
+                face = "bold", size = 14, ))
+
+  print(pf)
+  ggsave(file.in,pf)
+  
+}
+abund_plots_controls(phy_merge_sub_p,
+                     paste0(analysis_dir,"relabun_extbinf.png"))
 
 
-#add group info
-group_list = sample_data(phy_clean)$BINFID
-group_list = gsub("BINF-08","BINF-D",group_list)
-group_list = gsub("BINF-07","BINF-C",group_list)
-group_list = gsub("BINF-03","BINF-A",group_list)
-group_list = gsub("BINF-06","BINF-B",group_list)
-sample_data(phy_clean)$`Binf.Variable` <- group_list
+#bray curtis plots
+beta_diversity_controls<-function(phy.in,file.in){
+ # Set colors for plotting
+  phylum_colors <- c(
+    "#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD",
+     "#AD6F3B", "#673770","#D14285", "#652926", "#C84248", 
+    "#8569D5", "#5E738F","#D1A33D", "#8A7C64", "#599861",
+    "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3")
+  # Calculate bray curtis distances
+  df_bray <-  as.data.frame(as.matrix(phyloseq::distance(phy.in, method = "bray")))
+  
+  ###### BINF
+  compare_binf = data.frame()
+  for (binfid in unique(sample_data(phy.in)$BINFID)){
+    print(paste0("Working on ",binfid))
+    
+    # Store distances within type
+    for (typeid in unique(sample_data(phy.in)$Subject.ID)){
+        #must match binf method, type, extraction method
+        sample_list = subset(sample_data(phy.in),Subject.ID==typeid & BINFID == binfid)$UniqueID
+        
+        #for each sample determine within (type, binf, ext) variation
+        for (sampleid in sample_list){
+          df_sub = df_bray[sampleid,sample_list]
+          
+          for(colid in colnames(df_sub)){
+            if(sampleid==colid){ next
+              } else{
+              compare_binf[nrow(compare_binf)+1,"type"] = typeid
+              compare_binf[nrow(compare_binf),"sampleid"] = sampleid
+              compare_binf[nrow(compare_binf),"binf"] = binfid
+              compare_binf[nrow(compare_binf),"value"] = df_sub[sampleid,colid]
+          }
+        }
+      }
+    }
+  }
+  
+  #create boxplot
+  p1 <- compare_binf %>% 
+    ggplot(aes(x = binf, y = value, fill = factor(type))) + 
+    scale_fill_manual(values = phylum_colors) +
+    geom_bar(position="dodge", stat="identity") + 
+    guides(fill = guide_legend(keywidth = 1, keyheight = 1)) +
+    labs(fill = "Control Type", y = "Bray-Curtis",x = "")+
+    ggtitle("Bray-Curtis Dissimilarity Distances\nBioinformatic Methods")
+  
+  print(p1)
+  ggsave(paste0(file.in,"_binf.png"),p1)
+  
+  ###### EXT
+  compare_binf = data.frame()
+  for (extid in unique(subset(sample_data(phy.in),Subject.ID=="Z00")$Ext.Kit)){
+    print(paste0("Working on ",extid))
+    
+    # Store distances within type
+    for (binfid in unique(subset(sample_data(phy.in),Subject.ID=="Z00")$BINFID)){
+        #must match binf method, type, extraction method
+        sample_list = subset(sample_data(phy.in),Subject.ID=="Z00"& Ext.Kit==extid & BINFID==binfid)$UniqueID
+        
+        #for each sample determine within (type, binf, ext) variation
+        for (sampleid in sample_list){
+          df_sub = df_bray[sampleid,sample_list]
+          
+          for(colid in colnames(df_sub)){
+            if(sampleid==colid){ next
+              } else{
+              compare_binf[nrow(compare_binf)+1,"binf"] = binfid
+              compare_binf[nrow(compare_binf),"sampleid"] = subset(sample_data(phy.in),UniqueID==sampleid)$CGR.Sample.ID
+              compare_binf[nrow(compare_binf),"ext"] = extid
+              compare_binf[nrow(compare_binf),"value"] = df_sub[sampleid,colid]
+          }
+        }
+      }
+    }
+  }
+  
+  #create boxplot
+  p2 <- subset(compare_binf,ext=="EX-2") %>% 
+    ggplot(aes(x=binf, y=value, fill=factor(sampleid))) +
+    ggtitle ("Extraction Protocols") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x=element_blank()) +
+    labs(fill = "") +
+    ggtitle("EX-2") +
+    geom_boxplot() 
+  p3 <- subset(compare_binf,ext=="EX-4") %>% 
+    ggplot(aes(x=binf, y=value, fill=factor(sampleid))) +
+    ggtitle ("Extraction Protocols") + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x=element_blank()) +
+    labs(fill = "") +
+    ggtitle("EX-4") +
+    geom_boxplot() 
+  p4 <- subset(compare_binf,ext=="EX-5") %>% 
+    ggplot(aes(x=binf, y=value, fill=factor(sampleid))) +
+    ggtitle ("Extraction Protocols") + 
+    theme( axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 1, 
+                                       size = 9, hjust = 1)) +
+    labs(fill = "") +
+    ggtitle("EX-5") +
+    geom_boxplot() 
+  p5 <- subset(compare_binf,ext=="EX-7") %>% 
+    ggplot(aes(x=binf, y=value, fill=factor(sampleid))) +
+    ggtitle ("Extraction Protocols") + 
+    theme( axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 1, 
+                                       size = 9, hjust = 1)) +
+    labs(fill = "") +
+    ggtitle("EX-7") +
+    geom_boxplot()
+  
+  pf = ggarrange(p2, p3, p4, p5,
+                 labels = c("A", "B", "C", "D"),
+                 ncol = 2, nrow = 2,
+                 legend="none")
+    
+  pf = annotate_figure(pf, top = text_grob("Bray-Curtis Dissimilarity Distances\nExtraction Methods", 
+                                           face = "bold", size = 14))
+  print(pf)
+  ggsave(paste0(file.in,"_ext.png"),pf)
+}
+beta_diversity_controls(subset_samples(phy_merge_sub_p,Subject.ID %in% c("A00","A01","A02","A03",
+                                                                               "Z00","Z11")),
+                              paste0(analysis_dir,"bray_curtis_controls"))
 
-group_list = sample_data(phy_clean)$Sample.Des
-group_list = gsub("Blank","BW",group_list)
-group_list = gsub("Robogut","M98",group_list)
-group_list = gsub("Chemostat","M12,M16",group_list)
-group_list = gsub("Human","H01",group_list)
-group_list = gsub("ZymoBiomics","Z00,Z10",group_list)
-group_list = gsub("Artificial","Z05,Z06,Z11",group_list)
-group_list = gsub("MSA","A00-A03",group_list)
-sample_data(phy_clean)$`Sample.Description` <- group_list
-
-#create plots
-p1 = create_plots_ordin(phy_clean,"Binf.Variable")
-p2 = create_plots_ordin(phy_clean,"Sample.Description")
-p3 = create_plots_ordin(phy_clean,"Sample.Type")
-p4 = create_plots_ordin(phy_clean,"Ext.Kit")
-
-#plot
-library(ggpubr)
-file_name = paste0(analysis_dir,"beta_diversity_4plots.png")
-pf = ggarrange(p1, p2, p3, p4 , 
-          labels = c("A", "B", "C", "D"),
-          ncol = 2, nrow = 2)
-
-pf = annotate_figure(pf, top = text_grob("Beta-Diversity Analysis", 
-              face = "bold", size = 14))
-print(pf)
-ggsave(file_name,pf)
-
-
-
-
-#total number of samples
-phy_clean
-
-#total number of replicated
-nrow(subset(sample_data(phy_clean),BINFID=="BINF-08"))
-nrow(subset(sample_data(subset_samples(phy_clean,Sample.Type!="Seq_Control")),BINFID=="BINF-03"))
-
-#total number of physical
+#rare plots
+plot_rare_curves<-function(phy.in,file.in){
+  set.seed(1024)
+  
+  #ext method
+  print("Generating for ext")
+  p <- ggrare(subset_samples(phy.in,Subject.ID%in%c("BW","Z00")),step=1000,color="Ext.Kit",se=FALSE) +
+    facet_wrap(~Subject.ID) +
+    ggtitle ("Extraction Method") + 
+    labs(color="")
+    theme(axis.text.x = element_text(angle = 90, vjust = 1, 
+                                       size = 9, hjust = 1))
+  #binf method
+  print("Generating for binf")
+  p2 <- ggrare(subset_samples(phy.in,Subject.ID%in%c("A00","A01","A02","A03","BW","Z00","Z05","Z06","Z11")),step=1000,color="BINFID",se=FALSE) +
+    facet_wrap(~Subject.ID) + 
+    ggtitle ("Bioinformatics Protocols") + 
+    labs(color="") +
+    theme(axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 1, 
+                                       size = 9, hjust = 1))
+  pf = ggarrange(p, p2,
+                 labels = c("A", "B"),
+                 ncol = 2, nrow = 1,
+                 legend="bottom")
+    
+  pf = annotate_figure(pf, top = text_grob("Rarefaction Curves", 
+                                           face = "bold", size = 14))
+  print(pf)
+  ggsave(file.in,pf)
+}
+plot_rare_curves(phy_merge_sub,paste0(analysis_dir,"rare_curve_extbinf.png"))
 
 ```
 
-
+controls - TAR TDR F1 Bray
 ```{r}
-#https://www.biostars.org/p/451706/
+control_accuracy<-function(phy.in,file.in){
+  #read in taxonomy expected
+  tax_mani = read.csv(paste0("~/../../Volumes/sevillas2/git/gmu/dissertation/aim1/ref/Taxonomy_Complete.csv"))
+  tax_mani = tax_mani[,c("MSA1000","MSA1001","MSA1002","MSA1003", "D6300","D6305","D6306","D6311","Family")]
+  tax_mani = tax_mani[rowSums(tax_mani[, 1:6])>0, ]
+  
+  #create expected df
+  taxa_exp = data.frame()
+  for(typeid in c("MSA1000","MSA1001","MSA1002","MSA1003", "D6300","D6305","D6306","D6311")){
+    for (rowid in rownames(tax_mani)){
+      if(tax_mani[rowid,typeid]!=0){
+        taxa_exp[nrow(taxa_exp)+1,"value"] = tax_mani[rowid,typeid]
+        taxa_exp[nrow(taxa_exp),"family"] = tax_mani[rowid,"Family"]
+        taxa_exp[nrow(taxa_exp),"type"] = paste0(typeid,"_exp")
+    } else{next}
+    }
+  }
+  
+  #convert to shorthand
+  taxa_exp$type = gsub("MSA1000","A00",taxa_exp$type)
+  taxa_exp$type = gsub("MSA1001","A01",taxa_exp$type)
+  taxa_exp$type = gsub("MSA1002","A02",taxa_exp$type)
+  taxa_exp$type = gsub("MSA1003","A03",taxa_exp$type)
+  taxa_exp$type = gsub("D6300","Z00",taxa_exp$type)
+  taxa_exp$type = gsub("D6305","Z05",taxa_exp$type)
+  taxa_exp$type = gsub("D6306","Z06",taxa_exp$type)
+  taxa_exp$type = gsub("D6311","Z11",taxa_exp$type)
+  
+  #aggregate to family
+  taxa_exp= aggregate(value~family+type,taxa_exp, sum)
+  
+  #rel abundance glommed
+  phy_rel <- phy.in %>%
+      tax_glom(taxrank = "Family") %>%                     # agglomerate at Family level
+      transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+      psmelt() %>%                                         # Melt to long format
+      filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+      arrange(Phylum)
+  taxa_obs = data.frame(phy_rel)
+  
+  #for each expected control tested
+  taxa_ac = data.frame(unique(sample_data(phy.in)$UniqueID),"x")
+  taxa_ac$TP=0
+  taxa_ac$FP=0
+  taxa_ac$FN=0
+  rownames(taxa_ac)=taxa_ac[,1]
+  taxa_ac=taxa_ac[,c(-1,-2)]
+  
+  for (typeid in unique(sample_data(phy.in)$Subject.ID)){
+    #create list of expected taxa
+    taxa_exp_list = subset(taxa_exp,value > 0 & type == paste0(typeid,"_exp"))$family
+    
+    #for each sample
+    for (sampleid in subset(sample_data(phy.in),Subject.ID==typeid)$UniqueID){
+      taxa_obs_list = gsub("f__","",subset(taxa_obs,UniqueID==sampleid&Abundance>0)$Family)
+      
+      #for found taxa
+      for (taxa_o in taxa_obs_list){
+        taxa_ac[sampleid,"type"] = typeid
+        taxa_ac[sampleid,"BINF"] = subset(sample_data(phy.in),UniqueID==sampleid)$BINFID
+        taxa_ac[sampleid,"ext"] = subset(sample_data(phy.in),UniqueID==sampleid)$Ext.Kit
+        
+        #if the taxa is in expected list TP
+        if (taxa_o %in% taxa_exp_list){
+            taxa_ac[sampleid,"TP"] = taxa_ac[sampleid,"TP"]+1
+        } else{
+            taxa_ac[sampleid,"FP"] = taxa_ac[sampleid,"FP"]+1
+        }
+      }
+      #if there are missing taxa from the expected list FN
+      if(length(taxa_exp_list[!(taxa_exp_list %in% taxa_obs_list)])>0){
+        taxa_ac[sampleid,"FN"]=length(taxa_exp_list[!(taxa_exp_list %in% taxa_obs_list)])
+      }
+    }
+  }
+  
+  taxa_ac$Total_exp = taxa_ac$TP + taxa_ac$FN #total expected
+  taxa_ac$TAR = taxa_ac$TP / (taxa_ac$TP + taxa_ac$FP) #closer to 1 is accuracy
+  taxa_ac$TDR = taxa_ac$TP / (taxa_ac$TP + taxa_ac$FN) #closer to 1 is repeat
+  taxa_ac$F1 = 2 * ((taxa_ac$TAR*taxa_ac$TDR)/(taxa_ac$TAR+taxa_ac$TDR))
+  
+  p1 = ggplot(taxa_ac,aes(x=type, y=TP, color=type)) + 
+    geom_violin(trim=FALSE) + 
+          theme(axis.text.x = element_text(angle = 90, hjust = 1),
+               legend.position = "none") + 
+          xlab("Sample Type") +
+          ylab("True Positives") +
+          stat_summary(fun.data=mean_sdl, color="red")
+  p2 = ggplot(taxa_ac,aes(x=type, y=FP, color=type)) + 
+    geom_violin(trim=FALSE) + 
+          theme(axis.text.x = element_text(angle = 90, hjust = 1),
+               legend.position = "none") + 
+          xlab("Sample Type") +
+          ylab("False Positive") +
+          stat_summary(fun.data=mean_sdl, color="red")
+  p3 = ggplot(taxa_ac,aes(x=type, y=FN, color=type)) + 
+    geom_violin(trim=FALSE) + 
+          theme(axis.text.x = element_text(angle = 90, hjust = 1),
+               legend.position = "none") + 
+          xlab("Sample Type") +
+          ylab("False Negative") +
+          stat_summary(fun.data=mean_sdl, color="red")
+  p4 = ggplot(taxa_ac,aes(x=type, y=TAR, color=type)) + 
+    geom_violin(trim=FALSE) + 
+          theme(axis.text.x = element_text(angle = 90, hjust = 1),
+               legend.position = "none") + 
+          xlab("Sample Type") +
+          ylab("TAR Score") +
+          stat_summary(fun.data=mean_sdl, color="red")
+  p5 = ggplot(taxa_ac,aes(x=type, y=TDR, color=type)) + 
+    geom_violin(trim=FALSE) + 
+          theme(axis.text.x = element_text(angle = 90, hjust = 1),
+               legend.position = "none") + 
+          xlab("Sample Type") +
+          ylab("TDR Score") +
+          stat_summary(fun.data=mean_sdl, color="red")
+  pf = ggarrange(p1, p2,p3,p4,p5,
+          labels = c("A", "B","C","D","E"),
+          ncol = 3, nrow = 2,
+          common.legend=TRUE,
+          legend="bottom")
+
+  pf = annotate_figure(pf, top = text_grob("Accuracy Scores for Artificial Communities", 
+                face = "bold", size = 14, ))
+
+  print(pf)
+  ggsave(paste0(file.in,"_scores.png"),pf)
+  
+  #plot violin for F1
+  p1 = ggplot(taxa_ac,aes(x=type, y=F1, color=type)) + 
+    facet_wrap(~BINF) + 
+    geom_violin(trim=FALSE) + 
+          theme(axis.text.x = element_text(angle = 90, hjust = 1),
+               legend.position = "none") + 
+          xlab("Sample Type") +
+          ylab("F1 Score") +
+          ggtitle("Bioinformatic Method") + 
+          stat_summary(fun.data=mean_sdl, color="red")
+  p2 = ggplot(subset(taxa_ac,type=="Z00"),aes(x=ext, y=F1, color=type)) + 
+    geom_violin(trim=FALSE) + 
+          theme(axis.text.x = element_text(angle = 90, hjust = 1),
+               axis.title.y =element_blank(),
+               axis.title.x =element_blank(),
+               legend.position = "none") + 
+          xlab("Extraction Method") +
+          ggtitle("Extraction Method") + 
+          stat_summary(fun.data=mean_sdl, color="red")  
+  
+  pf = ggarrange(p1, p2,
+          labels = c("A", "B"),
+          ncol = 2, nrow = 1,
+          common.legend=TRUE,
+          legend="bottom")
+
+  pf = annotate_figure(pf, top = text_grob("F1 Score by Bioinformatic and Extraction Methods", 
+                face = "bold", size = 14, ))
+
+  print(pf)
+  ggsave(paste0(file.in,"_F1.png"),pf)
+  
+  #create taxa df at family level for controls
+  otu_df = subset(phy_rel,Subject.ID %in% c("A00","A01","A02","A03", "Z00","Z05","Z06","Z11"))
+  otu_df = otu_df[,c("Sample","Abundance","Subject.ID","Ext.Kit","BINFID","UniqueID","Family")]
+  otu_df$Family = gsub("f__","",otu_df$Family)
+  
+  #add controls to df
+  for (rowid in rownames(taxa_exp)){
+    otu_df[nrow(otu_df)+1,"Abundance"]=taxa_exp[rowid,"value"]
+    otu_df[nrow(otu_df),"Family"]=taxa_exp[rowid,"family"]
+    otu_df[nrow(otu_df),"UniqueID"]=taxa_exp[rowid,"type"]
+    otu_df[nrow(otu_df),"Subject.ID"]=gsub("_exp","",taxa_exp[rowid,"type"])
+  }
+  
+  #create final df
+  clean_df=data.frame()
+  for(sampleid in unique(otu_df$UniqueID)){
+    for (familyid in unique(subset(otu_df,UniqueID==sampleid)$Family)){
+      clean_df[sampleid,familyid]=subset(otu_df,UniqueID==sampleid&Family==familyid)$Abundance
+    }
+  }
+  clean_df[is.na(clean_df)] <- 0
+  
+  #scatterplot
+  obs_df=data.frame()
+  for (typeid in unique(sample_data(phy.in)$Subject.ID)){
+    sample_list=subset(sample_data(phy.in),Subject.ID==typeid)$UniqueID
+    
+    #create list of expected taxa
+    taxa_exp_list = subset(taxa_exp,value > 0 & type == paste0(typeid,"_exp"))$family
+    taxa_obs_list = unique(gsub("f__","",subset(taxa_obs,UniqueID %in% sample_list&Abundance>0)$Family))
+      
+    #subse df
+    sub_df = clean_df[sample_list,]
+    
+    #for all obs taxa
+    for (taxid in taxa_obs_list){
+      obs_df[nrow(obs_df)+1,"obs"]=mean(sub_df[,taxid])
+      obs_df[nrow(obs_df),"type"]=typeid
+      #if it was expected
+      if(taxid %in% taxa_exp_list){
+        obs_df[nrow(obs_df),"exp"]=subset(taxa_exp,family==taxid&type==paste0(typeid,"_exp"))$value
+      } else{
+        obs_df[nrow(obs_df),"exp"]=0
+      }
+    }
+    
+    #for all exp taxa not in obs
+    for (taxid in taxa_exp_list[!(taxa_exp_list %in% taxa_obs_list)]){
+      obs_df[nrow(obs_df)+1,"obs"]=0
+      obs_df[nrow(obs_df),"type"]=typeid
+      obs_df[nrow(obs_df),"exp"]=subset(taxa_exp,family==taxid&type==paste0(typeid,"_exp"))$value
+    }
+    
+    
+  }
+  p = ggscatter(obs_df, x = "obs", y = "exp", 
+              add = "reg.line", conf.int = TRUE, 
+              cor.coef = TRUE, cor.method = "pearson",
+              xlab = "Expected Rel Abunance (%)", ylab = "Observed Rel Abun (%)") +
+        facet_wrap(~type)+
+      ggtitle("Scatter plot of Artifical Community Accuracy")
+
+  print(p)
+  ggsave(paste0(file.in,"_scatterpot.png"),p)
+
+  
+  #run bray curtis
+  df_bray = as.data.frame(as.matrix(vegdist(clean_df,method="bray"))) #0 is same, 1 is diff
+
+  # Set colors for plotting
+  phylum_colors <- c(
+    "#CBD588", "#5F7FC7", "orange","#DA5724", "#508578", "#CD9BCD",
+     "#AD6F3B", "#673770","#D14285", "#652926", "#C84248", 
+    "#8569D5", "#5E738F","#D1A33D", "#8A7C64", "#599861",
+    "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3")
+  
+  ###### BINF
+  compare_binf = data.frame()
+  for (binfid in unique(sample_data(phy.in)$BINFID)){
+    print(paste0("Working on ",binfid))
+    
+    # Store distances within type
+    for (typeid in unique(sample_data(phy.in)$Subject.ID)){
+      #must match binf method, type, extraction method
+      sample_list = subset(sample_data(phy.in),Subject.ID==typeid & BINFID == binfid)$UniqueID
+        
+      #for each sample determine within (type, binf, ext) variation
+      for (sampleid in sample_list){
+          compare_binf[nrow(compare_binf)+1,"type"] = typeid
+          compare_binf[nrow(compare_binf),"sampleid"] = sampleid
+          compare_binf[nrow(compare_binf),"binf"] = binfid
+          compare_binf[nrow(compare_binf),"value"] = df_bray[sampleid,paste0(typeid,"_exp")]
+      }
+    }
+  }
+  
+  #create boxplot
+  p1 <- compare_binf %>% 
+    ggplot(aes(x = binf, y = value, fill = factor(type))) + 
+    scale_fill_manual(values = phylum_colors) +
+    geom_bar(position="dodge", stat="identity") + 
+    guides(fill = guide_legend(keywidth = 1, keyheight = 1)) +
+    labs(fill = "Control Type", y = "Bray-Curtis",x = "")+
+    ggtitle("Bray-Curtis Dissimilarity Distances\nBioinformatic Methods Accuracy")
+  
+  print(p1)
+  ggsave(paste0(file.in,"_binf_bray.png"),p1)
+  
+  ###### EXT
+  compare_binf = data.frame()
+  for (extid in unique(subset(sample_data(phy.in),Subject.ID=="Z00")$Ext.Kit)){
+    print(paste0("Working on ",extid))
+    
+    # Store distances within type
+    for (binfid in unique(subset(sample_data(phy.in),Subject.ID=="Z00")$BINFID)){
+      #must match binf method, type, extraction method
+      sample_list = subset(sample_data(phy.in),Subject.ID=="Z00"& Ext.Kit==extid & BINFID==binfid)$UniqueID
+        
+      #for each sample determine within (type, binf, ext) variation
+      for (sampleid in sample_list){
+          compare_binf[nrow(compare_binf)+1,"binf"] = binfid
+          compare_binf[nrow(compare_binf),"sampleid"] = subset(sample_data(phy.in),UniqueID==sampleid)$CGR.Sample.ID
+          compare_binf[nrow(compare_binf),"ext"] = extid
+          compare_binf[nrow(compare_binf),"value"] = df_bray[sampleid,paste0(typeid,"_exp")]
+      }
+    }
+  }
+  
+  #create boxplot
+  p2 <- ggplot(compare_binf,aes(y=value, x=ext, fill=factor(sampleid))) +
+    facet_wrap(~binf,nrow=2)+
+    ggtitle ("Bray-Curtis Dissimilarity Distances\nExtraction Methods") +
+    theme(
+      axis.title.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.ticks.x=element_blank(),
+      axis.text.x = element_text(angle = 90, vjust = 1, 
+                                       size = 9, hjust = 1)) +
+    geom_boxplot(show.legend = FALSE)
+  
+  print(p2)
+  ggsave(paste0(file.in,"_ext_bray.png"),p2)
+}
+control_accuracy(subset_samples(phy_merge_sub_p,Subject.ID %in% c("A00","A01","A02","A03", "Z00","Z05","Z06","Z11")),
+                                paste0(analysis_dir,"accuracy_assessment"))
 ```
-
-
