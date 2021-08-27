@@ -1,18 +1,18 @@
 git_dir: 
   w: 'C:\Program Files\Git\Coding\gmu\dissertation\aim3\'
-  m: '/home/sevillas2/git/gmu/dissertation/aim3/'
+  m: 'git_base/aim3/'
 data_dir: 
   w: 'C:\Users\slsevilla\Google Drive\MyDocuments_Current\Education\George Mason University\Dissertation\data\aim3\Project_NP0084_MB\'
-  m: '/data/sevillas2/gmu/aim3/output/'
+  m: 'data_base/aim3/output/'
 analysis_dir: 
   w: '/Users/slsevilla/Google Drive/MyDocuments_Current/Education/George Mason University/Dissertation/analysis/aim2/'
-  m: '/data/sevillas2/gmu/aim3/output/analysis/'
+  m: 'data_base/aim3/analysis/'
 ref_dir: 
   w: '/Users/slsevilla/Google Drive/MyDocuments_Current/Education/George Mason University/Dissertation/data/ref/'
-  m: '/data/sevillas2/gmu/ref/'
+  m: 'data_base/ref/'
 manifest_dir:
   w: 'C:\Program Files\Git\Coding\gmu\dissertation\aim3\manifest\'
-  m: '/home/sevillas2/git/gmu/dissertation/aim3/manifest/'
+  m: 'git_base/aim3/manifest/'
 
 clean_manifest: 'manifest.tsv'
 

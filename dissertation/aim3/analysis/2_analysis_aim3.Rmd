@@ -4,13 +4,14 @@ output: html_notebook
 editor_options: 
   chunk_output_type: console
 ---
-##################################################
-# AIM 2 Analysis
-##################################################
-#ref https://www.nicholas-ollberding.com/post/introduction-to-the-statistical-analysis-of-microbiome-data-in-r/
 
+Prepare Environment
 # set dir
 ```{r}
+dir("~/../../Volumes/")
+dir("~/../../Volumes/sevillas2-1")
+dir("~/../../Volumes/data")
+
 git_base="~/../../Volumes/sevillas2-1/git/gmu/dissertation/"
 data_base="~/../../Volumes/data/gmu/"
 ```
@@ -39,14 +40,10 @@ library(purrr)
 library(tibble)
 library(ALDEx2)
 library(rms)
-
-library(selbal)
-library(ggpubr)
-library(ggplot2)
-
 library(themetagenomics)
 library(wordcloud)
 library(tm)
+library(selbal)
 ```
 
 #Read in config file
@@ -55,7 +52,7 @@ library(tm)
 system_opt = "m"
 
 #read in config
-config_file = read_yaml(paste0(git_base,"aim2/analysis/config.yaml"))
+config_file = read_yaml(paste0(git_base,"aim3/analysis/config.yaml"))
 
 #set dirs
 git_dir=str_replace(config_file$git_dir[[system_opt]],'git_base/',git_base)
@@ -73,12 +70,39 @@ manifest_file=paste(manifest_dir, config_file$clean_manifest,sep="")
 #read metadata
 metadata<-read.table(manifest_file,sep='\t', header=T, row.names=1, comment="")
 
+#create new cols for status
+metadata$mental_status=metadata$mental_illness
+metadata$mental_status=gsub("No","healthy",metadata$mental_status)
+metadata$mental_status=gsub("Yes","afflicted",metadata$mental_status)
+metadata[is.na(metadata)]="No"
+
+metadata$health_subtype=paste(metadata$mental_illness_type_bipolar_disorder,
+                              metadata$mental_illness_type_depression,
+                              metadata$mental_illness_type_ptsd_posttraumatic_stress_disorder,
+                              metadata$mental_illness_type_schizophrenia,
+                              metadata$mental_illness_type_substance_abuse)
+unique(metadata$health_subtype)
+
+metadata$health_subtype=gsub("No No No No No","healthy",metadata$health_subtype)
+metadata$health_subtype=gsub("No Yes No No No","depression",metadata$health_subtype)
+metadata$health_subtype=gsub("No Yes Yes No No","depression, PTSD",metadata$health_subtype)
+metadata$health_subtype=gsub("Yes Yes Yes No No","bipolar, depression,\nPTSD",metadata$health_subtype)
+metadata$health_subtype=gsub("No No Yes No No","PTSD",metadata$health_subtype)
+metadata$health_subtype=gsub("No Yes No No Yes","depression,\nsubstance abuse",metadata$health_subtype)
+metadata$health_subtype=gsub("No Yes No Yes No","depression, schizophrenia",metadata$health_subtype)
+metadata$health_subtype=gsub("No No Yes Yes Yes","PTSD, schizophrenia,\nsubstance abuse",metadata$health_subtype)
+unique(metadata$health_subtype)
+
+metadata$ibd_status=metadata$ibd
+metadata$ibd_status=gsub("I do not have this condition","healthy",metadata$ibd_status)
+metadata$ibd_status=gsub("Diagnosed by prof","afflicted",metadata$ibd_status)
+
 prep_data<-function(){
   #Read OTUS
-  otus<-read_qza(paste0("4_tab.qza"))
+  otus<-read_qza(paste0(data_dir,"04_filtered/4_tab.qza"))
   
   #Read taxonomy reference file
-  taxonomy<-read_qza(paste0("scikit_silva.qza"))
+  taxonomy<-read_qza(paste0(data_dir,"05_class/scikit_silva.qza"))
   
   #convert tax to matrix for phyloseq input
   GenData <- function(x){
@@ -115,19 +139,99 @@ prep_data<-function(){
 phy_t1 = prep_data()
 ```
 
-#sample counts
+sample counts
 ```{r}
+summarize_phyloseq(phy_t1)
+
 count_samples<-function(df.in){
-  #samples by type
-  for (typeid in unique(df.in$SampleType)){
-    for (dietid in unique(df.in$Diet)){
-      for (timeid in unique(df.in$Timepoint)){
-        print(paste0(typeid,",",dietid,",",timeid,":",nrow(subset(df.in,SampleType==typeid & 
-                                                              Diet==dietid & 
-                                                              Timepoint==timeid))))
+  #summarize mental health
+  stats = c("healthy","afflicted")
+  for (val1 in stats){
+    count = nrow(subset(df.in,mental_status==val1))
+    print(paste(val1,count))
+  }
+  
+  sex = c("male","female")
+  bmi = c("Normal","overweight/obese")
+  age = c("30s","40s","50s","60s")
+  
+  #summarize bmi, age, sex
+  for (val1 in stats){
+    for (val2 in sex){
+      for (val3 in bmi){
+        for (val4 in age){
+          count = nrow(subset(df.in,mental_status==val1 & sex == val2 & bmi_cat == val3 & age_cat == val4))
+          print(paste(val1,val2,val3,val4,count))  
+        }
       }
     }
   }
+  
+  #summarize subtype
+  for (val1 in unique(df.in$health_subtype)){
+    for (val2 in sex){
+      print(paste(val1,val2,nrow(subset(df.in,(health_subtype == val1) & (sex == val2))))) 
+    }
+  }
+  
+  #failed samples
+  metadata[rownames(metadata)=="ERR4020670",]
+  metadata[rownames(metadata)=="ERR4019056",]
+  
+  #binomial tests
+  #health
+  print("bionmial test for health status")
+  print(binom.test(57,55+57)$p.value)
+  print(binom.test(55,55+57)$p.value)
+  
+  #by health and by
+  #sex f/u, total u, f/h divided by total healthy
+  nrow(subset(df.in,sex=="female" & mental_status=="afflicted"))
+  nrow(subset(df.in,sex=="female" & mental_status=="healthy"))
+  print("bionomial test for sex and status")
+  print(binom.test(nrow(subset(df.in,sex=="female" & status=="afflicted")),
+             nrow(subset(df.in,mental_status=="afflicted")), 
+             nrow(subset(df.in,sex=="female" & mental_status=="healthy")) / 
+               nrow(subset(df.in,mental_status=="healthy")),alternative="g")$p.value)
+  
+  #create df
+  tmp = df.in[,c("age_cat","mental_status","bmi_cat")]
+  for (id in rownames(tmp)){
+    tmp[id,"age"] = as.integer(str_remove(tmp[id,"age_cat"],"s"))
+    if(tmp[id,"bmi_cat"]=="Normal"){
+      tmp[id,"bmi"] = 18
+    } else{
+      tmp[id,"bmi"] = 35
+    }
+  }
+  
+  #age
+  mean(subset(tmp,mental_status=="healthy" & sex=="female")$age)
+  mean(subset(tmp,mental_status=="healthy" & sex=="male")$age)
+  mean(subset(tmp,mental_status=="afflicted" & sex=="female")$age)
+  mean(subset(tmp,mental_status=="afflicted" & sex=="male")$age)
+  print("test for age by status, female")
+  print(t.test(formula = age ~ mental_status,
+         data = tmp,
+         subset = sex == "female"))
+  print("test for age by status, male")
+  print(t.test(formula = age ~ mental_status,
+         data = tmp,
+         subset = sex == "male"))
+  
+  #bmi
+  mean(subset(tmp,mental_status=="healthy" & sex=="female")$bmi)
+  mean(subset(tmp,mental_status=="healthy" & sex=="male")$bmi)
+  mean(subset(tmp,mental_status=="afflicted" & sex=="female")$bmi)
+  mean(subset(tmp,mental_status=="afflicted" & sex=="male")$bmi)
+  print("test for bmi by status, female")
+  print(t.test(formula = bmi ~ mental_status,
+         data = tmp,
+         subset = sex == "female"))
+  print("test for bmi by status, male")
+  print(t.test(formula = bmi ~ mental_status,
+         data = tmp,
+         subset = sex == "male"))
 }
 
 #total samples sequenced
@@ -144,25 +248,25 @@ plot_read_depth<-function(phy.in){
   sampledf = data.frame()
   
   #for each sample type
-  for(typeid in unique(sample_data(phy.in)$SampleType)){
+  for(typeid in unique(sample_data(phy.in)$mental_status)){
   
     #create list of ids for ext.kit
-    sample_list = rownames(subset(sample_data(phy.in),SampleType==typeid))
+    sample_list = rownames(subset(sample_data(phy.in),mental_status==typeid))
     
     for (sampleid in sample_list){
-      sampledf[nrow(sampledf)+1,"Sample.Type"] = typeid
-      sampledf[nrow(sampledf),"Timepoint"] = as.character(sample_data(phy.in)[sampleid,"Timepoint"])
+      sampledf[nrow(sampledf)+1,"mental_status"] = typeid
+      sampledf[nrow(sampledf),"ibd_status"] = as.character(sample_data(phy.in)[sampleid,"ibd_status"])
       sampledf[nrow(sampledf),"reads"] = sample_sums(phy.in)[sampleid][[1]]
       sampledf[nrow(sampledf),"sample"] = sampleid
     }
   }
   sampledf$reads = as.numeric(sampledf$reads)
   print(paste0("Mean of all: ",mean(sampledf$reads)))
-  sumdf = summarySE(sampledf, measurevar="reads", groupvars=c("Sample.Type"))
+  sumdf = summarySE(sampledf, measurevar="reads", groupvars=c("mental_status"))
   print(sumdf)
   
   #plot
-  p1 = ggplot(sumdf, aes(x=Sample.Type, y=reads, fill=Sample.Type)) + 
+  p1 = ggplot(sumdf, aes(x=mental_status, y=reads, fill=mental_status)) + 
           geom_bar(position=position_dodge(), stat="identity",
                  colour="black", # Use black outlines,
                  size=.3) +      # Thinner lines
@@ -170,18 +274,18 @@ plot_read_depth<-function(phy.in){
                       size=.3,    # Thinner lines
                       width=.2,
                       position=position_dodge(.9)) +
-        xlab("Sample Type") +
+        xlab("Mental Status") +
         ylab("Average Read Length") +
-        scale_fill_hue(name="Sample.Type") + # Legend label, use darker colors
-        ggtitle(paste0("By Sample Type")) +
+        scale_fill_hue(name="mental_status") + # Legend label, use darker colors
+        ggtitle(paste0("By Mental Status")) +
         theme_bw()
   print(p1)
     
-  sumdf = summarySE(sampledf, measurevar="reads", groupvars=c("Timepoint"))
+  sumdf = summarySE(sampledf, measurevar="reads", groupvars=c("ibd_status"))
   print(sumdf)
   
   #plot
-  p2 = ggplot(sumdf, aes(x=Timepoint, y=reads, fill=Timepoint)) + 
+  p2 = ggplot(sumdf, aes(x=ibd_status, y=reads, fill=ibd_status)) + 
           geom_bar(position=position_dodge(), stat="identity",
                  colour="black", # Use black outlines,
                  size=.3) +      # Thinner lines
@@ -189,14 +293,14 @@ plot_read_depth<-function(phy.in){
                       size=.3,    # Thinner lines
                       width=.2,
                       position=position_dodge(.9)) +
-        xlab("Timepoint") +
+        xlab("IBD Status") +
         ylab("") +
-        scale_fill_hue(name="Timepoint") + # Legend label, use darker colors
-        ggtitle(paste0("By Timepoint")) +
+        scale_fill_hue(name="ibd_status") + # Legend label, use darker colors
+        ggtitle(paste0("By IBD Status")) +
         theme_bw()
   print(p2)
     
-  file_name = paste0(analysis_dir,"readlength_time_type.png")
+  file_name = paste0(analysis_dir,"readlength_ibd_mental.png")
   pf = ggarrange(p1, p2,
             labels = c("A", "B"),
             ncol = 2, nrow = 1)
@@ -207,7 +311,6 @@ plot_read_depth<-function(phy.in){
   ggsave(file_name,pf)
 }
 plot_read_depth(phy_t1)
-summarize_phyloseq(phy_t1)
 
 ```
 
@@ -224,7 +327,7 @@ prevdf = data.frame(Prevalence = prevdf,
 
 plyr::ddply(prevdf, "Kingdom", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
 plyr::ddply(prevdf, "Phylum", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
-
+15648/(15648+29+11+5)
 ```
 
 #abundances
@@ -264,7 +367,7 @@ top_abun_plots<-function(phy.in,type.in){
             geom_bar(stat = "identity") +
             xlab(type.in) +
             ylab("Relative Abundance (%)") +
-            ggtitle("Relative Abundance of Phylum: By Diet") +
+            ggtitle("Relative Abundance of Phylum: By Mental Health Status") +
             labs(fill = "Phylum")
   p1 = addSmallLegend(p)
   print(p1)
@@ -275,7 +378,6 @@ top_abun_plots<-function(phy.in,type.in){
   
   #select top OTUS
   TopNOTUs <- names(sort(taxa_sums(phy.in), TRUE)[1:50])
-  #phy_pr <- prune_taxa(TopNOTUs,phy.in)
 
   #melt data to phylum
   phy_tmp <- phy_t1 %>%
@@ -285,15 +387,15 @@ top_abun_plots<-function(phy.in,type.in){
   phy_tmp = subset(phy_tmp,OTU %in% TopNOTUs)
   
   #print plot of top abundance OTU
-  p = ggplot(phy_tmp, aes(x = Timepoint, y = Abundance, color=Diet)) + 
+  p = ggplot(phy_tmp, aes(x = mental_status, y = Abundance, color=health_subtype)) + 
       theme(legend.position = "bottom", legend.key.width = unit(0.2,"cm"),
             axis.text.x = element_text(angle = 90, hjust = 1), 
             legend.text = element_text(size = 8))  +
             geom_boxplot() +
-            xlab("Timepoint") +
+            xlab("Mental Status") +
             ylab("Abundnance") +
-            ggtitle("Abundance of Top 50 OTU's\nPhylum: By Diet, Timepoint") +
-            labs(fill = "Timpepoint")+
+            ggtitle("Abundance of Top 50 OTU's\nPhylum: By Mental Sub-type, Mental Status") +
+            labs(fill = "mental_status")+
     facet_wrap(~Phylum, scales = "free_y")
   p1 = addSmallLegend(p)
   print(p1)
@@ -302,7 +404,7 @@ top_abun_plots<-function(phy.in,type.in){
   ggsave(paste0(analysis_dir,file_name,".jpg"),plot=p1)
   
 }
-top_abun_plots(merge_samples(phy_t1,"Diet"),"diet")
+top_abun_plots(merge_samples(phy_t1,"mental_status"),"Mental Health Status")
 
 sig_test_abun<-function(phy.in,tax.in){
 
@@ -314,7 +416,7 @@ sig_test_abun<-function(phy.in,tax.in){
 
   #Subset groups
   prepare_df<-function(type.in){
-    df_otu <- subset(phy_tmp, Diet == type.in)
+    df_otu <- subset(phy_tmp, mental_status == type.in)
 
     #merge to phylum
     df_otu = subset(aggregate(Abundance~get(tax.in)+Sample, df_otu, sum),Abundance>0)
@@ -330,8 +432,8 @@ sig_test_abun<-function(phy.in,tax.in){
     return(df.out)
   }
   
-  control_otu = prepare_df("Rice Bran")
-  cf_otu = prepare_df("Apple Slices")
+  control_otu = prepare_df("healthy")
+  cf_otu = prepare_df("afflicted")
  
   #if there are different cols, add them to df
   if(length(setdiff(colnames(control_otu),colnames(cf_otu)))>0){
@@ -348,49 +450,40 @@ sig_test_abun<-function(phy.in,tax.in){
 sig_test_abun(phy_t1,"Phylum")
 sig_test_abun(phy_t1,"Genus")
 
-create_heatmap_diet<-function(phy.in,tax.in){
+create_heatmap_mental_status<-function(phy.in,tax.in){
   #melt OTUS  
   phy_tmp <- phy.in %>%
       tax_glom(taxrank = tax.in) # agglomerate at tax 
   
-  tmp_df = data.frame(sample_data(subset_samples(phy_tmp, Diet=="Rice Bran")))
-  tmp_df = tmp_df[order(tmp_df$Timepoint),]
+  tmp_df = data.frame(sample_data(phy_tmp))
+  tmp_df = tmp_df[order(tmp_df$health_subtype),]
   
   #plot heatmap
-  tmp_df = data.frame(sample_data(subset_samples(phy_tmp, Diet=="Rice Bran")))
-  sample_list = rownames(tmp_df[order(tmp_df$Timepoint),])
+  tmp_df = data.frame(sample_data(phy_tmp))
+  sample_list = rownames(tmp_df[order(tmp_df$health_subtype),])
   
-  tmp_df = data.frame(tax_table(subset_samples(phy_t1, Diet=="Rice Bran")))
-  taxa_list = rownames(tmp[order(tmp$Phylum,decreasing=TRUE),])
-  p1= plot_heatmap(subset_samples(phy_tmp, Diet=="Rice Bran"),
-                   "NMDS", "bray", "Timepoint", tax.in, low="#66CCFF", high="#000033",
-                   na.value="white", sample.order=sample_list, taxa.order = taxa_list) + ggtitle("Rice Bran")
-  
-  #plot second heatmap
-  tmp_df = data.frame(sample_data(subset_samples(phy_tmp, Diet=="Apple Slices")))
-  sample_list = rownames(tmp_df[order(tmp_df$Timepoint),])
-  
-  tmp_df = data.frame(tax_table(subset_samples(phy_t1, Diet=="Apple Slices")))
-  taxa_list = rownames(tmp[order(tmp$Phylum,decreasing=TRUE),])
-  p2= plot_heatmap(subset_samples(phy_tmp, Diet=="Apple Slices"),
-                   "NMDS", "bray", "Timepoint", tax.in, low="#66CCFF", high="#000033", 
-                   na.value="white", ample.order=sample_list, taxa.order = taxa_list) + ggtitle("Apple Slices")
+  tmp_df = data.frame(tax_table(phy_tmp))
+  taxa_list = rownames(tmp_df[order(tmp_df$Phylum,decreasing=TRUE),])
+  p1= plot_heatmap(phy_tmp,
+                   "NMDS", "bray", "health_subtype", tax.in, low="#66CCFF", high="#000033",
+                   na.value="white", sample.order=sample_list, taxa.order = taxa_list) + 
+    ggtitle("Heatplot by Health Status and subtype") + 
+    facet_grid(~health_subtype,scales="free")+
+    theme(axis.text.x = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          strip.text.x = element_text(angle=90))
 
+  
   #merge heatmaps
-  file_name = paste0(analysis_dir,"heatplot_diet_",tax.in,".png")
-  p = ggarrange(p1,p2,
-            labels = c("A", "C"),
-            ncol = 2, nrow = 1)
-  p = annotate_figure(p, top = text_grob(paste0("Absolute Abundance, ",tax.in," by Diet"), 
-                face = "bold", size = 14))
-  print(p)
-  ggsave(file_name,p)
+  file_name = paste0(analysis_dir,"heatplot_mental_status_",tax.in,".png")
+  print(p1)
+  ggsave(file_name,p1)
 }
-create_heatmap_diet(phy_t1,"Phylum")
-create_heatmap_diet(phy_t1,"Genus")
+create_heatmap_mental_status(phy_t1,"Phylum")
 ```
 
-#alpha table
+alpha table
 ```{r}
 ##################################################
 # richness summary
@@ -408,9 +501,9 @@ richness_variables<-function(phy.in){
   # Store inv distances within type
   for (rowid in rownames(df_ob)){
     lookupval = gsub("[.]","-",rowid)
-    compare_sampletype[nrow(compare_sampletype)+1,"type"] = as.character(sample_data(phy.in)[lookupval,"SampleType"])
-    compare_sampletype[nrow(compare_sampletype),"timepoint"] = as.character(sample_data(phy.in)[lookupval,"Timepoint"])
-    compare_sampletype[nrow(compare_sampletype),"diet"] = as.character(sample_data(phy.in)[lookupval,"Diet"])
+    compare_sampletype[nrow(compare_sampletype)+1,"type"] = as.character(sample_data(phy.in)[lookupval,"mental_status"])
+    compare_sampletype[nrow(compare_sampletype),"health_subtype"] = as.character(sample_data(phy.in)[lookupval,"health_subtype"])
+    compare_sampletype[nrow(compare_sampletype),"mental_status"] = as.character(sample_data(phy.in)[lookupval,"mental_status"])
     compare_sampletype[nrow(compare_sampletype),"INV"] = df_inv[lookupval,"InvSimpson"]  
     compare_sampletype[nrow(compare_sampletype),"CH"] = df_ch[rowid,"Chao1"]  
     compare_sampletype[nrow(compare_sampletype),"OBS"] = df_ob[rowid,"Observed"]  
@@ -418,16 +511,26 @@ richness_variables<-function(phy.in){
   
   #merge at group level
   for(typeid in sort(unique(compare_sampletype$type))){
-    for (timeid in sort(unique(compare_sampletype$timepoint))){
-      sub_df = subset(compare_sampletype, type==typeid & timepoint==timeid)
+    for (subid in sort(unique(compare_sampletype$health_subtype))){
+      sub_df = subset(compare_sampletype, type==typeid & health_subtype==subid)
       sampledf[nrow(sampledf)+1,"Sample Type"] = typeid
-      sampledf[nrow(sampledf),"Timepoint"] = timeid
+      sampledf[nrow(sampledf),"health_subtype"] = subid
       sampledf[nrow(sampledf),"Inverse Simpson"] = paste0(round(mean(sub_df$INV),2)," (", round(sd(sub_df$INV),2),")")
       sampledf[nrow(sampledf),"Chao1"] = paste0(round(mean(sub_df$CH),2)," (", round(sd(sub_df$CH),2),")")
       sampledf[nrow(sampledf),"Observed Species"] = paste0(round(mean(sub_df$OBS),2)," (", round(sd(sub_df$OBS),2),")")
     }
   }
   
+  #add afflicted row 
+  sub_df = subset(compare_sampletype, type=="afflicted")
+  sampledf[nrow(sampledf)+1,"Sample Type"] = "afflicted"
+  sampledf[nrow(sampledf),"health_subtype"] = "afflicted"
+  sampledf[nrow(sampledf),"Inverse Simpson"] = paste0(round(mean(sub_df$INV),2)," (", round(sd(sub_df$INV),2),")")
+  sampledf[nrow(sampledf),"Chao1"] = paste0(round(mean(sub_df$CH),2)," (", round(sd(sub_df$CH),2),")")
+  sampledf[nrow(sampledf),"Observed Species"] = paste0(round(mean(sub_df$OBS),2)," (", round(sd(sub_df$OBS),2),")")
+      
+  sampledf= subset(sampledf,`Inverse Simpson` != "NaN (NA)")
+  sampledf$health_subtype=gsub("\n"," ",sampledf$health_subtype)
   print(sampledf)
   
   file_save = paste0(analysis_dir,'richness.csv')
@@ -445,69 +548,72 @@ richness_plots <- function(phy.in){
   print(shapiro.test(sample_df$alpha))
   
   #run anova, tukey HSD, plot
-  ## diet
-  anova_result <- aov(alpha ~ Diet, sample_df)
+  ## mental_status
+  anova_result <- aov(alpha ~ mental_status, sample_df)
   print(summary(anova_result))
-  tukey_result <- HSD.test(anova_result, "Diet", group = TRUE)
+  tukey_result <- HSD.test(anova_result, "mental_status", group = TRUE)
   print(tukey_result)
   group_data <- tukey_result$groups[order(rownames(tukey_result$groups)),]
 
-  p1 = ggplot(sample_df, aes(x = Diet, y = alpha)) +
+  p1 = ggplot(sample_df, aes(x = mental_status, y = alpha)) +
     geom_text(data = data.frame(),
               aes(x = rownames(group_data), y = max(sample_df$alpha) + 1, label = group_data$groups),
               col = 'black',
               size = 10) +
     geom_boxplot() +
-    ggtitle("Diet") +
+    ggtitle("mental_status") +
     xlab("") +
     ylab("Alpha diversity index")
-  ggsave(paste0(paste0(analysis_dir,"alpha_diversity_diet.png")),p1)
+  ggsave(paste0(paste0(analysis_dir,"alpha_diversity_mental_status.png")),p1)
   
-  ## timepoint
-  anova_result <- aov(alpha ~ Timepoint, sample_df)
+  ## health_subtype
+  anova_result <- aov(alpha ~ health_subtype, sample_df)
   print(summary(anova_result))
-  tukey_result <- HSD.test(anova_result, "Timepoint", group = TRUE)
+  tukey_result <- HSD.test(anova_result, "health_subtype", group = TRUE)
   print(tukey_result)
   group_data <- tukey_result$groups[order(rownames(tukey_result$groups)),]
-  p2 = ggplot(sample_df, aes(x = Timepoint, y = alpha)) +
+  p2 = ggplot(sample_df, aes(x = health_subtype, y = alpha)) +
     geom_text(data = data.frame(),
               aes(x = rownames(group_data), y = max(sample_df$alpha) + 1, label = group_data$groups),
               col = 'black',
               size = 10) +
+    theme(axis.text.x = element_text(angle = 90)) +
     geom_boxplot() +
-    ggtitle("Timepoint") +
+    ggtitle("health_subtype") +
     xlab("") +
     ylab("")
-    ggsave(paste0(paste0(analysis_dir,"alpha_diversity_time.png")),p2)
+    ggsave(paste0(paste0(analysis_dir,"alpha_diversity_sub.png")),p2)
   
-  ##sampletype
-  anova_result <- aov(alpha ~ SampleType, sample_df)
+  ##IBD
+  anova_result <- aov(alpha ~ ibd_status, sample_df)
   print(summary(anova_result))
-  tukey_result <- HSD.test(anova_result, "SampleType", group = TRUE)
+  tukey_result <- HSD.test(anova_result, "ibd_status", group = TRUE)
   print(tukey_result)
   group_data <- tukey_result$groups[order(rownames(tukey_result$groups)),]
-  p3 = ggplot(sample_df, aes(x = SampleType, y = alpha)) +
+  p3 = ggplot(sample_df, aes(x = ibd_status, y = alpha)) +
     geom_text(data = data.frame(),
               aes(x = rownames(group_data), y = max(sample_df$alpha) + 1, label = group_data$groups),
               col = 'black',
               size = 10) +
     geom_boxplot() +
-    ggtitle("SampleType") +
+    ggtitle("IBD Status") +
     xlab("") +
     ylab("Alpha diversity index")
-    ggsave(paste0(paste0(analysis_dir,"alpha_diversity_type.png")),p3)
+    ggsave(paste0(paste0(analysis_dir,"alpha_diversity_ibd.png")),p3)
 
   
   file_name = paste0(analysis_dir,"alpha_diversity.png")
-  p = ggarrange(p1,p2,p3,
-            labels = c("A", "B","C"),
-            ncol = 2, nrow = 2)
+  p = ggarrange(ggarrange(p1,p3,ncol=1,nrow=2,labels = c("A", "B","C")), p2,
+            labels = c("","C"),
+            ncol = 2, nrow = 1)
   p = annotate_figure(p, top = text_grob("Alpha Diversity, Inverse Simpson Diversity", 
                 face = "bold", size = 14))
   print(p)
   ggsave(file_name,p)
   
-  p1 = plot_richness(phy_t1,measures = c("Observed","Simpson","Chao1"),color="SampleType",x="Diet",shape="Timepoint")
+  p1 = plot_richness(phy_t1,measures =c("Observed","Simpson","Chao1"),
+                     color="health_subtype",
+                     x="mental_status")
   file_name = paste0(analysis_dir,"alpha_diversity_merged.png")
   p = ggarrange(p1,
             ncol = 1, nrow = 1)
@@ -520,27 +626,22 @@ richness_plots(phy_t1)
 #samples are not normally distributed Shapiro-Wilk
 ```
 
-#Bray curtis
+Bray curtis
 ```{r}
 create_ord_plots <-function(){
   #https://microbiome.github.io/tutorials/Ordination.html
   ordination <- ordinate(phy_t1,"NMDS", "bray")
   p1 = plot_ordination(phy_t1, ordination,  
-                       color="Diet", title="Diet") + theme_bw() + 
+                       color="mental_status", title="Mental Health Status") + theme_bw() + 
     stat_ellipse(geom = "polygon", type="norm", alpha=0.4)
   
   p2 = plot_ordination(phy_t1, ordination,  
-                       color="Timepoint", title="Timepoint") + theme_bw() + 
-    stat_ellipse(geom = "polygon", type="norm", alpha=0.4, aes(fill=Diet))
-  
-  p3 = plot_ordination(phy_t1, ordination,  
-                       color="SampleType", title="Sample Type") + theme_bw() + 
-    stat_ellipse(geom = "polygon", type="norm", alpha=0.4, aes(fill=Diet))
+                       color="health_subtype", title="Mental Health Sub-type")
   
   file_name = paste0(analysis_dir,"NMDS_bray.png")
-  p = ggarrange(p1,p2,p3,
-                labels = c("A", "B", "C"),
-                ncol = 2, nrow = 2)
+  p = ggarrange(p1,p2,
+                labels = c("A", "B"),
+                ncol = 2, nrow = 1)
   p = annotate_figure(p, top = text_grob("NMDS-Bray plots", 
                   face = "bold", size = 14))
   print(p)
@@ -549,7 +650,7 @@ create_ord_plots <-function(){
 create_ord_plots()
 ```
 
-#permanova analysis
+permanova analysis
 ```{r}
 #https://www.nicholas-ollberding.com/post/introduction-to-the-statistical-analysis-of-microbiome-data-in-r/
 create_atich_plots<-function(phy.in,compare.in){
@@ -557,10 +658,10 @@ create_atich_plots<-function(phy.in,compare.in){
   clr_dist_matrix <- phyloseq::distance(phy.in, method = "euclidean") 
   
   #ADONIS test
-  print(vegan::adonis(clr_dist_matrix ~ phyloseq::sample_data(phy.in)$Diet))
+  print(vegan::adonis(clr_dist_matrix ~ phyloseq::sample_data(phy.in)$mental_status))
   
   #Dispersion test and plot
-  dispr <- vegan::betadisper(clr_dist_matrix, phyloseq::sample_data(phy.in)$Diet)
+  dispr <- vegan::betadisper(clr_dist_matrix, phyloseq::sample_data(phy.in)$mental_status)
   print(permutest(dispr))
 
   file_name = paste0(analysis_dir,"ordination_",compare.in,".png")
@@ -585,23 +686,23 @@ create_atich_plots<-function(phy.in,compare.in){
   mtext("Ordination Centroids and Dispersion Labeled:\nAitchison Distance", line=0, side=3, outer=TRUE, cex=1.5)
   dev.off()
 }
-create_atich_plots(subset_samples(phy_t1,Timepoint=="Baseline" | Timepoint=="Day12" & Diet=="Apple Slices"),"bto12")
+create_atich_plots(phy_t1,"mental_health")
 
 #https://microbiome.github.io/tutorials/PERMANOVA.html
-#For Diet
-adonis2(t(otu_table(phy_t1)) ~ Diet, 
+#For mental_status
+adonis2(t(otu_table(phy_t1)) ~ mental_status, 
         data=data.frame(sample_data(phy_t1)), permutations=99,
         method = "bray")
-anova(betadisper(vegdist(t(otu_table(phy_t1))), data.frame(sample_data(phy_t1))$Diet))
+anova(betadisper(vegdist(t(otu_table(phy_t1))), data.frame(sample_data(phy_t1))$mental_status))
 
-#For Timepoints
-adonis2(t(otu_table(phy_t1)) ~ Timepoint, 
+#For health_subtypes
+adonis2(t(otu_table(phy_t1)) ~ health_subtype, 
         data=data.frame(sample_data(phy_t1)), permutations=99,
         method = "bray")
-anova(betadisper(vegdist(t(otu_table(phy_t1))), data.frame(sample_data(phy_t1))$Timepoint))
+anova(betadisper(vegdist(t(otu_table(phy_t1))), data.frame(sample_data(phy_t1))$health_subtype))
 ```
 
-#Diff analysis
+Diff analysis
 ```{r}
 #https://informatics.fas.harvard.edu/differential-expression-with-deseq2.html
 #https://joey711.github.io/phyloseq-extensions/DESeq2.html
@@ -616,19 +717,19 @@ cal_wilcox<-function(phy.in,tax.in){
 
   #Generate data.frame with OTUs and metadata
   ps_wilcox <- data.frame(t(data.frame(phyloseq::otu_table(phy_tmp))))
-  ps_wilcox$Diet <- phyloseq::sample_data(phy_tmp)$Diet
+  ps_wilcox$mental_status <- phyloseq::sample_data(phy_tmp)$mental_status
   
   #Define functions to pass to map
   wilcox_model <- function(df){
-    wilcox.test(abund ~ Diet, data = df)
+    wilcox.test(abund ~ mental_status, data = df)
   }
   wilcox_pval <- function(df){
-    wilcox.test(abund ~ Diet, data = df)$p.value
+    wilcox.test(abund ~ mental_status, data = df)$p.value
   }
 
   #Create nested data frames by OTU and loop over each using map 
   wilcox_results <- ps_wilcox %>%
-    gather(key = OTU, value = abund, -Diet) %>%
+    gather(key = OTU, value = abund, -mental_status) %>%
     group_by(OTU) %>%
     nest() %>%
     mutate(wilcox_test = map(data, wilcox_model),
@@ -652,20 +753,21 @@ cal_wilcox<-function(phy.in,tax.in){
   print(data.frame(wilcox_results))
 }
 cal_wilcox(phy_t1,"Phylum")
-cal_wilcox(subset_samples(phy_t1,Timepoint=="Baseline" | Timepoint=="Day12" & Diet=="Apple Slices"),"Phylum")
+cal_wilcox(subset_samples(phy_t1,health_subtype=="healthy" | mental_illness_type_depression=="Yes"),"Phylum")
+cal_wilcox(subset_samples(phy_t1,health_subtype=="healthy" | mental_illness_type_ptsd_posttraumatic_stress_disorder=="Yes"),"Phylum")
 
 #aldex2
 cal_alex<-function(phy.in,tax.in){
   #Run ALDEx2
   aldex2_da <- ALDEx2::aldex(data.frame(phyloseq::otu_table(phy.in)), 
-                             phyloseq::sample_data(phy.in)$Diet, test="t", effect = TRUE, denom="all")
+                             phyloseq::sample_data(phy.in)$mental_status, test="t", effect = TRUE, denom="all")
   
-  file_name = paste0(analysis_dir,"aldex_diet.png")
+  file_name = paste0(analysis_dir,"aldex_mental_status.png")
   jpeg(file_name)
   par(mfrow=c(1,2),oma=c(1.5,2,3,1))    # set the plotting area into a 1*2 array
   aldex.plot(aldex2_da, type="MA", test="welch", xlab="Log-ratio abundance", ylab="Difference")
   aldex.plot(aldex2_da, type="MW", test="welch", xlab="Dispersion", ylab="Difference")
-  mtext("ALDEx2 stratified by diet", line=0, side=3, outer=TRUE, cex=1.5)
+  mtext("ALDEx2 stratified by mental_status", line=0, side=3, outer=TRUE, cex=1.5)
   dev.off()
   
   #Adding taxonomic labels
@@ -741,30 +843,18 @@ SigTables<-function(sig_in,val_in){
 }
 run_analysis<-function(phy.in){
   sig_complete = data.frame()
-  #Diet
-  sigtab = DiffAnalysis(phy.in,phyloseq_to_deseq2(phy.in, ~ Diet), "Apple Slices to Rice Bran","diffanal_diet")
-  sig_complete = rbind(sig_complete,SigTables(sigtab,"DIET"))
+  #mental_status
+  sigtab = DiffAnalysis(phy.in,phyloseq_to_deseq2(phy.in, ~ mental_status), "healthy to afflicted","diffanal_mental_status")
+  sig_complete = rbind(sig_complete,SigTables(sigtab,"mental_status"))
   
-  #Timepoints
-  phy_tmp = subset_samples(phy.in,Timepoint %in% c("Baseline","Day05"))
-  sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Baseline to Day 5","diffanal_tp_b5")
-  sig_complete = rbind(sig_complete,SigTables(sigtab,"Bto5"))
+  #health_subtypes
+  phy_tmp = subset_samples(phy_t1,health_subtype=="healthy" | mental_illness_type_depression=="Yes")
+  sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ mental_status), "healthy to depression","diffanal_healthy_dep")
+  sig_complete = rbind(sig_complete,SigTables(sigtab,"HtoD"))
   
-  phy_tmp = subset_samples(phy.in,Timepoint %in% c("Baseline","Day08"))
-  sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Baseline to Day 8","diffanal_tp_b8")
-  sig_complete = rbind(sig_complete,SigTables(sigtab,"Bto8"))
-  
-  phy_tmp = subset_samples(phy.in,Timepoint %in% c("Baseline","Day12"))
-  sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Baseline to Day 12","diffanal_tp_b12")
-  sig_complete = rbind(sig_complete,SigTables(sigtab,"Bto12"))
-  
-  phy_tmp = subset_samples(phy.in,Timepoint %in% c("Day05","Day08"))
-  sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Day 5 to Day 8","diffanal_tp_58")
-  sig_complete = rbind(sig_complete,SigTables(sigtab,"5to8"))
-  
-  phy_tmp = subset_samples(phy.in,Timepoint %in% c("Day08","Day12"))
-  sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ Timepoint), "Timepoint Day 8 to Day 12","diffanal_tp_812")
-  sig_complete = rbind(sig_complete,SigTables(sigtab,"8to12"))
+  phy_tmp = subset_samples(phy_t1,health_subtype=="healthy" | mental_illness_type_ptsd_posttraumatic_stress_disorder=="Yes")
+  sigtab = DiffAnalysis(phy_tmp, phyloseq_to_deseq2(phy_tmp, ~ health_subtype), "healthy to PTSD","diffanal_healthy_PTSD")
+  sig_complete = rbind(sig_complete,SigTables(sigtab,"HtoP"))
   
   sig_final = data.frame()
   for (rowid in rownames(sig_complete)){
@@ -794,9 +884,9 @@ cal_rms<-function(phy.in,sub.id){
     "pc1" = ord_clr$CA$u[,1],
     "pc2" = ord_clr$CA$u[,2],
     "pc3" = ord_clr$CA$u[,3],
-    "Status" = phyloseq::sample_data(phy.in)$Diet
+    "Status" = phyloseq::sample_data(phy.in)$mental_status
   )
-  clr_pcs$Status_num <- ifelse(clr_pcs$Status == "Rice Bran", 0, 1)
+  clr_pcs$Status_num <- ifelse(clr_pcs$Status == "healthy", 0, 1)
 
   #Specify a datadist object (for rms)
   options(datadist = rms::datadist(clr_pcs))
@@ -804,13 +894,13 @@ cal_rms<-function(phy.in,sub.id){
   #Plot the unconditional associations
   a <- ggplot(clr_pcs, aes(x = pc1, y = Status_num)) +
     Hmisc::histSpikeg(Status_num ~ pc1, lowess = TRUE, data = clr_pcs) +
-    labs(x = "\nPC1", y = "Pr(Apple Slices)\n")
+    labs(x = "\nPC1", y = "Pr(healthy)\n")
   b <- ggplot(clr_pcs, aes(x = pc2, y = Status_num)) +
     Hmisc::histSpikeg(Status_num ~ pc2, lowess = TRUE, data = clr_pcs) +
-    labs(x = "\nPC2", y = "Pr(Apple Slices)\n")
+    labs(x = "\nPC2", y = "Pr(healthy)\n")
   c <- ggplot(clr_pcs, aes(x = pc3, y = Status_num)) +
     Hmisc::histSpikeg(Status_num ~ pc3, lowess = TRUE, data = clr_pcs) +
-    labs(x = "\nPC3", y = "Pr(Apple Slices)\n")
+    labs(x = "\nPC3", y = "Pr(healthy)\n")
   p = cowplot::plot_grid(a, b, c, nrow = 2, ncol = 2, scale = .9, labels = "AUTO")
 
   file_name = paste0(analysis_dir,"rms_apple",sub.id,".png")
@@ -818,7 +908,7 @@ cal_rms<-function(phy.in,sub.id){
             ncol = 1, nrow = 1)
   
   pf = annotate_figure(pf, 
-                       top = text_grob(paste0("RMS Prediction of Apple Slices\n",sub.id), face = "bold", size = 14))
+                       top = text_grob(paste0("RMS Prediction of afflicted\n",sub.id), face = "bold", size = 14))
   print(pf)
   ggsave(file_name,pf)
   
@@ -838,16 +928,17 @@ cal_rms<-function(phy.in,sub.id){
   (c_opt_corr <- 0.5 * (val[1, 5] + 1))
   cal <- rms::calibrate(pen_m1, B = 200)
   
-  file_name = paste0(analysis_dir,"rms_diet",sub.id,".png")
+  file_name = paste0(analysis_dir,"rms_mental_status",sub.id,".png")
   jpeg(file_name)
   par(mfrow=c(1,1),oma=c(1.5,2,3,1))    # set the plotting area into a 1*2 array
   plot(cal)
-  mtext(paste0("Actual Probability compared to Predicted Probability for Apple Slices\n",sub.id))
+  mtext(paste0("Actual Probability compared to Predicted Probability for afflicted\n",sub.id))
   dev.off()
   
 }
 cal_rms(phy_t1,"allsamples")
-cal_rms(subset_samples(phy_t1,Timepoint=="Baseline" | Timepoint=="Day12" & Diet=="Apple Slices"),"subsetsamples")
+cal_rms(subset_samples(phy_t1,health_subtype=="healthy" | mental_illness_type_depression=="Yes"),"sub_dep")
+cal_rms(subset_samples(phy_t1,health_subtype=="healthy" | mental_illness_type_ptsd_posttraumatic_stress_disorder=="Yes"),"sub_ptsd")
 
 #sebal
 #https://www.nicholas-ollberding.com/post/introduction-to-the-statistical-analysis-of-microbiome-data-in-r/
@@ -864,9 +955,9 @@ cal_sebal<-function(phy.in,compare.in,tax.in){
   phy_df = phy_df[,colSums(phy_df[,1:(ncol(phy_df)-1)]) > 200]
 
   #Run selbal
-  cv_sebal <- selbal::selbal.cv(x = phy_df[1:(ncol(phy_df)-1)], 
-                                y = as.factor(phyloseq::sample_data(phy_tmp)$Diet), 
-                             n.fold = 5, n.iter = 1) 
+  cv_sebal <- selbal.cv(x = phy_df[1:(ncol(phy_df)-1)], 
+                                y = as.factor(phyloseq::sample_data(phy_tmp)$mental_status), 
+                             n.fold = 5, n.iter = 1, logit.acc = "AUC") 
   
   #plot/print results
   p1 = cv_sebal$accuracy.nvar
@@ -885,19 +976,18 @@ cal_sebal<-function(phy.in,compare.in,tax.in){
   jpeg(file_name)
   plot.new()
   plot(cv_sebal$global.plot)
-  mtext("Prediction Results using Sebal\n All samples for Diet", line=0, side=3, outer=TRUE, cex=1.5)
+  mtext("Prediction Results using Sebal\n All samples for mental_status", line=0, side=3, outer=TRUE, cex=1.5)
   dev.off()
   
   file_name = paste0(analysis_dir,"selbal_table.png")
   jpeg(file_name)
   plot.new()
   plot.tab(cv_sebal$cv.tab)
-  mtext("Prediction Results using Sebal\n All samples for Diet", line=0, side=3, outer=TRUE, cex=1.5)
+  mtext("Prediction Results using Sebal\n All samples for mental_status", line=0, side=3, outer=TRUE, cex=1.5)
   dev.off()
 }
-cal_sebal(phy_t1,"diet","Phylum")
+cal_sebal(phy_t1,"mental_status","Phylum")
 ```
-
 
 #Tax4Fun installation
 ```{r}
@@ -923,53 +1013,23 @@ cal_sebal(phy_t1,"diet","Phylum")
 ```{r}
 #https://rdrr.io/cran/themetagenomics/f/vignettes/functional_prediction.Rmd
 #https://cran.r-project.org/web/packages/themetagenomics/vignettes/thematic_structure.html
-
 #download ref
 tmp <- tempdir()
-download_ref(tmp,reference='silva_ko',overwrite=FALSE)
+download_ref(tmp,reference='silva_ko')
 
-create_wordcloud<-function(df.in,file.save){
-  str.list = df.in
-  
-  remove.list = c("SUBCELLULAR LOCATION","[[:punct:]]",
-                                      "ECO[0-9]*[|][A-Za-z]*[0-9]",
-                                      "Note=","ECO[0-9]*","[0-9]*",
-                                      " and "," [tT]he "," in ","PubMed", " with ")
-  for (items in remove.list){
-    str.list=str_remove_all(str.list,items)
-  }
-  list.final = stripWhitespace(str.list)
-  dtm <- TermDocumentMatrix(Corpus(VectorSource(list.final)))
-  v <- sort(rowSums(as.matrix(dtm)),decreasing=TRUE)
-  d <- data.frame(word = names(v),freq=v)
-
-  #save wordcloud and histogram counts
-  #png(file=paste(analysis_dir,"word_",file.save,".jpg",sep=""))
-  
-  file_name = paste0(analysis_dir,"word_cloud_bray.png")
-  jpeg(file_name)
-  par(mfrow=c(1,2),oma=c(0,0,4,0))
-  par(cex=.7)
-  wordcloud(list.final,colors=brewer.pal(8,"Dark2"),max.words = 25)
-  par(fig=c(.5,1,.2,.7), new=TRUE)
-  barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
-          col = "light blue", ylab = "Word frequencies")
-  mtext("Sub-Cellular Distribution of \nTop Pathway Descriptions",outer=TRUE, cex=2)
-  dev.off()
-}
 run_tax4fun<-function(phy.in,tax.in){
-  phy_tmp <- phy.in %>%
-      tax_glom(taxrank = tax.in) # agglomerate at tax 
-  phyloseq::taxa_names(phy_tmp) <- phyloseq::tax_table(phy_tmp)[, tax.in]
-  
   #create otu df
-  phy_df = data.frame(t(data.frame(phyloseq::otu_table(phy_tmp))))
-  
+  phy_df = data.frame(t(data.frame(phyloseq::otu_table(phy.in))))
+  phy_df = phy_df[,colSums(phy_df[,1:(ncol(phy_df))]) > 1000]
+  tax_df = data.frame(tax_table(phy.in))
+  tax_df = tax_df[ , colSums(is.na(tax_df)) == 0]
+    
   #run analysis
-  t4f_output <- t4f(phy_df,rows_are_taxa=FALSE,
-                   tax_table=data.frame(tax_table(phy_tmp)),
+  t4f_output <- themetagenomics::t4f(phy_df,rows_are_taxa=FALSE,
+                   tax_table=data.frame(tax_table(phy.in)),
                    reference_path=tmp,type='uproc',short=TRUE,
                    cn_normalize=TRUE,sample_normalize=TRUE,drop=TRUE)
+ 
   #top ko
   top_ko = names(sort(colMeans(t4f_output$fxn_table),decreasing = TRUE)[1:10])
 
@@ -988,30 +1048,31 @@ run_tax4fun<-function(phy.in,tax.in){
   print("Top 10 KO Pathways")
   print(list_ko_path)
   
-  #generate wordcloud
-  create_wordcloud(list_ko_path,file.save)
-  
   #repeat analysis
-  CLEAN <- prepare_data(otu_table=phy_df,
+  CLEAN <- prepare_data(otu_table=data.frame(t(otu_table(phy.in))),
                       rows_are_taxa=FALSE,
-                      tax_table=data.frame(tax_table(phy_tmp)),
-                      metadata=data.frame(sample_data(phy_tmp)),
-                      formula= ~Diet,
-                      refs="Rice Bran",
+                      tax_table=data.frame(tax_table(phy.in)),
+                      metadata=data.frame(sample_data(phy.in)),
+                      formula= ~mental_status,
+                      refs="healthy",
                       cn_normalize=FALSE,
                       drop=TRUE)
-  TOPICS <- find_topics(CLEAN,K=15)
+  TOPICS <- find_topics(CLEAN,K=5)
   TOPIC_EFFECTS<- est(TOPICS)
-  vis(TOPIC_EFFECTS,type="continuous")
-  FUNCTIONS <- predict(TOPICS,reference='silva_ko',reference_path=tmp,cn_normalize=TRUE,sample_normalize=FALSE,scalar=25)
+  FUNCTIONS <- predict(TOPICS,
+                       reference='silva_ko',
+                       reference_path=tmp,
+                       cn_normalize=TRUE,
+                       sample_normalize=FALSE,
+                       scalar=25)
+  
   FUNCTION_EFFECTS <- est(FUNCTIONS,level=3,iters=300,
                           chains=2,cores=2,
                           return_summary=TRUE,
                           prior=c('normal','normal','normal'))
   FUNCTION_EFFECTS2 <- resume(FUNCTION_EFFECTS,init_type='last',iters=600,chains=2,cores=2)
-  
+  vis(TOPIC_EFFECTS,type="continuous")
   vis(FUNCTION_EFFECTS2,est(TOPICS),ui_level=.95)
 }
 run_tax4fun(phy_t1,"Phylum")
 ```
-
